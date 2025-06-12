@@ -1,4 +1,3 @@
-
 import { ChatContextProvider } from "./ChatContext";
 import { Window as DefaultWindow } from "./Window";
 import { Button as DefaultButton } from "./Button";
@@ -7,8 +6,8 @@ import { Messages as DefaultMessages } from "./Messages";
 import { Input as DefaultInput } from "./Input";
 import { ResponseButton as DefaultResponseButton } from "./Response";
 import { CopilotChat } from "./Chat";
-import { defineComponent, PropType, ref, render } from "vue";
-import { SystemMessageFunction } from "@copilotkit/vue-core";
+import { defineComponent, PropType, ref, h } from "vue";
+import { SystemMessageFunction } from "@dingdayu/vue-copilotkit-core";
 
 export interface CopilotModalProps extends Record<string, any> {
   /**
@@ -41,10 +40,10 @@ export interface CopilotModalProps extends Record<string, any> {
    */
   onSetOpen?: (open: boolean) => void;
 }
-// const openState = ref(false);
+
 export const CopilotModal = defineComponent({
-  props:{
-    instructions:{
+  props: {
+    instructions: {
       type: String,
       default: ''
     },
@@ -105,130 +104,74 @@ export const CopilotModal = defineComponent({
       showResponseButton,
       onInProgress,
       className,
-     } = props;
+    } = props;
+    
     const openState = ref(defaultOpen);
+    
     const setOpenState = (open: boolean) => {
       openState.value = open;
       onSetOpen?.(open);
     };
-    const Window = slots.window || DefaultWindow;
-    const Header  = slots.header || DefaultHeader;
-    const Messages  = slots.messages || DefaultMessages;
-    const Input  = slots.input || DefaultInput;
-    const ResponseButton  = slots.responseButton || DefaultResponseButton;
-    return () => (<ChatContextProvider labels={labels} open={openState.value} setOpen={setOpenState}>
-      {slots.children?.() || null}
-      <div class={className}>
-        {slots.button?.() || <DefaultButton open={openState} setOpen={setOpenState} />}
-        <Window 
-          open={openState.value}
-          setOpen={setOpenState}
-          clickOutsideToClose={clickOutsideToClose}
-          shortcut={shortcut}
-          hitEscapeToClose={hitEscapeToClose}
-        >
-          <Header setOpen={setOpenState} />
-          <CopilotChat 
-            instructions={instructions}
-            onSubmitMessage={onSubmitMessage}
-            makeSystemMessage={makeSystemMessage}
-            showResponseButton={showResponseButton}
-            onInProgress={onInProgress}
-          >
-            {{
-              messages: (props) =>{
-                return (<Messages {...props} >
-                  {/* success */}
-                  {{
-                    default: () => <>{props.children.default?.() || null}</>
-                  }}
-                  {/* fail */}
-                  {/* {{
-                    default: () => {props.children.default?.() || null}
-                  }} */}
-                  {/* success */}
-                  {/* {props.children.default?.() || null} */}
-                  {/* fail */}
-                  {/* {props.children} */}
-                </Messages>)
-              },
-              input: (props) => <Input {...props} />,
-              responseButton: (props) => <ResponseButton {...props} />
-            }}
-          </CopilotChat>
-        </Window>
-      </div>
-    </ChatContextProvider>)
-  }
-})
 
-// export const CopilotModal = ({
-//   instructions,
-//   defaultOpen = false,
-//   clickOutsideToClose = true,
-//   hitEscapeToClose = true,
-//   onSetOpen,
-//   onSubmitMessage,
-//   shortcut = "/",
-//   icons,
-//   labels,
-//   makeSystemMessage,
-//   showResponseButton = true,
-//   onInProgress,
-//   className,
-// }: CopilotModalProps,{ slots }: any) => {
-//   const setOpenState = (open: boolean) => {
-//     openState.value = open;
-//     onSetOpen?.(open);
-//   };
-//   const Window = slots.window || DefaultWindow;
-//   const Header = slots.header || DefaultHeader;
-//   const Messages = slots.messages || DefaultMessages;
-//   const Input = slots.input || DefaultInput;
-//   const ResponseButton = slots.responseButton || DefaultResponseButton;
-//   return (
-//     <ChatContextProvider labels={labels} open={openState.value} setOpen={setOpenState}>
-//       {slots.children?.() || null}
-//       <div class={className}>
-//         {slots.button?.() || <DefaultButton open={openState} setOpen={setOpenState} />}
-//         <Window 
-//           open={openState.value}
-//           setOpen={setOpenState}
-//           clickOutsideToClose={clickOutsideToClose}
-//           shortcut={shortcut}
-//           hitEscapeToClose={hitEscapeToClose}
-//         >
-//           <Header setOpen={setOpenState} />
-//           <CopilotChat 
-//             instructions={instructions}
-//             onSubmitMessage={onSubmitMessage}
-//             makeSystemMessage={makeSystemMessage}
-//             showResponseButton={showResponseButton}
-//             onInProgress={onInProgress}
-//           >
-//             {{
-//               messages: (props) =>{
-//                 return (<Messages {...props} >
-//                   {/* success */}
-//                   {{
-//                     default: () => <>{props.children.default?.() || null}</>
-//                   }}
-//                   {/* fail */}
-//                   {/* {{
-//                     default: () => {props.children.default?.() || null}
-//                   }} */}
-//                   {/* success */}
-//                   {/* {props.children.default?.() || null} */}
-//                   {/* fail */}
-//                   {/* {props.children} */}
-//                 </Messages>)
-//               },
-//               input: (props) => <Input {...props} />,
-//               responseButton: (props) => <ResponseButton {...props} />
-//             }}
-//           </CopilotChat>
-//         </Window>
-//       </div>
-//     </ChatContextProvider>
-//   )
-// }
+    return () => (
+      <ChatContextProvider labels={labels} open={openState.value} setOpen={setOpenState}>
+        <div class={className}>
+          {slots.children?.() || null}
+          {slots.button?.() || h(DefaultButton, { open: openState, setOpen: setOpenState })}
+          
+          {/* Use conditional rendering with proper component usage */}
+          {slots.window ? (
+            slots.window({
+              open: openState.value,
+              setOpen: setOpenState,
+              clickOutsideToClose,
+              shortcut,
+              hitEscapeToClose
+            })
+          ) : (
+            h(DefaultWindow, {
+              open: openState.value,
+              setOpen: setOpenState,
+              clickOutsideToClose: clickOutsideToClose,
+              shortcut: shortcut,
+              hitEscapeToClose: hitEscapeToClose
+            }, {
+              default: () => [
+                slots.header ? 
+                  slots.header({ setOpen: setOpenState }) : 
+                  h(DefaultHeader, { setOpen: setOpenState }),
+                
+                h(CopilotChat, {
+                  instructions: instructions,
+                  onSubmitMessage: onSubmitMessage,
+                  makeSystemMessage: makeSystemMessage,
+                  showResponseButton: showResponseButton,
+                  onInProgress: onInProgress
+                }, {
+                  messages: (props: any) => {
+                    return slots.messages ? 
+                      slots.messages({
+                        ...props,
+                        children: {
+                          default: () => props.children?.default?.() || null
+                        }
+                      }) : 
+                      h(DefaultMessages, props, {
+                        default: () => props.children?.default?.() || null
+                      });
+                  },
+                  input: (props: any) => slots.input ? 
+                    slots.input(props) : 
+                    h(DefaultInput, props),
+                  responseButton: (props: any) => slots.responseButton ? 
+                    slots.responseButton(props) : 
+                    h(DefaultResponseButton, props)
+                })
+              ]
+            })
+          )}
+        </div>
+      </ChatContextProvider>
+    );
+  }
+});

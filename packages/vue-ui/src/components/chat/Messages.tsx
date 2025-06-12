@@ -2,7 +2,7 @@ import { defineComponent, PropType, ref, watch } from "vue";
 import { MessagesProps } from "./props";
 import { useChatContext } from "./ChatContext";
 import { Markdown } from "./Markdown";
-import { RenderFunctionStatus, useCopilotContext } from "@copilotkit/vue-core";
+import { RenderFunctionStatus, useCopilotContext } from "@dingdayu/vue-copilotkit-core";
 import { SpinnerIcon } from "./Icon";
 
 import {

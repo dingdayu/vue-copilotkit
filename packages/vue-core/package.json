@@ -1,7 +1,21 @@
 {
-  "name": "@copilotkit/vue-core",
+  "name": "@dingdayu/vue-copilotkit-core",
   "private": false,
-  "version": "1.0.3",
+  "version": "0.0.3",
+  "author": "dingdayu <dingxiaoyu.ddy@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dingdayu/vue-copilotkit.git",
+    "directory": "packages/vue-core"
+  },
+  "keywords": [
+    "vue",
+    "copilot",
+    "ai",
+    "assistant",
+    "copilotkit"
+  ],
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "exports": {
@@ -20,8 +34,8 @@
     "vite": "^5.3.4"
   },
   "dependencies": {
-    "@copilotkit/runtime-client-gql": "^1.1.0",
-    "@copilotkit/shared": "^1.1.0"
+    "@copilotkit/runtime-client-gql": "^1.8.14",
+    "@copilotkit/shared": "^1.8.14"
   },
   "publishConfig": {
     "access": "public"

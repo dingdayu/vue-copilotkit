@@ -43,8 +43,8 @@
 </template>
 
 <script setup lang="ts">
-import { CopilotTextarea } from '@copilotkit/vue-textarea'
-import { useCopilotReadable, DocumentPointer, useMakeCopilotDocumentReadable } from '@copilotkit/vue-core'
+import { CopilotTextarea } from '@dingdayu/vue-textarea'
+import { useCopilotReadable, DocumentPointer, useMakeCopilotDocumentReadable } from '@dingdayu/vue-copilotkit-core'
 import { ref } from 'vue'
 import emailHistory from '../lib/email-history.json'
 import { useStateWithLocalStorage } from '../hooks/utils'

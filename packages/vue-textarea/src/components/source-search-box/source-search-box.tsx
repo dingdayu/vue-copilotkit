@@ -1,6 +1,6 @@
 import { defineComponent, ref, PropType } from 'vue'
 import { ElButton, ElInput, ElScrollbar } from 'element-plus'
-import { DocumentPointer } from '@copilotkit/vue-core'
+import { DocumentPointer } from '@dingdayu/vue-copilotkit-core'
 
 export interface SourceSearchBoxProps {
   searchTerm: string

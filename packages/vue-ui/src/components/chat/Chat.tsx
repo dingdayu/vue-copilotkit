@@ -1,5 +1,5 @@
 import { defineComponent,PropType, ref, watch } from "vue";
-import { SystemMessageFunction, useCopilotChat, useCopilotContext } from "@copilotkit/vue-core";
+import { SystemMessageFunction, useCopilotChat, useCopilotContext } from "@dingdayu/vue-copilotkit-core";
 import { randomId } from "@copilotkit/shared";
 import { Message, Role, TextMessage } from "@copilotkit/runtime-client-gql";
 import { CopilotChatSuggestion } from "../../types/suggestions";

@@ -1,7 +1,21 @@
 {
-  "name": "@copilotkit/vue-ui",
+  "name": "@dingdayu/vue-copilotkit-ui",
   "private": false,
-  "version": "1.0.3",
+  "version": "0.0.6",
+  "author": "dingdayu <dingxiaoyu.ddy@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dingdayu/vue-copilotkit.git",
+    "directory": "packages/vue-ui"
+  },
+  "keywords": [
+    "vue",
+    "copilot",
+    "ai",
+    "assistant",
+    "copilotkit"
+  ],
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "exports": {
@@ -17,9 +31,9 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@copilotkit/runtime-client-gql": "^1.1.0",
-    "@copilotkit/shared": "^1.1.0",
-    "@copilotkit/vue-core": "1.0.3",
+    "@copilotkit/runtime-client-gql": "^1.8.14",
+    "@copilotkit/shared": "^1.8.14",
+    "@dingdayu/vue-copilotkit-core": "^0.0.3",
     "md-editor-v3": "4.18.1"
   },
   "devDependencies": {

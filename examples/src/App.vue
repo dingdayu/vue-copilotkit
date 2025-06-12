@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import { CopilotKit } from '@copilotkit/vue-core'
+import { CopilotKit } from '@dingdayu/vue-copilotkit-core'
 import ProvideApiKeyDialog from './components/ProvideApiKeyDialog.tsx'
 import { reactive } from 'vue';
 

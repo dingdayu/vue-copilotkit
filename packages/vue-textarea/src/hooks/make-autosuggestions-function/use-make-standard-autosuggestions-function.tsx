@@ -1,4 +1,4 @@
-import { useCopilotContext } from '@copilotkit/vue-core'
+import { useCopilotContext } from '@dingdayu/vue-copilotkit-core'
 import { COPILOT_CLOUD_PUBLIC_API_KEY_HEADER } from '@copilotkit/shared'
 import { retry } from '../../lib/retry'
 import { AutosuggestionsBareFunction } from '../../types'

@@ -1,5 +1,5 @@
 import { BaseCopilotTextareaApiConfig } from './autosuggestions-bare-function'
-import { defaultCopilotContextCategories } from '@copilotkit/vue-core'
+import { defaultCopilotContextCategories } from '@dingdayu/vue-copilotkit-core'
 
 /**
  * @interface BaseAutosuggestionsConfig

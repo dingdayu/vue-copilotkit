@@ -70,7 +70,7 @@ import {
   useCopilotReadable,
   useCopilotAction,
   useCopilotChat,
-} from "@copilotkit/vue-core";
+} from "@dingdayu/vue-copilotkit-core";
 import { Role, TextMessage } from "@copilotkit/runtime-client-gql";
 
 

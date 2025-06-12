@@ -1,6 +1,6 @@
 import { defineComponent, ref } from 'vue'
-import { useCopilotReadable, useCopilotAction, useCopilotContext } from '@copilotkit/vue-core'
-import { CopilotSidebar } from '@copilotkit/vue-ui'
+import { useCopilotReadable, useCopilotAction, useCopilotContext } from '@dingdayu/vue-copilotkit-core'
+import { CopilotSidebar } from '@dingdayu/vue-copilotkit-ui'
 
 import { TextMessage, Role } from '@copilotkit/runtime-client-gql'
 

@@ -5,7 +5,7 @@ import {
   Generator_InsertionOrEditingSuggestion
 } from '../../../types/base/autosuggestions-bare-function'
 import { SourceSearchBox } from '../../source-search-box/source-search-box'
-import { DocumentPointer, useCopilotContext } from '@copilotkit/vue-core'
+import { DocumentPointer, useCopilotContext } from '@dingdayu/vue-copilotkit-core'
 import { streamPromiseFlatten } from '../../../lib/stream-promise-flatten'
 import { IncludedFilesPreview } from './included-files-preview'
 import { useHoveringEditorContext } from '../hovering-editor-provider'

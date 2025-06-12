@@ -1,4 +1,4 @@
-import { DocumentPointer, useCopilotContext } from '@copilotkit/vue-core'
+import { DocumentPointer, useCopilotContext } from '@dingdayu/vue-copilotkit-core'
 import { COPILOT_CLOUD_PUBLIC_API_KEY_HEADER, randomId } from '@copilotkit/shared'
 import {
   CopilotRuntimeClient,
@@ -39,7 +39,7 @@ export function useMakeStandardInsertionOrEditingFunction(
   async function runtimeClientResponseToStringStream(
     responsePromise: ReturnType<typeof runtimeClient.generateCopilotResponse>
   ) {
-    const messagesStream = await CopilotRuntimeClient.asStream(responsePromise)
+    const messagesStream = await runtimeClient.asStream(responsePromise)
 
     return new ReadableStream({
       async start(controller) {

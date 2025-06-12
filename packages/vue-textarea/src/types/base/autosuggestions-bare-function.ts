@@ -1,4 +1,4 @@
-import { DocumentPointer } from '@copilotkit/vue-core'
+import { DocumentPointer } from '@dingdayu/vue-copilotkit-core'
 
 export interface InsertionEditorState {
   textBeforeCursor: string
