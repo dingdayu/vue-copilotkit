@@ -48,15 +48,15 @@ importers:
       '@copilotkit/shared':
         specifier: ^1.1.0
         version: 1.3.6(encoding@0.1.13)
-      '@copilotkit/vue-core':
-        specifier: ^1.0.3
-        version: 1.0.3(axios@1.7.7)(encoding@0.1.13)(handlebars@4.7.8)(ignore@5.3.2)(lodash@4.17.21)(react@18.3.1)
-      '@copilotkit/vue-textarea':
-        specifier: ^1.0.3
-        version: 1.0.3(axios@1.7.7)(encoding@0.1.13)(handlebars@4.7.8)(ignore@5.3.2)(lodash@4.17.21)(react@18.3.1)(vue@3.5.12(typescript@5.6.3))
-      '@copilotkit/vue-ui':
-        specifier: ^1.0.3
-        version: 1.0.3(axios@1.7.7)(encoding@0.1.13)(handlebars@4.7.8)(ignore@5.3.2)(lodash@4.17.21)(react@18.3.1)(vue@3.5.12(typescript@5.6.3))
+      '@dingdayu/vue-copilotkit-core':
+        specifier: workspace:*
+        version: link:../packages/vue-core
+      '@dingdayu/vue-copilotkit-ui':
+        specifier: workspace:*
+        version: link:../packages/vue-ui
+      '@dingdayu/vue-textarea':
+        specifier: workspace:*
+        version: link:../packages/vue-textarea
       '@element-plus/icons-vue':
         specifier: ^2.3.1
         version: 2.3.1(vue@3.5.12(typescript@5.6.3))
@@ -114,11 +114,11 @@ importers:
   packages/vue-core:
     dependencies:
       '@copilotkit/runtime-client-gql':
-        specifier: ^1.1.0
-        version: 1.3.6(axios@1.7.7)(encoding@0.1.13)(handlebars@4.7.8)(ignore@5.3.2)(lodash@4.17.21)(react@18.3.1)
+        specifier: ^1.8.14
+        version: 1.8.14(encoding@0.1.13)(graphql@16.9.0)(react@18.3.1)
       '@copilotkit/shared':
-        specifier: ^1.1.0
-        version: 1.3.6(encoding@0.1.13)
+        specifier: ^1.8.14
+        version: 1.8.14(encoding@0.1.13)
     devDependencies:
       '@copilotkit/vite-config':
         specifier: workspace:*
@@ -130,12 +130,12 @@ importers:
   packages/vue-textarea:
     dependencies:
       '@copilotkit/runtime-client-gql':
-        specifier: ^1.1.0
-        version: 1.3.6(axios@1.7.7)(encoding@0.1.13)(handlebars@4.7.8)(ignore@5.3.2)(lodash@4.17.21)(react@18.3.1)
+        specifier: ^1.8.14
+        version: 1.8.14(encoding@0.1.13)(graphql@16.9.0)(react@18.3.1)
       '@copilotkit/shared':
-        specifier: ^1.1.0
-        version: 1.3.6(encoding@0.1.13)
-      '@copilotkit/vue-core':
+        specifier: ^1.8.14
+        version: 1.8.14(encoding@0.1.13)
+      '@dingdayu/vue-copilotkit-core':
         specifier: workspace:*
         version: link:../vue-core
       '@tiptap/core':
@@ -159,6 +159,9 @@ importers:
       lodash.merge:
         specifier: ^4.6.2
         version: 4.6.2
+      prosemirror-state:
+        specifier: ^1.4.3
+        version: 1.4.3
     devDependencies:
       '@copilotkit/vite-config':
         specifier: workspace:*
@@ -173,14 +176,14 @@ importers:
   packages/vue-ui:
     dependencies:
       '@copilotkit/runtime-client-gql':
-        specifier: ^1.1.0
-        version: 1.3.6(axios@1.7.7)(encoding@0.1.13)(handlebars@4.7.8)(ignore@5.3.2)(lodash@4.17.21)(react@18.3.1)
+        specifier: ^1.8.14
+        version: 1.8.14(encoding@0.1.13)(graphql@16.9.0)(react@18.3.1)
       '@copilotkit/shared':
-        specifier: ^1.1.0
-        version: 1.3.6(encoding@0.1.13)
-      '@copilotkit/vue-core':
-        specifier: workspace:*
-        version: link:../vue-core
+        specifier: ^1.8.14
+        version: 1.8.14(encoding@0.1.13)
+      '@dingdayu/vue-copilotkit-core':
+        specifier: ^0.0.3
+        version: 0.0.3(encoding@0.1.13)(graphql@16.9.0)(react@18.3.1)
       md-editor-v3:
         specifier: 4.18.1
         version: 4.18.1(vue@3.5.12(typescript@5.6.3))
@@ -431,24 +434,26 @@ packages:
     peerDependencies:
       react: ^18.2.0
 
+  '@copilotkit/runtime-client-gql@1.8.14':
+    resolution: {integrity: sha512-QYj3uvNfnATi+Xb2hv963gKxTuxo4hGLOx7Colxdpbqon0ji6sfhINBHIvtPoMstf0Z3V9bTj0vIme5BXVnN0Q==}
+    peerDependencies:
+      react: ^18 || ^19 || ^19.0.0-rc
+
   '@copilotkit/runtime@1.3.6':
     resolution: {integrity: sha512-gI04MBWDsLmFWkSG6Szx+SHOzziBBibe+tsaHXzDzKtWIWczE24OMy4e2xlpxiftgreNhXrNvFK3xlP9sPjBlQ==}
 
   '@copilotkit/shared@1.3.6':
     resolution: {integrity: sha512-5tIDbtBMcVMBaswewbwTtVXQOWhDn+Y2zI8Wiijw0xJvoajA3BLMH/swragZXTgLbM2fyFtAoMSk8sZNwBkyTA==}
 
-  '@copilotkit/vue-core@1.0.3':
-    resolution: {integrity: sha512-DMfw2sYPtQH2YLiaiXKiUymzjThiD65E4HnvlRpM9JLe4jFkDfV7n05YeqOyQMwQXv9eErG2zKrecghBUY9zzg==}
-
-  '@copilotkit/vue-textarea@1.0.3':
-    resolution: {integrity: sha512-R+Oe0gVHTwrvlyH/IpyG/InOO9wYOq9ssF3uK6/p4jJ5bv9B8ytSZSAeuwRF7ASe4oUuJaGG8ZM8zm/e/MtTSQ==}
-
-  '@copilotkit/vue-ui@1.0.3':
-    resolution: {integrity: sha512-z3tIw+FQd9aKLWF+wzE5szzDr4q5H5v1vg/dwYkFl9fqVEjMmfY/MXsj1LQCSMAuQWCRxuJqUcwtrk/xKUSKFw==}
+  '@copilotkit/shared@1.8.14':
+    resolution: {integrity: sha512-jWNMyZ5/csGN0Iim/Y3ZVSnUTGJL9CAToD5SaLy2/jqaEwcLQgsAZNeHw35lh8NYGp57VxKuNbBCuEF9YXvnvw==}
 
   '@ctrl/tinycolor@3.6.1':
     resolution: {integrity: sha512-SITSV6aIXsuVNV3f3O0f2n/cgyEDWoSqtZMYiAmcsYHydcKrOz3gUxB/iXd/Qf08+IZX4KpgNbvUdMBmWz+kcA==}
     engines: {node: '>=10'}
+
+  '@dingdayu/vue-copilotkit-core@0.0.3':
+    resolution: {integrity: sha512-7orlMJQUO6G3J8/5KatkBBw1ooK78p2aI/tBsFQH20pLjrcXDB0UHWMQcWAWe75GhGwNtH4AE1p6mjeO3cNs0g==}
 
   '@element-plus/icons-vue@2.3.1':
     resolution: {integrity: sha512-XxVUZv48RZAd87ucGS48jPf6pKu0yV5UCg9f4FFwtrYxXOwWuVJo6wOvSLKEoMQKjv8GsX/mhP6UsC1lRwbUWg==}
@@ -1348,28 +1353,24 @@ packages:
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
-    libc: [glibc]
 
   '@nx/nx-linux-arm64-musl@19.8.6':
     resolution: {integrity: sha512-7rW21+uFj5KJx3z/HXhl6PUcp8+mQ8r/nUGbS59HjmMdVMZDd7PZKUVJF9Tu1ESproOCYSeJbOVk4WGiHtbF9Q==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
-    libc: [musl]
 
   '@nx/nx-linux-x64-gnu@19.8.6':
     resolution: {integrity: sha512-2/5WDr2wwWyvbqlB//ICWS5q3rRF4GyNX2NOp/tVkmh1RfDhH0ZAVZ/oJ7QvE1mKLQh0AM7bQBHsF5ikmMhUXw==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
-    libc: [glibc]
 
   '@nx/nx-linux-x64-musl@19.8.6':
     resolution: {integrity: sha512-G3UIMk+C090WR/btOaJCrBgRa7gjTj6ZBHinFceO7rii8r3D1SiN5cW1Njd1pV2K7IjJaSTuRtd9c1eLcIj9rQ==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
-    libc: [musl]
 
   '@nx/nx-win32-arm64-msvc@19.8.6':
     resolution: {integrity: sha512-8dfUstJkN2ChbIcj3TfcHgWyJy0b9za+3gU9IvZm82P9EeDCjEGoE/ld9VALGa+2UnX2Ve5BqlWGTD8BqYTeCA==}
@@ -1501,55 +1502,46 @@ packages:
     resolution: {integrity: sha512-0KXvIJQMOImLCVCz9uvvdPgfyWo93aHHp8ui3FrtOP57svqrF/roSSR5pjqL2hcMp0ljeGlU4q9o/rQaAQ3AYA==}
     cpu: [arm]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-arm-musleabihf@4.24.0':
     resolution: {integrity: sha512-it2BW6kKFVh8xk/BnHfakEeoLPv8STIISekpoF+nBgWM4d55CZKc7T4Dx1pEbTnYm/xEKMgy1MNtYuoA8RFIWw==}
     cpu: [arm]
     os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-linux-arm64-gnu@4.24.0':
     resolution: {integrity: sha512-i0xTLXjqap2eRfulFVlSnM5dEbTVque/3Pi4g2y7cxrs7+a9De42z4XxKLYJ7+OhE3IgxvfQM7vQc43bwTgPwA==}
     cpu: [arm64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-arm64-musl@4.24.0':
     resolution: {integrity: sha512-9E6MKUJhDuDh604Qco5yP/3qn3y7SLXYuiC0Rpr89aMScS2UAmK1wHP2b7KAa1nSjWJc/f/Lc0Wl1L47qjiyQw==}
     cpu: [arm64]
     os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-linux-powerpc64le-gnu@4.24.0':
     resolution: {integrity: sha512-2XFFPJ2XMEiF5Zi2EBf4h73oR1V/lycirxZxHZNc93SqDN/IWhYYSYj8I9381ikUFXZrz2v7r2tOVk2NBwxrWw==}
     cpu: [ppc64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-riscv64-gnu@4.24.0':
     resolution: {integrity: sha512-M3Dg4hlwuntUCdzU7KjYqbbd+BLq3JMAOhCKdBE3TcMGMZbKkDdJ5ivNdehOssMCIokNHFOsv7DO4rlEOfyKpg==}
     cpu: [riscv64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-s390x-gnu@4.24.0':
     resolution: {integrity: sha512-mjBaoo4ocxJppTorZVKWFpy1bfFj9FeCMJqzlMQGjpNPY9JwQi7OuS1axzNIk0nMX6jSgy6ZURDZ2w0QW6D56g==}
     cpu: [s390x]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-x64-gnu@4.24.0':
     resolution: {integrity: sha512-ZXFk7M72R0YYFN5q13niV0B7G8/5dcQ9JDp8keJSfr3GoZeXEoMHP/HlvqROA3OMbMdfr19IjCeNAnPUG93b6A==}
     cpu: [x64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-x64-musl@4.24.0':
     resolution: {integrity: sha512-w1i+L7kAXZNdYl+vFvzSZy8Y1arS7vMgIy8wusXJzRrPyof5LAb02KGr1PD2EkRcl73kHulIID0M501lN+vobQ==}
     cpu: [x64]
     os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-win32-arm64-msvc@4.24.0':
     resolution: {integrity: sha512-VXBrnPWgBpVDCVY6XF3LEW0pOU51KbaHhccHw6AS6vBWIC60eqsH19DAeeObl+g8nKAz04QFdl/Cefta0xQtUQ==}
@@ -3794,6 +3786,7 @@ packages:
 
   lodash.get@4.4.2:
     resolution: {integrity: sha512-z+Uw/vLuy6gQe8cfaFWD7p0wVv8fJl3mbzXh33RS+0oW2wvUqiRXiQ69gLWSLpgB5/6sU+r6BlQR0MBILadqTQ==}
+    deprecated: This package is deprecated. Use the optional chaining (?.) operator instead.
 
   lodash.ismatch@4.4.0:
     resolution: {integrity: sha512-fPMfXjGQEV9Xsq/8MTSgUf255gawYRbjwMyDbcvDhXgV7enSZA0hynz6vMPnpAb5iONEzBHBPsT+0zes5Z301g==}
@@ -4095,6 +4088,7 @@ packages:
   node-domexception@1.0.0:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
     engines: {node: '>=10.5.0'}
+    deprecated: Use your platform's native DOMException instead
 
   node-fetch-native@1.6.4:
     resolution: {integrity: sha512-IhOigYzAKHd244OC0JIMIUrjzctirCmPkaIfhDeGcEETWof5zKYUW7e7MYvChGWh/4CJeXEgsRyGzuF334rOOQ==}
@@ -5626,6 +5620,11 @@ packages:
     peerDependencies:
       zod: ^3.23.3
 
+  zod-to-json-schema@3.24.5:
+    resolution: {integrity: sha512-/AuWwMP+YqiPbsJx5D6TfgRTc4kTLjsh5SOcd4bLsfUg2RcEXrFMJl1DGgdHy2aCfsIA/cr/1JM0xcB2GZji8g==}
+    peerDependencies:
+      zod: ^3.24.1
+
   zod@3.23.8:
     resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
 
@@ -6226,6 +6225,17 @@ snapshots:
       - youtube-transcript
       - youtubei.js
 
+  '@copilotkit/runtime-client-gql@1.8.14(encoding@0.1.13)(graphql@16.9.0)(react@18.3.1)':
+    dependencies:
+      '@copilotkit/shared': 1.8.14(encoding@0.1.13)
+      '@urql/core': 5.0.7(graphql@16.9.0)
+      react: 18.3.1
+      untruncate-json: 0.0.1
+      urql: 4.2.0(@urql/core@5.0.7(graphql@16.9.0))(react@18.3.1)
+    transitivePeerDependencies:
+      - encoding
+      - graphql
+
   '@copilotkit/runtime@1.3.6(axios@1.7.7)(class-validator@0.14.1)(encoding@0.1.13)(handlebars@4.7.8)(ignore@5.3.2)(lodash@4.17.21)':
     dependencies:
       '@anthropic-ai/sdk': 0.27.3(encoding@0.1.13)
@@ -6382,407 +6392,27 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@copilotkit/vue-core@1.0.3(axios@1.7.7)(encoding@0.1.13)(handlebars@4.7.8)(ignore@5.3.2)(lodash@4.17.21)(react@18.3.1)':
+  '@copilotkit/shared@1.8.14(encoding@0.1.13)':
     dependencies:
-      '@copilotkit/runtime-client-gql': 1.3.6(axios@1.7.7)(encoding@0.1.13)(handlebars@4.7.8)(ignore@5.3.2)(lodash@4.17.21)(react@18.3.1)
-      '@copilotkit/shared': 1.3.6(encoding@0.1.13)
+      '@segment/analytics-node': 2.2.0(encoding@0.1.13)
+      chalk: 4.1.2
+      graphql: 16.9.0
+      uuid: 10.0.0
+      zod: 3.23.8
+      zod-to-json-schema: 3.24.5(zod@3.23.8)
     transitivePeerDependencies:
-      - '@aws-crypto/sha256-js'
-      - '@aws-sdk/client-bedrock-agent-runtime'
-      - '@aws-sdk/client-bedrock-runtime'
-      - '@aws-sdk/client-dynamodb'
-      - '@aws-sdk/client-kendra'
-      - '@aws-sdk/client-lambda'
-      - '@aws-sdk/client-s3'
-      - '@aws-sdk/client-sagemaker-runtime'
-      - '@aws-sdk/client-sfn'
-      - '@aws-sdk/credential-provider-node'
-      - '@azure/search-documents'
-      - '@azure/storage-blob'
-      - '@browserbasehq/sdk'
-      - '@clickhouse/client'
-      - '@cloudflare/ai'
-      - '@datastax/astra-db-ts'
-      - '@elastic/elasticsearch'
-      - '@getmetal/metal-sdk'
-      - '@getzep/zep-js'
-      - '@gomomento/sdk'
-      - '@gomomento/sdk-core'
-      - '@gomomento/sdk-web'
-      - '@google-ai/generativelanguage'
-      - '@google-cloud/storage'
-      - '@gradientai/nodejs-sdk'
-      - '@huggingface/inference'
-      - '@mendable/firecrawl-js'
-      - '@mozilla/readability'
-      - '@neondatabase/serverless'
-      - '@notionhq/client'
-      - '@opensearch-project/opensearch'
-      - '@pinecone-database/pinecone'
-      - '@planetscale/database'
-      - '@premai/prem-sdk'
-      - '@qdrant/js-client-rest'
-      - '@raycast/api'
-      - '@rockset/client'
-      - '@smithy/eventstream-codec'
-      - '@smithy/protocol-http'
-      - '@smithy/signature-v4'
-      - '@smithy/util-utf8'
-      - '@supabase/postgrest-js'
-      - '@supabase/supabase-js'
-      - '@tensorflow-models/universal-sentence-encoder'
-      - '@tensorflow/tfjs-converter'
-      - '@tensorflow/tfjs-core'
-      - '@upstash/redis'
-      - '@upstash/vector'
-      - '@vercel/kv'
-      - '@vercel/postgres'
-      - '@writerai/writer-sdk'
-      - '@xata.io/client'
-      - '@xenova/transformers'
-      - '@zilliz/milvus2-sdk-node'
-      - apify-client
-      - assemblyai
-      - axios
-      - better-sqlite3
-      - cassandra-driver
-      - cborg
-      - cheerio
-      - chromadb
-      - closevector-common
-      - closevector-node
-      - closevector-web
-      - cohere-ai
-      - convex
-      - couchbase
-      - d3-dsv
-      - discord.js
-      - dria
-      - duck-duck-scrape
       - encoding
-      - epub2
-      - faiss-node
-      - fast-xml-parser
-      - firebase-admin
-      - google-auth-library
-      - googleapis
-      - handlebars
-      - hnswlib-node
-      - html-to-text
-      - ignore
-      - interface-datastore
-      - ioredis
-      - it-all
-      - jsdom
-      - jsonwebtoken
-      - llmonitor
-      - lodash
-      - lunary
-      - mammoth
-      - mongodb
-      - mysql2
-      - neo4j-driver
-      - node-llama-cpp
-      - notion-to-md
-      - officeparser
-      - pdf-parse
-      - peggy
-      - pg
-      - pg-copy-streams
-      - pickleparser
-      - playwright
-      - portkey-ai
-      - puppeteer
-      - pyodide
-      - react
-      - redis
-      - replicate
-      - sonix-speech-recognition
-      - srt-parser-2
-      - supports-color
-      - typeorm
-      - typesense
-      - usearch
-      - vectordb
-      - voy-search
-      - weaviate-ts-client
-      - web-auth-library
-      - ws
-      - youtube-transcript
-      - youtubei.js
-
-  '@copilotkit/vue-textarea@1.0.3(axios@1.7.7)(encoding@0.1.13)(handlebars@4.7.8)(ignore@5.3.2)(lodash@4.17.21)(react@18.3.1)(vue@3.5.12(typescript@5.6.3))':
-    dependencies:
-      '@copilotkit/runtime-client-gql': 1.3.6(axios@1.7.7)(encoding@0.1.13)(handlebars@4.7.8)(ignore@5.3.2)(lodash@4.17.21)(react@18.3.1)
-      '@copilotkit/shared': 1.3.6(encoding@0.1.13)
-      '@copilotkit/vue-core': link:packages/vue-core
-      '@tiptap/core': 2.12.0(@tiptap/pm@2.12.0)
-      '@tiptap/extension-placeholder': 2.12.0(@tiptap/core@2.12.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.12.0)
-      '@tiptap/pm': 2.12.0
-      '@tiptap/starter-kit': 2.12.0
-      '@tiptap/vue-3': 2.12.0(@tiptap/core@2.12.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.12.0)(vue@3.5.12(typescript@5.6.3))
-      element-plus: 2.8.6(vue@3.5.12(typescript@5.6.3))
-      lodash.merge: 4.6.2
-    transitivePeerDependencies:
-      - '@aws-crypto/sha256-js'
-      - '@aws-sdk/client-bedrock-agent-runtime'
-      - '@aws-sdk/client-bedrock-runtime'
-      - '@aws-sdk/client-dynamodb'
-      - '@aws-sdk/client-kendra'
-      - '@aws-sdk/client-lambda'
-      - '@aws-sdk/client-s3'
-      - '@aws-sdk/client-sagemaker-runtime'
-      - '@aws-sdk/client-sfn'
-      - '@aws-sdk/credential-provider-node'
-      - '@azure/search-documents'
-      - '@azure/storage-blob'
-      - '@browserbasehq/sdk'
-      - '@clickhouse/client'
-      - '@cloudflare/ai'
-      - '@datastax/astra-db-ts'
-      - '@elastic/elasticsearch'
-      - '@getmetal/metal-sdk'
-      - '@getzep/zep-js'
-      - '@gomomento/sdk'
-      - '@gomomento/sdk-core'
-      - '@gomomento/sdk-web'
-      - '@google-ai/generativelanguage'
-      - '@google-cloud/storage'
-      - '@gradientai/nodejs-sdk'
-      - '@huggingface/inference'
-      - '@mendable/firecrawl-js'
-      - '@mozilla/readability'
-      - '@neondatabase/serverless'
-      - '@notionhq/client'
-      - '@opensearch-project/opensearch'
-      - '@pinecone-database/pinecone'
-      - '@planetscale/database'
-      - '@premai/prem-sdk'
-      - '@qdrant/js-client-rest'
-      - '@raycast/api'
-      - '@rockset/client'
-      - '@smithy/eventstream-codec'
-      - '@smithy/protocol-http'
-      - '@smithy/signature-v4'
-      - '@smithy/util-utf8'
-      - '@supabase/postgrest-js'
-      - '@supabase/supabase-js'
-      - '@tensorflow-models/universal-sentence-encoder'
-      - '@tensorflow/tfjs-converter'
-      - '@tensorflow/tfjs-core'
-      - '@upstash/redis'
-      - '@upstash/vector'
-      - '@vercel/kv'
-      - '@vercel/postgres'
-      - '@vue/composition-api'
-      - '@writerai/writer-sdk'
-      - '@xata.io/client'
-      - '@xenova/transformers'
-      - '@zilliz/milvus2-sdk-node'
-      - apify-client
-      - assemblyai
-      - axios
-      - better-sqlite3
-      - cassandra-driver
-      - cborg
-      - cheerio
-      - chromadb
-      - closevector-common
-      - closevector-node
-      - closevector-web
-      - cohere-ai
-      - convex
-      - couchbase
-      - d3-dsv
-      - discord.js
-      - dria
-      - duck-duck-scrape
-      - encoding
-      - epub2
-      - faiss-node
-      - fast-xml-parser
-      - firebase-admin
-      - google-auth-library
-      - googleapis
-      - handlebars
-      - hnswlib-node
-      - html-to-text
-      - ignore
-      - interface-datastore
-      - ioredis
-      - it-all
-      - jsdom
-      - jsonwebtoken
-      - llmonitor
-      - lodash
-      - lunary
-      - mammoth
-      - mongodb
-      - mysql2
-      - neo4j-driver
-      - node-llama-cpp
-      - notion-to-md
-      - officeparser
-      - pdf-parse
-      - peggy
-      - pg
-      - pg-copy-streams
-      - pickleparser
-      - playwright
-      - portkey-ai
-      - puppeteer
-      - pyodide
-      - react
-      - redis
-      - replicate
-      - sonix-speech-recognition
-      - srt-parser-2
-      - supports-color
-      - typeorm
-      - typesense
-      - usearch
-      - vectordb
-      - voy-search
-      - vue
-      - weaviate-ts-client
-      - web-auth-library
-      - ws
-      - youtube-transcript
-      - youtubei.js
-
-  '@copilotkit/vue-ui@1.0.3(axios@1.7.7)(encoding@0.1.13)(handlebars@4.7.8)(ignore@5.3.2)(lodash@4.17.21)(react@18.3.1)(vue@3.5.12(typescript@5.6.3))':
-    dependencies:
-      '@copilotkit/runtime-client-gql': 1.3.6(axios@1.7.7)(encoding@0.1.13)(handlebars@4.7.8)(ignore@5.3.2)(lodash@4.17.21)(react@18.3.1)
-      '@copilotkit/shared': 1.3.6(encoding@0.1.13)
-      '@copilotkit/vue-core': link:packages/vue-core
-      md-editor-v3: 4.18.1(vue@3.5.12(typescript@5.6.3))
-    transitivePeerDependencies:
-      - '@aws-crypto/sha256-js'
-      - '@aws-sdk/client-bedrock-agent-runtime'
-      - '@aws-sdk/client-bedrock-runtime'
-      - '@aws-sdk/client-dynamodb'
-      - '@aws-sdk/client-kendra'
-      - '@aws-sdk/client-lambda'
-      - '@aws-sdk/client-s3'
-      - '@aws-sdk/client-sagemaker-runtime'
-      - '@aws-sdk/client-sfn'
-      - '@aws-sdk/credential-provider-node'
-      - '@azure/search-documents'
-      - '@azure/storage-blob'
-      - '@browserbasehq/sdk'
-      - '@clickhouse/client'
-      - '@cloudflare/ai'
-      - '@datastax/astra-db-ts'
-      - '@elastic/elasticsearch'
-      - '@getmetal/metal-sdk'
-      - '@getzep/zep-js'
-      - '@gomomento/sdk'
-      - '@gomomento/sdk-core'
-      - '@gomomento/sdk-web'
-      - '@google-ai/generativelanguage'
-      - '@google-cloud/storage'
-      - '@gradientai/nodejs-sdk'
-      - '@huggingface/inference'
-      - '@mendable/firecrawl-js'
-      - '@mozilla/readability'
-      - '@neondatabase/serverless'
-      - '@notionhq/client'
-      - '@opensearch-project/opensearch'
-      - '@pinecone-database/pinecone'
-      - '@planetscale/database'
-      - '@premai/prem-sdk'
-      - '@qdrant/js-client-rest'
-      - '@raycast/api'
-      - '@rockset/client'
-      - '@smithy/eventstream-codec'
-      - '@smithy/protocol-http'
-      - '@smithy/signature-v4'
-      - '@smithy/util-utf8'
-      - '@supabase/postgrest-js'
-      - '@supabase/supabase-js'
-      - '@tensorflow-models/universal-sentence-encoder'
-      - '@tensorflow/tfjs-converter'
-      - '@tensorflow/tfjs-core'
-      - '@upstash/redis'
-      - '@upstash/vector'
-      - '@vercel/kv'
-      - '@vercel/postgres'
-      - '@writerai/writer-sdk'
-      - '@xata.io/client'
-      - '@xenova/transformers'
-      - '@zilliz/milvus2-sdk-node'
-      - apify-client
-      - assemblyai
-      - axios
-      - better-sqlite3
-      - cassandra-driver
-      - cborg
-      - cheerio
-      - chromadb
-      - closevector-common
-      - closevector-node
-      - closevector-web
-      - cohere-ai
-      - convex
-      - couchbase
-      - d3-dsv
-      - discord.js
-      - dria
-      - duck-duck-scrape
-      - encoding
-      - epub2
-      - faiss-node
-      - fast-xml-parser
-      - firebase-admin
-      - google-auth-library
-      - googleapis
-      - handlebars
-      - hnswlib-node
-      - html-to-text
-      - ignore
-      - interface-datastore
-      - ioredis
-      - it-all
-      - jsdom
-      - jsonwebtoken
-      - llmonitor
-      - lodash
-      - lunary
-      - mammoth
-      - mongodb
-      - mysql2
-      - neo4j-driver
-      - node-llama-cpp
-      - notion-to-md
-      - officeparser
-      - pdf-parse
-      - peggy
-      - pg
-      - pg-copy-streams
-      - pickleparser
-      - playwright
-      - portkey-ai
-      - puppeteer
-      - pyodide
-      - react
-      - redis
-      - replicate
-      - sonix-speech-recognition
-      - srt-parser-2
-      - supports-color
-      - typeorm
-      - typesense
-      - usearch
-      - vectordb
-      - voy-search
-      - vue
-      - weaviate-ts-client
-      - web-auth-library
-      - ws
-      - youtube-transcript
-      - youtubei.js
 
   '@ctrl/tinycolor@3.6.1': {}
+
+  '@dingdayu/vue-copilotkit-core@0.0.3(encoding@0.1.13)(graphql@16.9.0)(react@18.3.1)':
+    dependencies:
+      '@copilotkit/runtime-client-gql': 1.8.14(encoding@0.1.13)(graphql@16.9.0)(react@18.3.1)
+      '@copilotkit/shared': 1.8.14(encoding@0.1.13)
+    transitivePeerDependencies:
+      - encoding
+      - graphql
+      - react
 
   '@element-plus/icons-vue@2.3.1(vue@3.5.12(typescript@5.6.3))':
     dependencies:
@@ -12252,6 +11882,10 @@ snapshots:
   yocto-queue@0.1.0: {}
 
   zod-to-json-schema@3.23.3(zod@3.23.8):
+    dependencies:
+      zod: 3.23.8
+
+  zod-to-json-schema@3.24.5(zod@3.23.8):
     dependencies:
       zod: 3.23.8
 
