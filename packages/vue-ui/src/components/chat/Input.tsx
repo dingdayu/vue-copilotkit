@@ -3,7 +3,6 @@ import { InputProps } from "./props";
 import { ActivityIcon, SendIcon, PushToTalkIcon } from "./Icon";
 import { AutoResizingTextarea } from "./Textarea";
 import { Message } from "@copilotkit/runtime-client-gql";
-// import { useCopilotContext } from "@copilotkit/vue-core";
 
 
 export const Input = defineComponent({

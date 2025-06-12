@@ -5,7 +5,7 @@ import { defineConfig } from '@copilotkit/vite-config'
 export default defineConfig({
     build: {
         rollupOptions: {
-            external: ['vue','@copilotkit/vue-core','@copilotkit/runtime-client-gql','@copilotkit/shared','element-plus']
+            external: ['vue','@dingdayu/vue-copilotkit-core','@copilotkit/runtime-client-gql','@copilotkit/shared','element-plus']
         }
     }
 })

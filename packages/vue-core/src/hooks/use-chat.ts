@@ -119,7 +119,7 @@ export function useChat(options: UseChatOptions) {
 
     const messagesWithContext = [systemMessage, ...(initialMessages || []), ...previousMessages]
 
-    const stream = CopilotRuntimeClient.asStream(
+    const stream = runtimeClient.asStream(
       runtimeClient.generateCopilotResponse({
         data: {
           frontend: {
@@ -207,7 +207,6 @@ export function useChat(options: UseChatOptions) {
             if (
               message instanceof ActionExecutionMessage &&
               message.status.code !== MessageStatusCode.Pending &&
-              message.scope === 'client' &&
               onFunctionCall
             ) {
               if (!(message.id in results)) {

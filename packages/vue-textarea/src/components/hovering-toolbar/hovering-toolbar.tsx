@@ -40,9 +40,7 @@ export const HoveringToolbar = defineComponent({
       const { from, to } = state.selection
 
       // 获取光标所在的DOM节点及其相对偏移量
-      const resolvedPos = view.docView.domFromPos(to)
-      const domNode = resolvedPos.node
-      const offset = resolvedPos.offset
+      const { node: domNode, offset } = view.domAtPos(to)
 
       // 获取编辑器容器的位置信息
       const editorRect = view.dom.getBoundingClientRect()

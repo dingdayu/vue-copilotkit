@@ -109,7 +109,7 @@ export interface CopilotContextParams {
   showDevConsole: boolean | 'auto'
 }
 
-export const CopilotKitContext = Symbol()
+export const CopilotKitContext = Symbol('CopilotKitContext')
 
 export function useCopilotContext() {
   const ctx = inject<CopilotContextParams>(CopilotKitContext)
