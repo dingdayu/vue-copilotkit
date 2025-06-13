@@ -3,27 +3,27 @@
 ---
 # Vue Copilotkit
 
-*This project is forked from https://github.com/fe-51shebao/vue-copilotkit*
+*此项目 fork 自 https://github.com/fe-51shebao/vue-copilotkit*
 
-> A Vue implementation based on the React UI library of <a href="https://github.com/CopilotKit/CopilotKit" target="_blank">CopilotKit</a>
+> 一个基于 <a href="https://github.com/CopilotKit/CopilotKit" target="_blank">CopilotKit</a> React UI 库的 Vue 实现。
 
-Both `@dingdayu/vue-copilotkit-core` and `@dingdayu/vue-copilotkit-ui` have been published to the NPM registry and can be added to your project using:
+`@dingdayu/vue-copilotkit-core` 和 `@dingdayu/vue-copilotkit-ui` 均已发布到 NPM 仓库，你可以使用以下命令将其添加到你的项目中：
 
 ```bash
 pnpm add @dingdayu/vue-copilotkit-core @dingdayu/vue-copilotkit-ui
 ```
 
-## Example
+## 示例
 
-### Server
+### 服务端
 
-Install dependencies
+安装依赖
 
 ```bash
 pnpm add @copilotkit/runtime openai
 ```
 
-Create `index.js` file.
+创建 `index.js` 文件。
 
 ```ts
 import { createServer } from 'node:http';
@@ -35,21 +35,21 @@ import {
 import OpenAI from 'openai';
 
 const openai = new OpenAI({
-    apiKey: "sk-xxx", // Or read the API key from environment variables process.env["OPENAI_API_KEY"]
-    baseURL: "https://api.deepseek.com", // Optional: baseURL for relevant platforms, e.g., Bailian (阿里云百炼): https://dashscope.aliyuncs.com/compatible-mode/v1
+    apiKey: "sk-xxx", // 或者从环境变量 process.env["OPENAI_API_KEY"] 读取 API 密钥
+    baseURL: "https://api.deepseek.com", // 可选：相关平台的 baseURL，例如阿里云百炼：https://dashscope.aliyuncs.com/compatible-mode/v1
 });
 
-// During testing, it was found that CopilotKit 1.8.14 uses this.openai.beta.chat.completions.stream
-// This will cause an error in actual use, so an assignment is needed.
+// 测试时发现 CopilotKit 1.8.14 版本使用的是 this.openai.beta.chat.completions.stream
+// 这会导致实际使用中出错，因此需要进行赋值。
 openai.beta = openai;
 
-// Note the model setting here, e.g., for Qwen: qwen-max-latest
+// 注意这里的模型设置，例如 Qwen（通义千问）的模型：qwen-max-latest
 const serviceAdapter = new OpenAIAdapter({ openai, model: "deepseek-chat", keepSystemRole: true, });
 
 const server = createServer((req, res) => {
     const runtime = new CopilotRuntime({
-        // This is for remote Agent usage. If you need to implement it in other languages,
-        // you can refer to the sdk-python in CopilotKit.
+        // 这是用于远程 Agent 的用法。如果你需要用其他语言实现，
+        // 可以参考 CopilotKit 中的 sdk-python。
         // "remoteEndpoints": [
         //     {
         //         "url": "http://10.0.7.105:8005/copilotkit_remote",
@@ -66,15 +66,15 @@ const server = createServer((req, res) => {
 });
 
 server.listen(4000, () => {
-    console.log('Listening at http://localhost:4000/copilotkit');
+    console.log('监听地址 http://localhost:4000/copilotkit');
 });
 ```
 
-Run `node index.js`.
+运行 `node index.js`。
 
-### Client
+### 客户端
 
-Install dependencies
+安装依赖
 
 ```bash
 pnpm add @dingdayu/vue-copilotkit-core @dingdayu/vue-copilotkit-ui
@@ -103,7 +103,7 @@ const tokenTheme = computed(() => {
     ? [theme.darkAlgorithm]
     : [theme.defaultAlgorithm];
 
-  // antd compact mode algorithm
+  // antd 紧凑模式算法
   if (preferences.app.compact) {
     algorithm.push(theme.compactAlgorithm);
   }
@@ -129,8 +129,8 @@ const tokenTheme = computed(() => {
 </template>
 ```
 
-Usage in a page. This example uses `CopilotPopup`, but `CopilotChat` or `CopilotSidebar` can also be considered.  
-Documentation: https://docs.copilotkit.ai/reference/components/chat/CopilotChat
+在页面中使用。此示例使用 `CopilotPopup`，但也可以考虑使用 `CopilotChat` 或 `CopilotSidebar`。  
+文档：https://docs.copilotkit.ai/reference/components/chat/CopilotChat
 
 ```vue
 <script setup lang="ts">
@@ -138,7 +138,7 @@ import { Page } from '@vben/common-ui';
 
 +import { CopilotPopup } from '@dingdayu/vue-copilotkit-ui';
 
-// CSS can be imported globally if necessary
+// 如果需要，可以全局导入 CSS
 +import '@dingdayu/vue-copilotkit-ui/style.css';
 </script>
 
@@ -149,23 +149,20 @@ import { Page } from '@vben/common-ui';
     </Page>
   </div>
 </template>
-
 ```
 
-**Popup Example:**
+**Popup 效果:**
 
 ![Copilot Popup](./popup.png) 
 
-## Changes from Upstream
+## 与上游版本的差异
 
-1. Renamed packages for NPM registry publication
-
-    - `@copilotkit/vue-core` → `@dingdayu/vue-copilotkit-core`
-    - `@copilotkit/vue-ui` → `@dingdayu/vue-copilotkit-ui`
-
-2. Upgraded @copilotkit/shared and related packages to `1.8.14`
-3. Fixed `Window` for build errors
-4. Updated `vite.config.ts` to resolve `injection "Symbol()" not found` issue caused by vite inlining
-5. Fixed `asStream` not found issue caused by incorrect `CopilotRuntimeClient` usage
-6. Fixed `view.docView.domFromPos` related issues
-7. Added repository information to `package.json`
+1.  为 NPM 仓库发布重命名了包名
+    *   `@copilotkit/vue-core` → `@dingdayu/vue-copilotkit-core`
+    *   `@copilotkit/vue-ui` → `@dingdayu/vue-copilotkit-ui`
+2.  将 @copilotkit/shared 及相关包升级到 `1.8.14`
+3.  修复了 `Window` 组件导致的构建错误
+4.  更新了 `vite.config.ts` 以解决由 vite 内联导致的 `injection "Symbol()" not found` 问题
+5.  修复了因 `CopilotRuntimeClient` 使用不当导致的 `asStream` 未找到的问题
+6.  修复了与 `view.docView.domFromPos` 相关的问题
+7.  在 `package.json` 中添加了仓库信息
