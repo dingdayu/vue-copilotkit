@@ -1,7 +1,9 @@
 [English](./README.md) | [中文](./README.zh.md)
 
-[![NPM version for @dingdayu/vue-copilotkit-core](https://img.shields.io/npm/v/@dingdayu/vue-copilotkit-core)](https://www.npmjs.com/package/@dingdayu/vue-copilotkit-core)
-[![NPM version for @dingdayu/vue-copilotkit-ui](https://img.shields.io/npm/v/@dingdayu/vue-copilotkit-ui)](https://www.npmjs.com/package/@dingdayu/vue-copilotkit-ui)
+| Package                                 | NPM Version                                                                                                                               |
+| :-------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------- |
+| `@dingdayu/vue-copilotkit-core`         | [![NPM version for @dingdayu/vue-copilotkit-core](https://img.shields.io/npm/v/@dingdayu/vue-copilotkit-core)](https://www.npmjs.com/package/@dingdayu/vue-copilotkit-core) |
+| `@dingdayu/vue-copilotkit-ui`           | [![NPM version for @dingdayu/vue-copilotkit-ui](https://img.shields.io/npm/v/@dingdayu/vue-copilotkit-ui)](https://www.npmjs.com/package/@dingdayu/vue-copilotkit-ui)     |
 
 ---
 # Vue Copilotkit
