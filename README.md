@@ -80,7 +80,7 @@ Install dependencies
 pnpm add @dingdayu/vue-copilotkit-core @dingdayu/vue-copilotkit-ui
 ```
 
-```vue
+```diff
 // app.vue
 <script lang="ts" setup>
 import { computed } from 'vue';
@@ -132,7 +132,7 @@ const tokenTheme = computed(() => {
 Usage in a page. This example uses `CopilotPopup`, but `CopilotChat` or `CopilotSidebar` can also be considered.  
 Documentation: https://docs.copilotkit.ai/reference/components/chat/CopilotChat
 
-```vue
+```diff
 <script setup lang="ts">
 import { Page } from '@vben/common-ui';
 

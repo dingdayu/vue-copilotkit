@@ -80,7 +80,7 @@ server.listen(4000, () => {
 pnpm add @dingdayu/vue-copilotkit-core @dingdayu/vue-copilotkit-ui
 ```
 
-```vue
+```diff
 // app.vue
 <script lang="ts" setup>
 import { computed } from 'vue';
@@ -132,7 +132,7 @@ const tokenTheme = computed(() => {
 在页面中使用。此示例使用 `CopilotPopup`，但也可以考虑使用 `CopilotChat` 或 `CopilotSidebar`。  
 文档：https://docs.copilotkit.ai/reference/components/chat/CopilotChat
 
-```vue
+```diff
 <script setup lang="ts">
 import { Page } from '@vben/common-ui';
 
