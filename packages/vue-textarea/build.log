@@ -1,0 +1,27 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+[36mvite v5.4.21 [32mbuilding for production...[36m[39m
+transforming...
+[32m✓[39m 146 modules transformed.
+rendering chunks...
+
+[vite:dts] Start generate declaration files...
+[96msrc/components/hovering-toolbar/hovering-toolbar.tsx[0m:[93m7[0m:[93m27[0m - [91merror[0m[90m TS2307: [0mCannot find module 'prosemirror-state' or its corresponding type declarations.
+
+[7m7[0m import { Selection } from 'prosemirror-state'
+[7m [0m [91m                          ~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/components/hovering-toolbar/hovering-toolbar.tsx[0m:[93m43[0m:[93m32[0m - [91merror[0m[90m TS2339: [0mProperty 'docView' does not exist on type 'EditorView'.
+
+[7m43[0m       const resolvedPos = view.docView.domFromPos(to)
+[7m  [0m [91m                               ~~~~~~~[0m
+
+computing gzip size...
+[vite:dts] Start rollup declaration files...
+Analysis will use the bundled TypeScript version 5.8.2
+*** The target project appears to use TypeScript 5.9.3 which is newer than the bundled compiler engine; consider upgrading API Extractor.
+[2mdist/[22m[35mstyle.css  [39m[1m[2m  6.73 kB[22m[1m[22m[2m │ gzip:   1.27 kB[22m
+[2mdist/[22m[36mindex.mjs  [39m[1m[33m826.82 kB[39m[22m[2m │ gzip: 186.77 kB[22m
+[vite:dts] Declaration files built in 19419ms.
+
+[2mdist/[22m[35mstyle.css  [39m[1m[2m  6.73 kB[22m[1m[22m[2m │ gzip:   1.27 kB[22m
+[2mdist/[22m[36mindex.js   [39m[1m[33m828.72 kB[39m[22m[2m │ gzip: 186.67 kB[22m
+[32m✓ built in 25.63s[39m

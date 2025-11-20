@@ -43,8 +43,8 @@ export interface CopilotModalProps extends Record<string, any> {
 }
 // const openState = ref(false);
 export const CopilotModal = defineComponent({
-  props:{
-    instructions:{
+  props: {
+    instructions: {
       type: String,
       default: ''
     },
@@ -61,7 +61,7 @@ export const CopilotModal = defineComponent({
       default: true
     },
     onSetOpen: {
-      type: Function as PropType<(open: boolean) => void>,  
+      type: Function as PropType<(open: boolean) => void>,
     },
     onSubmitMessage: {
       type: Function as PropType<(messageContent: string) => void>,
@@ -91,7 +91,7 @@ export const CopilotModal = defineComponent({
     }
   },
   setup(props, { slots }) {
-    const { 
+    const {
       instructions,
       defaultOpen,
       clickOutsideToClose,
@@ -105,22 +105,22 @@ export const CopilotModal = defineComponent({
       showResponseButton,
       onInProgress,
       className,
-     } = props;
+    } = props;
     const openState = ref(defaultOpen);
     const setOpenState = (open: boolean) => {
       openState.value = open;
       onSetOpen?.(open);
     };
-    const Window = slots.window || DefaultWindow;
-    const Header  = slots.header || DefaultHeader;
-    const Messages  = slots.messages || DefaultMessages;
-    const Input  = slots.input || DefaultInput;
-    const ResponseButton  = slots.responseButton || DefaultResponseButton;
+    const Window = (slots.window || DefaultWindow) as any;
+    const Header = (slots.header || DefaultHeader) as any;
+    const Messages = (slots.messages || DefaultMessages) as any;
+    const Input = (slots.input || DefaultInput) as any;
+    const ResponseButton = (slots.responseButton || DefaultResponseButton) as any;
     return () => (<ChatContextProvider labels={labels} open={openState.value} setOpen={setOpenState}>
       {slots.children?.() || null}
       <div class={className}>
         {slots.button?.() || <DefaultButton open={openState} setOpen={setOpenState} />}
-        <Window 
+        <Window
           open={openState.value}
           setOpen={setOpenState}
           clickOutsideToClose={clickOutsideToClose}
@@ -128,7 +128,7 @@ export const CopilotModal = defineComponent({
           hitEscapeToClose={hitEscapeToClose}
         >
           <Header setOpen={setOpenState} />
-          <CopilotChat 
+          <CopilotChat
             instructions={instructions}
             onSubmitMessage={onSubmitMessage}
             makeSystemMessage={makeSystemMessage}
@@ -136,7 +136,7 @@ export const CopilotModal = defineComponent({
             onInProgress={onInProgress}
           >
             {{
-              messages: (props) =>{
+              messages: (props) => {
                 return (<Messages {...props} >
                   {/* success */}
                   {{
@@ -161,74 +161,3 @@ export const CopilotModal = defineComponent({
     </ChatContextProvider>)
   }
 })
-
-// export const CopilotModal = ({
-//   instructions,
-//   defaultOpen = false,
-//   clickOutsideToClose = true,
-//   hitEscapeToClose = true,
-//   onSetOpen,
-//   onSubmitMessage,
-//   shortcut = "/",
-//   icons,
-//   labels,
-//   makeSystemMessage,
-//   showResponseButton = true,
-//   onInProgress,
-//   className,
-// }: CopilotModalProps,{ slots }: any) => {
-//   const setOpenState = (open: boolean) => {
-//     openState.value = open;
-//     onSetOpen?.(open);
-//   };
-//   const Window = slots.window || DefaultWindow;
-//   const Header = slots.header || DefaultHeader;
-//   const Messages = slots.messages || DefaultMessages;
-//   const Input = slots.input || DefaultInput;
-//   const ResponseButton = slots.responseButton || DefaultResponseButton;
-//   return (
-//     <ChatContextProvider labels={labels} open={openState.value} setOpen={setOpenState}>
-//       {slots.children?.() || null}
-//       <div class={className}>
-//         {slots.button?.() || <DefaultButton open={openState} setOpen={setOpenState} />}
-//         <Window 
-//           open={openState.value}
-//           setOpen={setOpenState}
-//           clickOutsideToClose={clickOutsideToClose}
-//           shortcut={shortcut}
-//           hitEscapeToClose={hitEscapeToClose}
-//         >
-//           <Header setOpen={setOpenState} />
-//           <CopilotChat 
-//             instructions={instructions}
-//             onSubmitMessage={onSubmitMessage}
-//             makeSystemMessage={makeSystemMessage}
-//             showResponseButton={showResponseButton}
-//             onInProgress={onInProgress}
-//           >
-//             {{
-//               messages: (props) =>{
-//                 return (<Messages {...props} >
-//                   {/* success */}
-//                   {{
-//                     default: () => <>{props.children.default?.() || null}</>
-//                   }}
-//                   {/* fail */}
-//                   {/* {{
-//                     default: () => {props.children.default?.() || null}
-//                   }} */}
-//                   {/* success */}
-//                   {/* {props.children.default?.() || null} */}
-//                   {/* fail */}
-//                   {/* {props.children} */}
-//                 </Messages>)
-//               },
-//               input: (props) => <Input {...props} />,
-//               responseButton: (props) => <ResponseButton {...props} />
-//             }}
-//           </CopilotChat>
-//         </Window>
-//       </div>
-//     </ChatContextProvider>
-//   )
-// }
