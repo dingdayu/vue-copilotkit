@@ -134,19 +134,19 @@ export function useChat(options: UseChatOptions) {
           messages: convertMessagesToGqlInput(messagesWithContext),
           ...(copilotConfig.cloud
             ? {
-                cloud: {
-                  ...(copilotConfig.cloud.guardrails?.input?.restrictToTopic?.enabled
-                    ? {
-                        guardrails: {
-                          inputValidationRules: {
-                            allowList: copilotConfig.cloud.guardrails.input.restrictToTopic.validTopics,
-                            denyList: copilotConfig.cloud.guardrails.input.restrictToTopic.invalidTopics
-                          }
-                        }
+              cloud: {
+                ...(copilotConfig.cloud.guardrails?.input?.restrictToTopic?.enabled
+                  ? {
+                    guardrails: {
+                      inputValidationRules: {
+                        allowList: copilotConfig.cloud.guardrails.input.restrictToTopic.validTopics,
+                        denyList: copilotConfig.cloud.guardrails.input.restrictToTopic.invalidTopics
                       }
-                    : {})
-                }
+                    }
+                  }
+                  : {})
               }
+            }
             : {}),
           metadata: {
             requestType: CopilotRequestType.Chat
@@ -207,7 +207,7 @@ export function useChat(options: UseChatOptions) {
             if (
               message instanceof ActionExecutionMessage &&
               message.status.code !== MessageStatusCode.Pending &&
-              message.scope === 'client' &&
+              (message.scope === 'client' || message.scope === null) &&
               onFunctionCall
             ) {
               if (!(message.id in results)) {
