@@ -1,7 +1,7 @@
 {
-  "name": "@copilotkit/vue-core",
+  "name": "@vue-copilotkit/vue-core",
   "private": false,
-  "version": "1.0.3",
+  "version": "1.10.6",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "exports": {
@@ -16,7 +16,7 @@
     "build": "vite build"
   },
   "devDependencies": {
-    "@copilotkit/vite-config": "workspace:*",
+    "@vue-copilotkit/vite-config": "workspace:*",
     "vite": "^5.3.4"
   },
   "dependencies": {

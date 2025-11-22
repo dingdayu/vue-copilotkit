@@ -1,7 +1,7 @@
 {
-  "name": "@copilotkit/vue-ui",
+  "name": "@vue-copilotkit/vue-ui",
   "private": false,
-  "version": "1.0.3",
+  "version": "1.10.6",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "exports": {
@@ -19,11 +19,11 @@
   "dependencies": {
     "@copilotkit/runtime-client-gql": "^1.1.0",
     "@copilotkit/shared": "^1.1.0",
-    "@copilotkit/vue-core": "workspace:*",
+    "@vue-copilotkit/vue-core": "workspace:*",
     "md-editor-v3": "4.18.1"
   },
   "devDependencies": {
-    "@copilotkit/vite-config": "workspace:*",
+    "@vue-copilotkit/vite-config": "workspace:*",
     "vite": "^5.3.4"
   },
   "publishConfig": {
