@@ -1,6 +1,6 @@
 import { onMounted, onUnmounted } from "vue";
-import { CopilotChatSuggestionConfiguration } from "@copilotkit/vue-core";
-import { useCopilotContext } from "@copilotkit/vue-core";
+import { CopilotChatSuggestionConfiguration } from "@vue-copilotkit/vue-core";
+import { useCopilotContext } from "@vue-copilotkit/vue-core";
 
 export interface UseCopilotChatSuggestionsProps {
     /**

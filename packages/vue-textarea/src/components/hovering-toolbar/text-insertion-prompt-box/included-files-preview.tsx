@@ -1,6 +1,6 @@
 import { defineComponent, PropType, ref } from 'vue'
 import { ElTag, ElAvatar } from 'element-plus'
-import { DocumentPointer } from '@copilotkit/vue-core'
+import { DocumentPointer } from '@vue-copilotkit/vue-core'
 
 export interface IncludedFilesPreviewProps {
   includedFiles: DocumentPointer[]

@@ -28,8 +28,8 @@
 import { ref, computed } from 'vue'
 import { ElInput, ElButton } from 'element-plus'
 import TodoItem from '../components/TodoItem.vue'
-import { CopilotPopup } from '@copilotkit/vue-ui'
-import { useCopilotAction, useCopilotReadable } from '@copilotkit/vue-core'
+import { CopilotPopup } from '@vue-copilotkit/vue-ui'
+import { useCopilotAction, useCopilotReadable } from '@vue-copilotkit/vue-core'
 
 type Todo = {
   id: number

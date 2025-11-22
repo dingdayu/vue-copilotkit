@@ -1,5 +1,5 @@
 import { ref, watch } from "vue";
-import { useCopilotContext } from "@copilotkit/vue-core";
+import { useCopilotContext } from "@vue-copilotkit/vue-core";
 
 export interface UsePushToTalkProps {
     send: (message: string) => void;

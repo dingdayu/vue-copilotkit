@@ -8,7 +8,7 @@ import { Input as DefaultInput } from "./Input";
 import { ResponseButton as DefaultResponseButton } from "./Response";
 import { CopilotChat } from "./Chat";
 import { defineComponent, PropType, ref, render } from "vue";
-import { SystemMessageFunction } from "@copilotkit/vue-core";
+import { SystemMessageFunction } from "@vue-copilotkit/vue-core";
 
 export interface CopilotModalProps extends Record<string, any> {
   /**

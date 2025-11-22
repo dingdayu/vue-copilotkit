@@ -45,8 +45,8 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { CopilotPopup } from '@copilotkit/vue-ui'
-import { useCopilotAction, useCopilotReadable } from '@copilotkit/vue-core'
+import { CopilotPopup } from '@vue-copilotkit/vue-ui'
+import { useCopilotAction, useCopilotReadable } from '@vue-copilotkit/vue-core'
 
 // do not use same name with ref
 const form = ref({

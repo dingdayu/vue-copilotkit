@@ -1,4 +1,4 @@
-import { DocumentPointer, useCopilotContext } from '@copilotkit/vue-core'
+import { DocumentPointer, useCopilotContext } from '@vue-copilotkit/vue-core'
 import { COPILOT_CLOUD_PUBLIC_API_KEY_HEADER, randomId } from '@copilotkit/shared'
 import {
   CopilotRuntimeClient,

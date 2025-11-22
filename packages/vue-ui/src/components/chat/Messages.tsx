@@ -2,7 +2,7 @@ import { defineComponent, PropType, ref, watch } from "vue";
 import { MessagesProps } from "./props";
 import { useChatContext } from "./ChatContext";
 import { Markdown } from "./Markdown";
-import { RenderFunctionStatus, useCopilotContext } from "@copilotkit/vue-core";
+import { RenderFunctionStatus, useCopilotContext } from "@vue-copilotkit/vue-core";
 import { SpinnerIcon } from "./Icon";
 
 import {
@@ -15,7 +15,7 @@ import {
 } from "@copilotkit/runtime-client-gql";
 
 export const Messages = defineComponent({
-  props:{
+  props: {
     messages: {
       type: Array as PropType<Message[]>,
       required: true,
@@ -29,15 +29,15 @@ export const Messages = defineComponent({
     },
   },
   setup(props, { slots }) {
-    
+
     const msgs = ref<Message[]>([]) // 定义message
     const { chatComponentsCache } = useCopilotContext(); // chat缓存
 
     const context = useChatContext(); // context
     watch(() => props.messages,
-    (newMessages, oldMessages) => {
-      msgs.value = newMessages ?? [];
-    }, {
+      (newMessages, oldMessages) => {
+        msgs.value = newMessages ?? [];
+      }, {
       immediate: true
     })
     const functionResults: Record<string, string> = {};
@@ -67,7 +67,7 @@ export const Messages = defineComponent({
 
     return () => (
       <div class="copilotKitMessages">
-        {msgs.value.map((message,index) => {
+        {msgs.value.map((message, index) => {
           const isCurrentMessage = index === msgs.value.length - 1;
           if (message instanceof TextMessage && message.role === "user") {
             return (
@@ -79,7 +79,7 @@ export const Messages = defineComponent({
             return (
               <div key={index} class={`copilotKitMessage copilotKitAssistantMessage`}>
                 {isCurrentMessage && props.inProgress && !message.content ? (
-                  <SpinnerIcon/>
+                  <SpinnerIcon />
                 ) : (
                   <Markdown content={message.content} />
                 )}
@@ -96,7 +96,7 @@ export const Messages = defineComponent({
                   return (
                     <div key={index} class={`copilotKitMessage copilotKitAssistantMessage`}>
                       {/* {context.icons.spinnerIcon}  */}
-                       <span class="inProgressLabel">{render}</span>
+                      <span class="inProgressLabel">{render}</span>
                     </div>
                   );
                 }
@@ -131,7 +131,7 @@ export const Messages = defineComponent({
                 if (typeof toRender === "string") {
                   return (
                     <div key={index} class={`copilotKitMessage copilotKitAssistantMessage`}>
-                      {isCurrentMessage && props.inProgress } {toRender}
+                      {isCurrentMessage && props.inProgress} {toRender}
                       {/* { && context.icons.spinnerIcon} */}
                     </div>
                   );
