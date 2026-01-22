@@ -7,41 +7,41 @@ import { reloadSuggestions } from "./Suggestion";
 import { useChatContext, ChatContextProvider, CopilotChatLabels } from "./ChatContext";
 
 export const CopilotChat = defineComponent({
-  props:{
-    instructions:{
+  props: {
+    instructions: {
       type: String,
       default: ''
     },
-    onSubmitMessage:{
+    onSubmitMessage: {
       type: Function as PropType<(messageContent: string) => void>,
-      default: () => {}
+      default: () => { }
     },
-    makeSystemMessage:{
+    makeSystemMessage: {
       type: Function as PropType<SystemMessageFunction>,
       default: null
     },
-    showResponseButton:{
+    showResponseButton: {
       type: Boolean,
       default: true
     },
-    onInProgress:{
+    onInProgress: {
       type: Function as PropType<(isLoading: boolean) => void>,
-      default: () => {}
+      default: () => { }
     },
     className: {
       type: String,
       default: ''
     },
-    labels:{
+    labels: {
       type: Object,
       default: () => ({})
     }
   },
-  setup(props,{ slots }) {
+  setup(props, { slots }) {
     const context = useCopilotContext();
-    watch(()=> props.instructions, (instructions) => {
+    watch(() => props.instructions, (instructions) => {
       // context.setMakeSystemMessage?.(instructions || "")
-    },{ immediate: true })
+    }, { immediate: true })
 
     const {
       visibleMessages,
@@ -61,19 +61,19 @@ export const CopilotChat = defineComponent({
           {/* {slots.messages ? slots.messages({ messages: visibleMessages.value, inProgress: isLoading.value, children: {default: () => <>{props.showResponseButton && visibleMessages.value.length > 0 && <ResponseButton inProgress={isLoading.value} hClick={isLoading.value ? stopGeneration : reloadMessages} />}</>}  }) : <DefaultMessages messages={visibleMessages.value}  inProgress={isLoading.value}>
             {props.showResponseButton && visibleMessages.value.length > 0 && <ResponseButton inProgress={isLoading.value} hClick={isLoading.value ? stopGeneration : reloadMessages} />}
           </DefaultMessages>} */}
-            {/* fail  props.children.default */}
-            {/* {slots.messages ? slots.messages({ messages: visibleMessages.value, inProgress: isLoading.value, children: {default: () => {props.showResponseButton && visibleMessages.value.length > 0 && <ResponseButton inProgress={isLoading.value} hClick={isLoading.value ? stopGeneration : reloadMessages} />}}  }) : <DefaultMessages messages={visibleMessages.value}  inProgress={isLoading.value}>
+          {/* fail  props.children.default */}
+          {/* {slots.messages ? slots.messages({ messages: visibleMessages.value, inProgress: isLoading.value, children: {default: () => {props.showResponseButton && visibleMessages.value.length > 0 && <ResponseButton inProgress={isLoading.value} hClick={isLoading.value ? stopGeneration : reloadMessages} />}}  }) : <DefaultMessages messages={visibleMessages.value}  inProgress={isLoading.value}>
               {props.showResponseButton && visibleMessages.value.length > 0 && <ResponseButton inProgress={isLoading.value} hClick={isLoading.value ? stopGeneration : reloadMessages} />}
             </DefaultMessages>} */}
-            {/* fail */}
-            {/* <Messages messages={visibleMessages.value} inProgress={isLoading.value} >
+          {/* fail */}
+          {/* <Messages messages={visibleMessages.value} inProgress={isLoading.value} >
               {props.showResponseButton && visibleMessages.value.length > 0 && <ResponseButton inProgress={isLoading.value} hClick={isLoading.value ? stopGeneration : reloadMessages} />}
             </Messages> */}
-          {slots.messages && slots.messages({ messages: visibleMessages.value, inProgress: isLoading.value, children: {default: () => <>{props.showResponseButton && visibleMessages.value.length > 0 && (slots.responseButton && slots.responseButton({ inProgress: isLoading.value, hClick: isLoading.value ? stopGeneration : reloadMessages }))}</>}  })}
-          {slots.input && slots.input({ send:sendMessage, inProgress: isLoading.value, isVisible: isVisible })}
+          {slots.messages && slots.messages({ messages: visibleMessages.value, inProgress: isLoading.value, children: { default: () => <>{props.showResponseButton && visibleMessages.value.length > 0 && (slots.responseButton && slots.responseButton({ inProgress: isLoading.value, hClick: isLoading.value ? stopGeneration : reloadMessages }))}</> } })}
+          {slots.input && slots.input({ send: sendMessage, inProgress: isLoading.value, isVisible: isVisible })}
           {/* {slots.input ? slots.input({ send:sendMessage, inProgress: isLoading.value, isVisible: isVisible }) : <DefaultInput inProgress={isLoading.value} send={sendMessage} isVisible={isVisible} />} */}
         </WrappedCopilotChat>
-  
+
         // <WrappedCopilotChat labels={props.labels} className={props.className}>
         //   <components is={props.input}></components>
         // </WrappedCopilotChat>
@@ -87,11 +87,11 @@ export function WrappedCopilotChat({
 }: {
   labels?: CopilotChatLabels;
   className?: string;
-},{ slots }: any) {
+}, { slots }: any) {
   const chatContext = useChatContext();
   if (!chatContext) {
     return (
-      <ChatContextProvider  labels={labels} open={true} setOpen={() => {}}>
+      <ChatContextProvider labels={labels} open={true} setOpen={() => { }}>
         <div class={`copilotKitChat ${className}`}>{slots.default?.()}</div>
       </ChatContextProvider>
     );
@@ -142,7 +142,7 @@ export const useCopilotChatLogic = (
             );
           }
         },
-        currentSuggestions.value.length == 0 ? 0 : SUGGESTIONS_DEBOUNCE_TIMEOUT, 
+        currentSuggestions.value.length == 0 ? 0 : SUGGESTIONS_DEBOUNCE_TIMEOUT,
       );
 
       return () => {

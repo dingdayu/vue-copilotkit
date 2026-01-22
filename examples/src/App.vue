@@ -14,6 +14,6 @@ import { reactive } from 'vue';
 
 const state = reactive({
   apiKey:localStorage.getItem("apiKey")||''  ,
-  runtimeUrl: localStorage.getItem("runtimeUrl")||'http://47.94.253.214/api/copilotkit/zhipu'
+  runtimeUrl: localStorage.getItem("runtimeUrl")||'http://10.0.7.105:4002/copilotkit'
 })
 </script>

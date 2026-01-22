@@ -11,7 +11,7 @@
 ## Example
  
 ```tsx
-import { CopilotTextarea } from '@copilotkit/vue-textarea';
+import { CopilotTextarea } from '@vue-copilotkit/vue-textarea';
  
 <CopilotTextarea
   autosuggestionsConfig={{
@@ -22,25 +22,12 @@ import { CopilotTextarea } from '@copilotkit/vue-textarea';
 />
 ```
  
-## Usage
- 
-### Install Dependencies
- 
-该组件是 [@copilotkit/vue-textarea](https://npmjs.com/) 包的一部分。
- 
-```shell npm2yarn \"@copilotkit/vue-textarea"\
-npm install @copilotkit/vue-textarea
-```
- 
-### Usage
- 
-在 Vue 应用程序中使用 CopilotTextarea 组件的方式类似于标准 `<textarea />`，并针对 AI 功能进行额外配置。
  
 For example:
  
 ```tsx
 import { ref } from "vue";
-import { CopilotTextarea } from "@copilotkit/vue-textarea";
+import { CopilotTextarea } from "@vue-copilotkit/vue-textarea";
  
 export function ExampleComponent() {
   const text = ref('')
@@ -70,7 +57,7 @@ export function ExampleComponent() {
 默认情况下，CopilotKit 组件没有任何样式。您可以在项目根目录中导入 CopilotKit 的样式表：
 ```tsx fileName="YourRootComponent.tsx" {2}
 ...
-import "@copilotkit/vue-ui/styles.css";
+import "@vue-copilotkit/vue-ui/styles.css";
  
 export function YourRootComponent() {
   return (

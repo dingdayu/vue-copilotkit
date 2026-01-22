@@ -164,10 +164,9 @@ import { Page } from '@vben/common-ui';
 ## Changes from Upstream
 
 1. Renamed packages for NPM registry publication
-
     - `@copilotkit/vue-core` → `@dingdayu/vue-copilotkit-core`
     - `@copilotkit/vue-ui` → `@dingdayu/vue-copilotkit-ui`
-
+    -   `@copilotkit/vite-config` → `@dingdayu/vue-copilotkit-vite-config`
 2. Upgraded @copilotkit/shared and related packages to `1.8.14`
 3. Fixed `Window` for build errors
 4. Updated `vite.config.ts` to resolve `injection "Symbol()" not found` issue caused by vite inlining

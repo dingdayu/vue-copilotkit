@@ -1,80 +1,65 @@
 <template>
-<div class="card">
-  <input type="radio" name="select" id="slide_1" checked>
-  <input type="radio" name="select" id="slide_2">
-  <input type="radio" name="select" id="slide_3">
-  <input type="checkbox" id="slideImg">
+  <div class="card">
+    <input type="radio" name="select" id="slide_1" checked />
+    <input type="radio" name="select" id="slide_2" />
+    <input type="radio" name="select" id="slide_3" />
+    <input type="radio" name="select" id="slide_4" />
+    <input type="checkbox" id="slideImg" />
 
-  <div class="slider">
-    <label for="slide_1" class="slide slide_1"></label>
-    <label for="slide_2" class="slide slide_2"></label>
-    <label for="slide_3" class="slide slide_3"></label>
-  </div>
+    <div class="slider">
+      <label for="slide_1" class="slide slide_1"></label>
+      <label for="slide_2" class="slide slide_2"></label>
+      <label for="slide_3" class="slide slide_3"></label>
+      <label for="slide_4" class="slide slide_4"></label>
+    </div>
 
-  <div class="inner_part">
-    <label for="slideImg" class="img">
-      <img class="img_1" src="https://github.com/fe-51shebao/.github/raw/main/demo3-ok.gif">
-    </label>
-    <div class="content content_1">
-      <div class="title">待办演示</div>
-      <div class="text">
-        谈笑之间，待办灰飞烟灭
+    <div class="inner_part">
+      <label for="slideImg" class="img">
+        <img class="img_1" src="https://github.com/fe-51shebao/.github/raw/main/demo3-ok.gif" />
+      </label>
+      <div class="content content_1">
+        <div class="title">待办演示</div>
+        <div class="text">谈笑之间，待办灰飞烟灭</div>
+        <button><a href="./todolist">去体验</a></button>
       </div>
-      <button><a href="./todolist"> 去体验 </a></button>
+    </div>
+
+    <div class="inner_part">
+      <label for="slideImg" class="img">
+        <img class="img_2" src="https://github.com/fe-51shebao/.github/raw/main/demo-form.gif" />
+      </label>
+      <div class="content content_2">
+        <div class="title">表单自动填写演示</div>
+        <div class="text">表单太长，人太忙，拷贝粘贴之间，AI帮你搞定！</div>
+        <button><a href="./form">去体验</a></button>
+      </div>
+    </div>
+
+    <div class="inner_part">
+      <label for="slideImg" class="img">
+        <img class="img_3" src="https://github.com/fe-51shebao/.github/raw/main/demo1-ok.gif" />
+      </label>
+      <div class="content content_3">
+        <div class="title">email自动回复</div>
+        <div class="text">比较内敛，担心辞不达意，又或时间紧迫，任务繁多，你只需输入几个词，指出方向，AI帮你回复。</div>
+        <button><a href="./textarea">去体验</a></button>
+      </div>
+    </div>
+
+    <div class="inner_part">
+      <label for="slideImg" class="img">
+        <img class="img_4" src="https://github.com/fe-51shebao/.github/raw/main/demo4.gif" />
+      </label>
+      <div class="content content_4">
+        <div class="title">操作表格</div>
+        <div class="text">常见的表格操作，看看接入ai会有什么不同？</div>
+        <button><a href="./table">去体验</a></button>
+      </div>
     </div>
   </div>
-
-  <div class="inner_part">
-    <label for="slideImg" class="img">
-      <img class="img_2" src="https://github.com/fe-51shebao/.github/raw/main/demo-form.gif">
-    </label>
-    <div class="content content_2">
-      <div class="title">表单自动填写演示</div>
-      <div class="text">
-        表单太长，人太忙，拷贝粘贴之间，AI帮你搞定！
-      </div>
-      <button><a href="./form"> 去体验 </a></button>
-    </div>
-  </div>
-
-  <div class="inner_part">
-    <label for="slideImg" class="img">
-      <img class="img_3" src="https://github.com/fe-51shebao/.github/raw/main/demo1-ok.gif">
-    </label>
-    <div class="content content_3">
-      <div class="title">email自动回复</div>
-      <div class="text">
-        比较内敛，担心辞不达意，又或时间紧迫，任务繁多，你只需输入几个词，指出方向，AI帮你回复。
-      </div>
-      <button><a href="./textarea"> 去体验 </a></button>
-    </div>
-  </div>
-  <div class="inner_part">
-    <label for="slideImg" class="img">
-      <img class="img_3" src="https://github.com/fe-51shebao/.github/raw/main/demo4.gif">
-    </label>
-    <div class="content content_3">
-      <div class="title">操作表格</div>
-      <div class="text">
-        常见的表格操作，看看接入ai会有什么不同？
-      </div>
-      <button><a href="./table"> 去体验 </a></button>
-    </div>
-  </div>
-
-</div>
 </template>
 
-<script setup lang="ts">
-import {
-  useCopilotReadable,
-  useCopilotAction,
-  useCopilotChat,
-} from "@dingdayu/vue-copilotkit-core";
-import { Role, TextMessage } from "@copilotkit/runtime-client-gql";
-
-
-</script>
+<script setup lang="ts"></script>
 
 <style scoped>
 * {
@@ -83,7 +68,8 @@ import { Role, TextMessage } from "@copilotkit/runtime-client-gql";
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   height: 100vh;
   font-family: 'Open Sans', sans-serif;
   background-color: #666666;
@@ -118,7 +104,7 @@ body {
 
 #slideImg:checked ~ .inner_part {
   padding: 0;
-  transition: .1s ease-in;
+  transition: 0.1s ease-in;
 }
 
 .inner_part .img {
@@ -127,14 +113,14 @@ body {
   overflow: hidden;
   flex-shrink: 0;
   border-radius: 20px;
-  box-shadow: 0 10px 50px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.2);
 }
 
 #slideImg:checked ~ .inner_part .img {
- height: 350px;
- width: 850px;
- z-index: 99;
- transition: .3s .2s ease-in;
+  height: 350px;
+  width: 850px;
+  z-index: 99;
+  transition: 0.3s 0.2s ease-in;
 }
 
 .img img {
@@ -142,14 +128,15 @@ body {
   width: 100%;
   cursor: pointer;
   opacity: 0;
-  transition: .6s;
+  transition: 0.6s;
 }
 
 #slide_1:checked ~ .inner_part .img_1,
 #slide_2:checked ~ .inner_part .img_2,
-#slide_3:checked ~ .inner_part .img_3 {
+#slide_3:checked ~ .inner_part .img_3,
+#slide_4:checked ~ .inner_part .img_4 {
   opacity: 1;
-  transition-delay: .2s;
+  transition-delay: 0.2s;
 }
 
 .content {
@@ -157,7 +144,7 @@ body {
   width: 440px;
   margin-left: 50px;
   opacity: 0;
-  transition: .6s; 
+  transition: 0.6s;
 }
 
 #slideImg:checked ~ .inner_part .content {
@@ -166,11 +153,12 @@ body {
 
 #slide_1:checked ~ .inner_part .content_1,
 #slide_2:checked ~ .inner_part .content_2,
-#slide_3:checked ~ .inner_part .content_3 {
+#slide_3:checked ~ .inner_part .content_3,
+#slide_4:checked ~ .inner_part .content_4 {
   opacity: 1;
   margin-left: 0;
   z-index: 100;
-  transition-delay: .3s;
+  transition-delay: 0.3s;
 }
 
 .content .title {
@@ -230,7 +218,6 @@ body {
   cursor: pointer;
 }
 
-
 .slider .slide:before {
   position: absolute;
   content: '';
@@ -238,16 +225,17 @@ body {
   left: 0;
   height: 100%;
   width: -100%;
-  background: #000000;;
+  background: #000000;
   border-radius: 10px;
   transform: scaleX(0);
-  transition: transform .6s;
+  transition: transform 0.6s;
   transform-origin: left;
 }
 
 #slide_1:checked ~ .slider .slide_1:before,
 #slide_2:checked ~ .slider .slide_2:before,
-#slide_3:checked ~ .slider .slide_3:before {
+#slide_3:checked ~ .slider .slide_3:before,
+#slide_4:checked ~ .slider .slide_4:before {
   transform: scaleX(1);
   width: 100%;
 }

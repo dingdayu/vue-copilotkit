@@ -1,4 +1,4 @@
-import { defineConfig } from '@copilotkit/vite-config'
+import { defineConfig } from '@dingdayu/vue-copilotkit-vite-config'
 
 // https://vitejs.dev/config/
 export default defineConfig({

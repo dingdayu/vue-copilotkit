@@ -1,5 +1,5 @@
 import { inject, Ref } from 'vue'
-import { CopilotCloudConfig, FunctionCallHandler } from '@copilotkit/shared'
+import { CopilotCloudConfig, FunctionCallHandler, CopilotKitError } from '@copilotkit/shared'
 import { Message } from '@copilotkit/runtime-client-gql'
 
 import { ActionRenderProps, FrontendAction } from '../types/frontend-action'
@@ -107,6 +107,9 @@ export interface CopilotContextParams {
   copilotApiConfig: CopilotApiConfig
 
   showDevConsole: boolean | 'auto'
+
+  usageError: Ref<CopilotKitError | null>
+  setUsageError: (error: CopilotKitError | null) => void
 }
 
 export const CopilotKitContext = Symbol('CopilotKitContext')

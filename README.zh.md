@@ -165,6 +165,7 @@ import { Page } from '@vben/common-ui';
 1.  为 NPM 仓库发布重命名了包名
     *   `@copilotkit/vue-core` → `@dingdayu/vue-copilotkit-core`
     *   `@copilotkit/vue-ui` → `@dingdayu/vue-copilotkit-ui`
+    *   `@copilotkit/vite-config` → `@dingdayu/vue-copilotkit-vite-config`
 2.  将 @copilotkit/shared 及相关包升级到 `1.8.14`
 3.  修复了 `Window` 组件导致的构建错误
 4.  更新了 `vite.config.ts` 以解决由 vite 内联导致的 `injection "Symbol()" not found` 问题

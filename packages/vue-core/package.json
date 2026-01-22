@@ -30,7 +30,7 @@
     "build": "vite build"
   },
   "devDependencies": {
-    "@copilotkit/vite-config": "workspace:*",
+    "@dingdayu/vue-copilotkit-vite-config": "workspace:*",
     "vite": "^5.3.4"
   },
   "dependencies": {

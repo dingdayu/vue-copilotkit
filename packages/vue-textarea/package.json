@@ -44,8 +44,8 @@
     "prosemirror-state": "^1.4.3"
   },
   "devDependencies": {
-    "@copilotkit/vite-config": "workspace:*",
     "@types/lodash.merge": "^4.6.9",
+    "@dingdayu/vue-copilotkit-vite-config": "workspace:*",
     "vite": "^5.3.4"
   },
   "publishConfig": {

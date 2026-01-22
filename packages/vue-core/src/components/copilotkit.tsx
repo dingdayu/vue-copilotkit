@@ -8,6 +8,11 @@ import { CopilotKitProps } from './copilotkit-props'
 
 import useTree from '../hooks/use-tree'
 import useFlatCategoryStore from '../hooks/use-flat-category-store'
+import { ConsoleTrigger } from './dev-console'
+import { ToastProvider } from './toast'
+import { CopilotErrorBoundary } from './error-boundary'
+import { UsageBanner } from './usage-banner'
+import { CopilotKitError } from '@copilotkit/shared'
 // vue context symbol
 import { CopilotKitContext, CopilotContextParams, InChatRenderFunction } from '../context'
 
@@ -115,6 +120,11 @@ export const CopilotKit = defineComponent({
       chatInstructions.value = value
     }
 
+    const usageError = ref<CopilotKitError | null>(null)
+    const setUsageError = (error: CopilotKitError | null) => {
+      usageError.value = error
+    }
+
     const setAction = (id: string, action: FrontendAction<any>) => {
       actions.value = {
         ...actions.value,
@@ -152,10 +162,10 @@ export const CopilotKit = defineComponent({
       documentPointer: DocumentPointer,
       categories: string[] = defaultCopilotContextCategories
     ) => returnAndThrowInDebug('')
-    const removeDocumentContext = (documentId: string) => {}
+    const removeDocumentContext = (documentId: string) => { }
 
-    const addChatSuggestionConfiguration = (id: string, suggestion: CopilotChatSuggestionConfiguration) => {}
-    const removeChatSuggestionConfiguration = (id: string) => {}
+    const addChatSuggestionConfiguration = (id: string, suggestion: CopilotChatSuggestionConfiguration) => { }
+    const removeChatSuggestionConfiguration = (id: string) => { }
 
     if (!props.publicApiKey) {
       if (props.cloudRestrictToTopic) {
@@ -214,11 +224,21 @@ export const CopilotKit = defineComponent({
       removeChatSuggestionConfiguration,
       chatInstructions,
       setChatInstructions,
-      showDevConsole: props.showDevConsole || 'auto'
+      showDevConsole: props.showDevConsole || 'auto',
+      usageError,
+      setUsageError
     })
 
     return () => {
-      return <>{renderSlot(slots, 'default')}</>
+      return (
+        <ToastProvider>
+          <CopilotErrorBoundary>
+            {renderSlot(slots, 'default')}
+            <ConsoleTrigger />
+            {usageError.value && <UsageBanner error={usageError.value} onClose={() => (usageError.value = null)} />}
+          </CopilotErrorBoundary>
+        </ToastProvider>
+      )
     }
   }
 })

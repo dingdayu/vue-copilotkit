@@ -6,23 +6,23 @@ import { Message } from "@copilotkit/runtime-client-gql";
 
 
 export const Input = defineComponent({
-  props:{
-    inProgress:{
+  props: {
+    inProgress: {
       type: Boolean,
       required: true,
     },
-    send:{
-      type:Function,
-      default:(text: string) => Promise<Message>
+    send: {
+      type: Function,
+      default: (text: string) => Promise<Message>
     },
     isVisible: {
       type: Boolean,
       required: true,
     }
   },
-  setup:(_p,) => {
+  setup: (_p,) => {
     const textareaRef = ref<any | null>(null)
-    
+
     const handleDivClick = (event: MouseEvent) => {
       // Check if the clicked element is not the textarea itself
       if (event.target !== event.currentTarget) return;
@@ -35,18 +35,18 @@ export const Input = defineComponent({
       text.value = '';
       textareaRef.value?.$el?.focus();
     }
-    watch(()=> _p.isVisible, () => {
+    watch(() => _p.isVisible, () => {
       textareaRef.value?.$el?.focus();
     })
-  
+
     const sendIcon = SendIcon
-    const showPushToTalk =  false
+    const showPushToTalk = false
     const sendDisabled = _p.inProgress
-  
-  
+
+
     return () => (
       <div class="copilotKitInput" onClick={handleDivClick}>
-        <AutoResizingTextarea 
+        <AutoResizingTextarea
           ref={e => textareaRef.value = e}
           placeholder="Type a message..."
           autoFocus={true}
@@ -63,7 +63,7 @@ export const Input = defineComponent({
         <div class="copilotKitInputControls">
           {showPushToTalk && (
             <button
-              onClick={() => {}}
+              onClick={() => { }}
               class="copilotKitPushToTalkRecording"
             >
               <PushToTalkIcon />
