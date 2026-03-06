@@ -26,53 +26,76 @@ pnpm add @dingdayu/vue-copilotkit-core @dingdayu/vue-copilotkit-ui
 安装依赖
 
 ```bash
-pnpm add @copilotkit/runtime openai
+pnpm add @copilotkit/runtime @ai-sdk/openai-compatible
 ```
 
 创建 `index.js` 文件。
 
 ```ts
 import { createServer } from 'node:http'
-import { CopilotRuntime, OpenAIAdapter, copilotRuntimeNodeHttpEndpoint } from '@copilotkit/runtime'
-import OpenAI from 'openai'
+import { CopilotRuntime, copilotRuntimeNodeHttpEndpoint } from '@copilotkit/runtime'
+import { BuiltInAgent } from '@copilotkit/runtime/v2'
+import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
 
-const openai = new OpenAI({
-  apiKey: 'sk-xxx', // 或者从环境变量 process.env["OPENAI_API_KEY"] 读取 API 密钥
-  baseURL: 'https://api.deepseek.com' // 可选：相关平台的 baseURL，例如阿里云百炼：https://dashscope.aliyuncs.com/compatible-mode/v1
+const provider = createOpenAICompatible({
+  name: 'openai-compatible',
+  apiKey: process.env.OPENAI_API_KEY,
+  baseURL: process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1'
 })
 
-// 测试时发现 CopilotKit 1.8.14 版本使用的是 this.openai.beta.chat.completions.stream
-// 这会导致实际使用中出错，因此需要进行赋值。
-openai.beta = openai
-
-// 注意这里的模型设置，例如 Qwen（通义千问）的模型：qwen-max-latest
-const serviceAdapter = new OpenAIAdapter({ openai, model: 'deepseek-chat', keepSystemRole: true })
-
-const server = createServer((req, res) => {
-  const runtime = new CopilotRuntime({
-    // 这是用于远程 Agent 的用法。如果你需要用其他语言实现，
-    // 可以参考 CopilotKit 中的 sdk-python。
-    // "remoteEndpoints": [
-    //     {
-    //         "url": "http://10.0.7.105:8005/copilotkit_remote",
-    //     }
-    // ]
-  })
-  const handler = copilotRuntimeNodeHttpEndpoint({
-    endpoint: '/copilotkit',
-    runtime,
-    serviceAdapter
-  })
-
-  return handler(req, res)
+const runtime = new CopilotRuntime({
+  agents: {
+    default: new BuiltInAgent({
+      model: provider.chatModel(process.env.OPENAI_MODEL || 'deepseek-chat'),
+      forwardSystemMessages: true
+    })
+  }
 })
 
+const handler = copilotRuntimeNodeHttpEndpoint({
+  endpoint: '/copilotkit',
+  runtime
+})
+
+const server = createServer((req, res) => handler(req, res))
 server.listen(4000, () => {
   console.log('监听地址 http://localhost:4000/copilotkit')
 })
 ```
 
 运行 `node index.js`。
+
+## CopilotKit v2 API Reference 速览
+
+官方文档：https://docs.copilotkit.ai/reference/v2
+
+本项目当前使用 v2 的 single-route 协议，运行时请求包格式如下：
+
+```json
+{
+  "method": "agent/run",
+  "params": { "agentId": "default" },
+  "body": {
+    "threadId": "...",
+    "runId": "...",
+    "messages": [],
+    "tools": [],
+    "context": [],
+    "state": {},
+    "forwardedProps": {}
+  }
+}
+```
+
+v2 single-route 支持的 `method`：
+
+- `agent/run`
+- `agent/connect`
+- `agent/stop`
+- `info`
+- `transcribe`
+
+注意：该端点只接受 JSON envelope（`Content-Type: application/json`），否则会返回 `invalid_request`。
 
 ### 客户端
 
@@ -163,10 +186,10 @@ import { Page } from '@vben/common-ui';
     - `@copilotkit/vue-core` → `@dingdayu/vue-copilotkit-core`
     - `@copilotkit/vue-ui` → `@dingdayu/vue-copilotkit-ui`
     - `@copilotkit/vite-config` → `@dingdayu/vue-copilotkit-vite-config`
-2.  将 @copilotkit/shared 及相关包升级到 `1.8.14`
+2.  将 CopilotKit runtime/client 相关包升级到 `1.53.0`（兼容 v2 协议）
 3.  修复了 `Window` 组件导致的构建错误
 4.  更新了 `vite.config.ts` 以解决由 vite 内联导致的 `injection "Symbol()" not found` 问题
-5.  修复了因 `CopilotRuntimeClient` 使用不当导致的 `asStream` 未找到的问题
+5.  将 chat 与 textarea 的请求链路迁移到 v2 single-route 协议（`method: agent/run`）
 6.  修复了与 `view.docView.domFromPos` 相关的问题
 7.  在 `package.json` 中添加了仓库信息
 

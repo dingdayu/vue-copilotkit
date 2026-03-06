@@ -26,53 +26,76 @@ pnpm add @dingdayu/vue-copilotkit-core @dingdayu/vue-copilotkit-ui
 Install dependencies
 
 ```bash
-pnpm add @copilotkit/runtime openai
+pnpm add @copilotkit/runtime @ai-sdk/openai-compatible
 ```
 
 Create `index.js` file.
 
 ```ts
 import { createServer } from 'node:http'
-import { CopilotRuntime, OpenAIAdapter, copilotRuntimeNodeHttpEndpoint } from '@copilotkit/runtime'
-import OpenAI from 'openai'
+import { CopilotRuntime, copilotRuntimeNodeHttpEndpoint } from '@copilotkit/runtime'
+import { BuiltInAgent } from '@copilotkit/runtime/v2'
+import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
 
-const openai = new OpenAI({
-  apiKey: 'sk-xxx', // Or read the API key from environment variables process.env["OPENAI_API_KEY"]
-  baseURL: 'https://api.deepseek.com' // Optional: baseURL for relevant platforms, e.g., Bailian (阿里云百炼): https://dashscope.aliyuncs.com/compatible-mode/v1
+const provider = createOpenAICompatible({
+  name: 'openai-compatible',
+  apiKey: process.env.OPENAI_API_KEY,
+  baseURL: process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1'
 })
 
-// During testing, it was found that CopilotKit 1.8.14 uses this.openai.beta.chat.completions.stream
-// This will cause an error in actual use, so an assignment is needed.
-openai.beta = openai
-
-// Note the model setting here, e.g., for Qwen: qwen-max-latest
-const serviceAdapter = new OpenAIAdapter({ openai, model: 'deepseek-chat', keepSystemRole: true })
-
-const server = createServer((req, res) => {
-  const runtime = new CopilotRuntime({
-    // This is for remote Agent usage. If you need to implement it in other languages,
-    // you can refer to the sdk-python in CopilotKit.
-    // "remoteEndpoints": [
-    //     {
-    //         "url": "http://10.0.7.105:8005/copilotkit_remote",
-    //     }
-    // ]
-  })
-  const handler = copilotRuntimeNodeHttpEndpoint({
-    endpoint: '/copilotkit',
-    runtime,
-    serviceAdapter
-  })
-
-  return handler(req, res)
+const runtime = new CopilotRuntime({
+  agents: {
+    default: new BuiltInAgent({
+      model: provider.chatModel(process.env.OPENAI_MODEL || 'deepseek-chat'),
+      forwardSystemMessages: true
+    })
+  }
 })
 
+const handler = copilotRuntimeNodeHttpEndpoint({
+  endpoint: '/copilotkit',
+  runtime
+})
+
+const server = createServer((req, res) => handler(req, res))
 server.listen(4000, () => {
   console.log('Listening at http://localhost:4000/copilotkit')
 })
 ```
 
 Run `node index.js`.
+
+## CopilotKit v2 API Reference Notes
+
+Official reference: https://docs.copilotkit.ai/reference/v2
+
+This repo now follows the v2 single-route protocol shape used by the runtime endpoint:
+
+```json
+{
+  "method": "agent/run",
+  "params": { "agentId": "default" },
+  "body": {
+    "threadId": "...",
+    "runId": "...",
+    "messages": [],
+    "tools": [],
+    "context": [],
+    "state": {},
+    "forwardedProps": {}
+  }
+}
+```
+
+Supported single-route `method` values in v2 runtime are:
+
+- `agent/run`
+- `agent/connect`
+- `agent/stop`
+- `info`
+- `transcribe`
+
+Important: the endpoint accepts JSON envelopes only (`Content-Type: application/json`), otherwise it returns `invalid_request`.
 
 ### Client
 
@@ -164,10 +187,10 @@ import { Page } from '@vben/common-ui';
    - `@copilotkit/vue-core` → `@dingdayu/vue-copilotkit-core`
    - `@copilotkit/vue-ui` → `@dingdayu/vue-copilotkit-ui`
    - `@copilotkit/vite-config` → `@dingdayu/vue-copilotkit-vite-config`
-2. Upgraded @copilotkit/shared and related packages to `1.8.14`
+2. Upgraded CopilotKit runtime/client-related packages to `1.53.0` (v2 protocol-compatible)
 3. Fixed `Window` for build errors
 4. Updated `vite.config.ts` to resolve `injection "Symbol()" not found` issue caused by vite inlining
-5. Fixed `asStream` not found issue caused by incorrect `CopilotRuntimeClient` usage
+5. Migrated chat and textarea data paths to the v2 single-route protocol (`method: agent/run`)
 6. Fixed `view.docView.domFromPos` related issues
 7. Added repository information to `package.json`
 
