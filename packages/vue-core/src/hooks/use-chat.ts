@@ -4,21 +4,22 @@ import {
   FunctionCallHandler,
   COPILOT_CLOUD_PUBLIC_API_KEY_HEADER,
   Action,
-  actionParametersToJsonSchema
+  actionParametersToJsonSchema,
+  parseJson,
+  randomId
 } from '@copilotkit/shared'
+
+import { convertToLegacyEvents, runHttpRequest, transformHttpEventStream } from '@ag-ui/client'
 
 import {
   Message,
   TextMessage,
   ActionExecutionMessage,
   ResultMessage,
-  CopilotRuntimeClient,
-  convertMessagesToGqlInput,
-  convertGqlOutputToMessages,
   MessageStatusCode,
   MessageRole,
   Role,
-  CopilotRequestType
+  AgentStateMessage
 } from '@copilotkit/runtime-client-gql'
 
 import { CopilotApiConfig } from '../context'
@@ -38,51 +39,21 @@ export type UseChatOptions = {
   setIsLoading: any
 }
 
-function buildCopilotRequest(
-  actions: Action[],
-  copilotConfig: CopilotApiConfig,
-  agentSession: CopilotAgentSession | null,
-  threadId: string | null,
-  runId: string | null,
-  messagesWithContext: Message[]
-) {
+function buildRunInput(actions: Action[], threadId: string | null, messagesWithContext: Message[]) {
+  const normalizedThreadId = threadId || randomId()
   return {
-    frontend: {
-      actions: actions?.map(action => ({
-        name: action.name,
-        description: action.description || '',
-        jsonSchema: JSON.stringify(actionParametersToJsonSchema(action.parameters || []))
-      }))
-    },
-    threadId,
-    runId,
-    ...(agentSession
-      ? {
-          agentSession: {
-            agentName: agentSession.agentName,
-            ...(agentSession.nodeName ? { nodeName: agentSession.nodeName } : {}),
-            ...(agentSession.threadId ? { threadId: agentSession.threadId } : {})
-          }
-        }
-      : {}),
-    messages: convertMessagesToGqlInput(messagesWithContext),
-    ...(copilotConfig.cloud
-      ? {
-          cloud: {
-            ...(copilotConfig.cloud.guardrails?.input?.restrictToTopic?.enabled
-              ? {
-                  guardrails: {
-                    inputValidationRules: {
-                      allowList: copilotConfig.cloud.guardrails.input.restrictToTopic.validTopics,
-                      denyList: copilotConfig.cloud.guardrails.input.restrictToTopic.invalidTopics
-                    }
-                  }
-                }
-              : {})
-          }
-        }
-      : {}),
-    metadata: { requestType: CopilotRequestType.Chat }
+    threadId: normalizedThreadId,
+    runId: randomId(),
+    state: {},
+    messages: messagesWithContext
+      .map(convertMessageToAgUi)
+      .filter((message): message is Record<string, unknown> => Boolean(message)),
+    tools: actions?.map(action => ({
+      name: action.name,
+      description: action.description || '',
+      parameters: actionParametersToJsonSchema(action.parameters || [])
+    })),
+    context: []
   }
 }
 
@@ -121,6 +92,56 @@ async function handleActionExecution(
   return newMessages
 }
 
+function normalizeRole(role?: string) {
+  if (role === MessageRole.User || role === MessageRole.System || role === MessageRole.Assistant) {
+    return role
+  }
+
+  if (role === 'user') return MessageRole.User
+  if (role === 'system') return MessageRole.System
+
+  return MessageRole.Assistant
+}
+
+function convertMessageToAgUi(message: Message): Record<string, unknown> | null {
+  if (message instanceof TextMessage) {
+    return {
+      id: message.id,
+      role: normalizeRole(message.role),
+      content: message.content || ''
+    }
+  }
+
+  if (message instanceof ActionExecutionMessage) {
+    return {
+      id: message.id,
+      role: 'assistant',
+      content: '',
+      toolCalls: [
+        {
+          id: message.id,
+          type: 'function',
+          function: {
+            name: message.name,
+            arguments: JSON.stringify(message.arguments || {})
+          }
+        }
+      ]
+    }
+  }
+
+  if (message instanceof ResultMessage) {
+    return {
+      id: message.id,
+      role: 'tool',
+      toolCallId: message.actionExecutionId,
+      content: message.result || ''
+    }
+  }
+
+  return null
+}
+
 export function useChat(options: UseChatOptions) {
   const {
     messages,
@@ -145,95 +166,260 @@ export function useChat(options: UseChatOptions) {
     ...(publicApiKey ? { [COPILOT_CLOUD_PUBLIC_API_KEY_HEADER]: publicApiKey } : {})
   }
 
-  const runtimeClientRef = ref<CopilotRuntimeClient | null>(null)
-  const getRuntimeClient = () => {
-    if (!runtimeClientRef.value) {
-      runtimeClientRef.value = new CopilotRuntimeClient({
-        url: copilotConfig.chatApiEndpoint,
-        publicApiKey: copilotConfig.publicApiKey,
-        headers,
-        credentials: copilotConfig.credentials
-      })
-    }
-    return runtimeClientRef.value
-  }
   const runChatCompletionOnce = async (previousMessages: Message[]) => {
-    let newMessages: Message[] = [new TextMessage({ content: '', role: Role.Assistant })]
+    let newMessages: Message[] = []
     const abortController = new AbortController()
     abortControllerRef.value = abortController
-    setMessages([...previousMessages, ...newMessages])
 
     const systemMessage = makeSystemMessageCallback()
     const messagesWithContext = [systemMessage, ...(initialMessages || []), ...previousMessages]
+    const agentId = getAgentSession?.()?.agentName || 'default'
+    const runInput = buildRunInput(getActions(), threadIdRef.value, messagesWithContext)
 
-    const requestData = buildCopilotRequest(
-      getActions(),
-      copilotConfig,
-      getAgentSession?.() || null,
-      threadIdRef.value,
-      runIdRef.value,
-      messagesWithContext
-    )
+    threadIdRef.value = runInput.threadId
+    runIdRef.value = runInput.runId
 
-    const runtimeClient = getRuntimeClient()
-    const stream = runtimeClient.asStream(
-      runtimeClient.generateCopilotResponse({
-        data: requestData,
-        properties: {
-          ...(copilotConfig.properties || {}),
-          ...(body || {})
-        },
-        signal: abortControllerRef.value?.signal
-      })
-    )
-
-    const guardrailsEnabled = copilotConfig.cloud?.guardrails?.input?.restrictToTopic.enabled || false
-    const reader = stream.getReader()
-    let results: { [id: string]: string } = {}
-
-    while (true) {
-      const { done, value } = await reader.read()
-      if (done) break
-      if (!value?.generateCopilotResponse) continue
-
-      threadIdRef.value = value.generateCopilotResponse.threadId || null
-      runIdRef.value = value.generateCopilotResponse.runId || null
-
-      const messages = convertGqlOutputToMessages(value.generateCopilotResponse.messages)
-      if (messages.length === 0) continue
-
-      newMessages = []
-
-      if (
-        value.generateCopilotResponse.status?.__typename === 'FailedResponseStatus' &&
-        value.generateCopilotResponse.status.reason === 'GUARDRAILS_VALIDATION_FAILED'
-      ) {
-        newMessages = [
-          new TextMessage({
-            role: MessageRole.Assistant,
-            content: value.generateCopilotResponse.status.details?.guardrailsReason || ''
-          })
-        ]
-      } else {
-        for (const message of messages) {
-          newMessages.push(message)
-          if (message instanceof ActionExecutionMessage && onFunctionCall) {
-            const actionResults = await handleActionExecution(
-              message,
-              results,
-              previousMessages,
-              onFunctionCall,
-              guardrailsEnabled,
-              value.generateCopilotResponse.status
-            )
-            newMessages.push(...actionResults)
+    const requestInit: RequestInit = {
+      method: 'POST',
+      headers: {
+        ...headers,
+        'Content-Type': 'application/json',
+        Accept: 'text/event-stream'
+      },
+      body: JSON.stringify({
+        method: 'agent/run',
+        params: { agentId },
+        body: {
+          ...runInput,
+          forwardedProps: {
+            ...(copilotConfig.properties || {}),
+            ...(body || {})
           }
         }
-      }
+      }),
+      signal: abortController.signal,
+      ...(copilotConfig.credentials ? { credentials: copilotConfig.credentials } : {})
+    }
 
-      if (newMessages.length > 0) {
-        setMessages([...previousMessages, ...newMessages])
+    const legacyEvents = convertToLegacyEvents(
+      runInput.threadId,
+      runInput.runId,
+      agentId
+    )(transformHttpEventStream(runHttpRequest(copilotConfig.chatApiEndpoint, requestInit)))
+
+    let results: { [id: string]: string } = {}
+    const messageIndexById = new Map<string, number>()
+    const actionExecutionArgsBuffers = new Map<string, string>()
+
+    const upsertMessage = (message: Message) => {
+      const index = messageIndexById.get(message.id)
+      if (index === undefined) {
+        messageIndexById.set(message.id, newMessages.length)
+        newMessages.push(message)
+      } else {
+        newMessages[index] = message
       }
+      setMessages([...previousMessages, ...newMessages])
+    }
+
+    await new Promise<void>((resolve, reject) => {
+      const subscription = legacyEvents.subscribe({
+        next: event => {
+          const eventType = (event as { type?: string }).type
+
+          if (eventType === 'RunStarted') {
+            const runEvent = event as { threadId?: string; runId?: string }
+            if (runEvent.threadId) threadIdRef.value = runEvent.threadId
+            if (runEvent.runId) runIdRef.value = runEvent.runId
+            return
+          }
+
+          if (eventType === 'RunError') {
+            const errorEvent = event as { message?: string }
+            reject(new Error(errorEvent.message || 'Runtime returned RunError'))
+            return
+          }
+
+          if (eventType === 'TextMessageStart') {
+            const textStartEvent = event as { messageId: string; role?: string }
+            upsertMessage(
+              new TextMessage({
+                id: textStartEvent.messageId,
+                content: '',
+                role: normalizeRole(textStartEvent.role),
+                status: { code: MessageStatusCode.Pending }
+              })
+            )
+            return
+          }
+
+          if (eventType === 'TextMessageContent') {
+            const textContentEvent = event as { messageId: string; content: string }
+            const existing =
+              newMessages[messageIndexById.get(textContentEvent.messageId) ?? -1] ||
+              new TextMessage({
+                id: textContentEvent.messageId,
+                content: '',
+                role: MessageRole.Assistant,
+                status: { code: MessageStatusCode.Pending }
+              })
+            const nextMessage = new TextMessage({
+              ...existing,
+              id: textContentEvent.messageId,
+              role: normalizeRole((existing as TextMessage).role),
+              content: `${(existing as TextMessage).content || ''}${textContentEvent.content || ''}`,
+              status: { code: MessageStatusCode.Pending }
+            })
+            upsertMessage(nextMessage)
+            return
+          }
+
+          if (eventType === 'TextMessageEnd') {
+            const textEndEvent = event as { messageId: string }
+            const existing = newMessages[messageIndexById.get(textEndEvent.messageId) ?? -1]
+            if (existing instanceof TextMessage) {
+              upsertMessage(
+                new TextMessage({
+                  ...existing,
+                  status: { code: MessageStatusCode.Success }
+                })
+              )
+            }
+            return
+          }
+
+          if (eventType === 'ActionExecutionStart') {
+            const actionStartEvent = event as {
+              actionExecutionId: string
+              actionName: string
+              parentMessageId?: string
+            }
+            actionExecutionArgsBuffers.set(actionStartEvent.actionExecutionId, '')
+            upsertMessage(
+              new ActionExecutionMessage({
+                id: actionStartEvent.actionExecutionId,
+                name: actionStartEvent.actionName,
+                parentMessageId: actionStartEvent.parentMessageId,
+                arguments: {},
+                status: { code: MessageStatusCode.Pending }
+              })
+            )
+            return
+          }
+
+          if (eventType === 'ActionExecutionArgs') {
+            const actionArgsEvent = event as { actionExecutionId: string; args: string }
+            const buffer = `${actionExecutionArgsBuffers.get(actionArgsEvent.actionExecutionId) || ''}${actionArgsEvent.args || ''}`
+            actionExecutionArgsBuffers.set(actionArgsEvent.actionExecutionId, buffer)
+            const existing = newMessages[messageIndexById.get(actionArgsEvent.actionExecutionId) ?? -1]
+            if (existing instanceof ActionExecutionMessage) {
+              upsertMessage(
+                new ActionExecutionMessage({
+                  ...existing,
+                  arguments: parseJson(buffer, {}),
+                  status: { code: MessageStatusCode.Pending }
+                })
+              )
+            }
+            return
+          }
+
+          if (eventType === 'ActionExecutionEnd') {
+            const actionEndEvent = event as { actionExecutionId: string }
+            const existing = newMessages[messageIndexById.get(actionEndEvent.actionExecutionId) ?? -1]
+            if (existing instanceof ActionExecutionMessage) {
+              upsertMessage(
+                new ActionExecutionMessage({
+                  ...existing,
+                  arguments: parseJson(actionExecutionArgsBuffers.get(actionEndEvent.actionExecutionId) || '', {}),
+                  status: { code: MessageStatusCode.Success }
+                })
+              )
+            }
+            return
+          }
+
+          if (eventType === 'ActionExecutionResult') {
+            const actionResultEvent = event as {
+              actionExecutionId: string
+              actionName: string
+              result: string
+            }
+            upsertMessage(
+              new ResultMessage({
+                id: randomId(),
+                actionExecutionId: actionResultEvent.actionExecutionId,
+                actionName: actionResultEvent.actionName,
+                result: actionResultEvent.result,
+                status: { code: MessageStatusCode.Success }
+              })
+            )
+            return
+          }
+
+          if (eventType === 'AgentStateMessage') {
+            const stateEvent = event as {
+              threadId: string
+              role?: string
+              agentName: string
+              nodeName?: string
+              runId: string
+              active: boolean
+              running: boolean
+              state: string
+            }
+            upsertMessage(
+              new AgentStateMessage({
+                id: randomId(),
+                threadId: stateEvent.threadId,
+                role: normalizeRole(stateEvent.role),
+                agentName: stateEvent.agentName,
+                nodeName: stateEvent.nodeName,
+                runId: stateEvent.runId,
+                active: stateEvent.active,
+                running: stateEvent.running,
+                state: parseJson(stateEvent.state, {})
+              })
+            )
+          }
+        },
+        error: error => {
+          reject(error)
+        },
+        complete: () => {
+          resolve()
+        }
+      })
+
+      abortController.signal.addEventListener(
+        'abort',
+        () => {
+          subscription.unsubscribe()
+          resolve()
+        },
+        { once: true }
+      )
+    })
+
+    const streamMessages = [...newMessages]
+    newMessages = []
+    for (const message of streamMessages) {
+      newMessages.push(message)
+      if (message instanceof ActionExecutionMessage && onFunctionCall) {
+        const actionResults = await handleActionExecution(
+          message,
+          results,
+          previousMessages,
+          onFunctionCall,
+          false,
+          undefined
+        )
+        newMessages.push(...actionResults)
+      }
+    }
+
+    if (newMessages.length > 0) {
+      setMessages([...previousMessages, ...newMessages])
     }
 
     const needsFollowup =

@@ -37,10 +37,10 @@ importers:
   examples:
     dependencies:
       '@copilotkit/runtime-client-gql':
-        specifier: ^1.53.0
+        specifier: 1.53.0
         version: 1.53.0(@ag-ui/core@0.0.47)(encoding@0.1.13)(graphql@16.12.0)(react@18.3.1)
       '@copilotkit/shared':
-        specifier: ^1.53.0
+        specifier: 1.53.0
         version: 1.53.0(@ag-ui/core@0.0.47)(encoding@0.1.13)
       '@dingdayu/vue-copilotkit-core':
         specifier: workspace:*
@@ -61,15 +61,21 @@ importers:
         specifier: ^4.4.3
         version: 4.6.3(vue@3.5.24(typescript@5.9.3))
     devDependencies:
+      '@ai-sdk/openai-compatible':
+        specifier: ^2.0.35
+        version: 2.0.35(zod@3.25.76)
       '@copilotkit/runtime':
-        specifier: ^1.53.0
-        version: 1.53.0(ltdhrfqaljetddtk5c4yjezi4e)
+        specifier: 1.53.0
+        version: 1.53.0(w45humdfvoufrghg3qex5byh3a)
       '@vitejs/plugin-vue':
         specifier: ^5.0.5
         version: 5.2.4(vite@5.4.21(@types/node@18.19.130))(vue@3.5.24(typescript@5.9.3))
       '@vitejs/plugin-vue-jsx':
         specifier: ^4.0.0
         version: 4.2.0(vite@5.4.21(@types/node@18.19.130))(vue@3.5.24(typescript@5.9.3))
+      dotenv:
+        specifier: ^16.6.1
+        version: 16.6.1
       openai:
         specifier: ^4.55.5
         version: 4.104.0(encoding@0.1.13)(ws@8.18.3)(zod@3.25.76)
@@ -113,14 +119,17 @@ importers:
 
   packages/vue-core:
     dependencies:
+      '@ag-ui/client':
+        specifier: ^0.0.47
+        version: 0.0.47
       '@ag-ui/core':
         specifier: ^0.0.47
         version: 0.0.47
       '@copilotkit/runtime-client-gql':
-        specifier: ^1.53.0
+        specifier: 1.53.0
         version: 1.53.0(@ag-ui/core@0.0.47)(encoding@0.1.13)(graphql@16.12.0)(react@18.3.1)
       '@copilotkit/shared':
-        specifier: ^1.53.0
+        specifier: 1.53.0
         version: 1.53.0(@ag-ui/core@0.0.47)(encoding@0.1.13)
     devDependencies:
       '@dingdayu/vue-copilotkit-vite-config':
@@ -132,14 +141,17 @@ importers:
 
   packages/vue-textarea:
     dependencies:
+      '@ag-ui/client':
+        specifier: ^0.0.47
+        version: 0.0.47
       '@ag-ui/core':
         specifier: ^0.0.47
         version: 0.0.47
       '@copilotkit/runtime-client-gql':
-        specifier: ^1.53.0
+        specifier: 1.53.0
         version: 1.53.0(@ag-ui/core@0.0.47)(encoding@0.1.13)(graphql@16.12.0)(react@18.3.1)
       '@copilotkit/shared':
-        specifier: ^1.53.0
+        specifier: 1.53.0
         version: 1.53.0(@ag-ui/core@0.0.47)(encoding@0.1.13)
       '@dingdayu/vue-copilotkit-core':
         specifier: workspace:*
@@ -185,10 +197,10 @@ importers:
         specifier: ^0.0.47
         version: 0.0.47
       '@copilotkit/runtime-client-gql':
-        specifier: ^1.53.0
+        specifier: 1.53.0
         version: 1.53.0(@ag-ui/core@0.0.47)(encoding@0.1.13)(graphql@16.12.0)(react@18.3.1)
       '@copilotkit/shared':
-        specifier: ^1.53.0
+        specifier: 1.53.0
         version: 1.53.0(@ag-ui/core@0.0.47)(encoding@0.1.13)
       '@dingdayu/vue-copilotkit-core':
         specifier: workspace:*
@@ -268,6 +280,12 @@ packages:
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
+  '@ai-sdk/openai-compatible@2.0.35':
+    resolution: {integrity: sha512-g3wA57IAQFb+3j4YuFndgkUdXyRETZVvbfAWM+UX7bZSxA3xjes0v3XKgIdKdekPtDGsh4ZX2byHD0gJIMPfiA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25.76 || ^4.1.8
+
   '@ai-sdk/openai@3.0.41':
     resolution: {integrity: sha512-IZ42A+FO+vuEQCVNqlnAPYQnnUpUfdJIwn1BEDOBywiEHa23fw7PahxVtlX9zm3/zMvTW4JKPzWyvAgDu+SQ2A==}
     engines: {node: '>=18'}
@@ -296,10 +314,6 @@ packages:
 
   '@antfu/utils@8.1.1':
     resolution: {integrity: sha512-Mex9nXf9vR6AhcXmMrlz/HVgYYZpVGJ6YlPgwl7UnaFpnshXs6EK/oa5Gpf3CzENMjkvEx2tQtntGnb7UtSTOQ==}
-
-  '@anthropic-ai/sdk@0.57.0':
-    resolution: {integrity: sha512-z5LMy0MWu0+w2hflUgj4RlJr1R+0BxKXL7ldXTO8FasU8fu599STghO+QKwId2dAD0d464aHtU+ChWuRHw4FNw==}
-    hasBin: true
 
   '@aws-crypto/crc32@5.2.0':
     resolution: {integrity: sha512-nLbCWqQNgUiwwtFsen1AdzAtvuLRsQS8rYgMuxCrdKf9kOssamGLuPwyTY9wyYblNr9+1XM8v6zoDTPPSIeANg==}
@@ -3812,6 +3826,10 @@ packages:
     resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
     engines: {node: '>=12'}
 
+  dotenv@16.6.1:
+    resolution: {integrity: sha512-uBq4egWHTcTt33a72vpSG0z3HnPuIl6NqYcTrKEg2azoEyl2hpW0zqlxysq2pK9HlDIHyHyakeYaYnSAwd8bow==}
+    engines: {node: '>=12'}
+
   dset@3.1.4:
     resolution: {integrity: sha512-2QF/g9/zTaPDc3BjNcVTGoBbXBgYfMTTceLaYcFJ/W9kggFUkhxD/hMEeuLKbugyef9SqAx8cpgwlIP/jinUTA==}
     engines: {node: '>=4'}
@@ -4721,8 +4739,8 @@ packages:
   jwa@2.0.1:
     resolution: {integrity: sha512-hRF04fqJIP8Abbkq5NKGN0Bbr3JxlQ+qhZufXVr0DvujKy93ZCbXZMHDL4EOtodSbCWxOqR8MS1tXA5hwqCXDg==}
 
-  jws@4.0.0:
-    resolution: {integrity: sha512-KDncfTmOZoOMTFG4mBlG0qUIOlc03fmzH+ru6RgYVZhPkyiy/92Owlt/8UEN+a4TXR1FQetfIpJE8ApdvdVxTg==}
+  jws@4.0.1:
+    resolution: {integrity: sha512-EKI/M/yqPncGUUh44xz0PxSidXFr/+r0pA70+gIYhjv+et7yxM+s29Y+VGDkovRofQem0fs7Uvf4+YmAdyRduA==}
 
   kind-of@6.0.3:
     resolution: {integrity: sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==}
@@ -6807,11 +6825,6 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
-  zod-to-json-schema@3.25.0:
-    resolution: {integrity: sha512-HvWtU2UG41LALjajJrML6uQejQhNJx+JBO9IflpSja4R03iNWfKXrj6W2h7ljuLyc1nKS+9yDyL/9tD1U/yBnQ==}
-    peerDependencies:
-      zod: ^3.25 || ^4
-
   zod-to-json-schema@3.25.1:
     resolution: {integrity: sha512-pM/SU9d3YAggzi6MtR4h7ruuQlqKtad8e9S0fmxcMi+ueAK5Korys/aWcV9LIIHTVbj01NdzxcnXSN+O74ZIVA==}
     peerDependencies:
@@ -6912,6 +6925,12 @@ snapshots:
       pkce-challenge: 5.0.1
       zod: 3.25.76
 
+  '@ai-sdk/openai-compatible@2.0.35(zod@3.25.76)':
+    dependencies:
+      '@ai-sdk/provider': 3.0.8
+      '@ai-sdk/provider-utils': 4.0.19(zod@3.25.76)
+      zod: 3.25.76
+
   '@ai-sdk/openai@3.0.41(zod@3.25.76)':
     dependencies:
       '@ai-sdk/provider': 3.0.8
@@ -6942,9 +6961,6 @@ snapshots:
   '@antfu/utils@0.7.10': {}
 
   '@antfu/utils@8.1.1': {}
-
-  '@anthropic-ai/sdk@0.57.0':
-    optional: true
 
   '@aws-crypto/crc32@5.2.0':
     dependencies:
@@ -7904,7 +7920,7 @@ snapshots:
       - encoding
       - graphql
 
-  '@copilotkit/runtime@1.53.0(ltdhrfqaljetddtk5c4yjezi4e)':
+  '@copilotkit/runtime@1.53.0(w45humdfvoufrghg3qex5byh3a)':
     dependencies:
       '@ag-ui/client': 0.0.47
       '@ag-ui/core': 0.0.47
@@ -7934,7 +7950,6 @@ snapshots:
       type-graphql: 2.0.0-rc.1(class-validator@0.14.2)(graphql-scalars@1.25.0(graphql@16.12.0))(graphql@16.12.0)
       zod: 3.25.76
     optionalDependencies:
-      '@anthropic-ai/sdk': 0.57.0
       '@langchain/aws': 0.1.15(@langchain/core@0.3.80(@opentelemetry/api@1.9.0)(openai@4.104.0(encoding@0.1.13)(ws@8.18.3)(zod@3.25.76)))
       '@langchain/community': 0.3.58(@langchain/aws@0.1.15(@langchain/core@0.3.80(@opentelemetry/api@1.9.0)(openai@4.104.0(encoding@0.1.13)(ws@8.18.3)(zod@3.25.76))))(@langchain/core@0.3.80(@opentelemetry/api@1.9.0)(openai@4.104.0(encoding@0.1.13)(ws@8.18.3)(zod@3.25.76)))(@opentelemetry/api@1.9.0)(encoding@0.1.13)(lodash@4.17.21)(openai@4.104.0(encoding@0.1.13)(ws@8.18.3)(zod@3.25.76))(ws@8.18.3)
       '@langchain/google-gauth': 0.1.8(@langchain/core@0.3.80(@opentelemetry/api@1.9.0)(openai@4.104.0(encoding@0.1.13)(ws@8.18.3)(zod@3.25.76)))(encoding@0.1.13)(zod@3.25.76)
@@ -8561,7 +8576,7 @@ snapshots:
       p-retry: 4.6.2
       uuid: 10.0.0
       zod: 3.25.76
-      zod-to-json-schema: 3.25.0(zod@3.25.76)
+      zod-to-json-schema: 3.25.1(zod@3.25.76)
     transitivePeerDependencies:
       - '@opentelemetry/api'
       - '@opentelemetry/exporter-trace-otlp-proto'
@@ -8572,7 +8587,7 @@ snapshots:
     dependencies:
       '@langchain/core': 0.3.80(@opentelemetry/api@1.9.0)(openai@4.104.0(encoding@0.1.13)(ws@8.18.3)(zod@3.25.76))
       uuid: 10.0.0
-      zod-to-json-schema: 3.25.0(zod@3.25.76)
+      zod-to-json-schema: 3.25.1(zod@3.25.76)
     transitivePeerDependencies:
       - zod
     optional: true
@@ -8604,7 +8619,7 @@ snapshots:
       js-tiktoken: 1.0.21
       openai: 4.104.0(encoding@0.1.13)(ws@8.18.3)(zod@3.25.76)
       zod: 3.25.76
-      zod-to-json-schema: 3.25.0(zod@3.25.76)
+      zod-to-json-schema: 3.25.1(zod@3.25.76)
     transitivePeerDependencies:
       - encoding
       - ws
@@ -11068,9 +11083,11 @@ snapshots:
 
   dotenv-expand@11.0.7:
     dependencies:
-      dotenv: 16.4.7
+      dotenv: 16.6.1
 
   dotenv@16.4.7: {}
+
+  dotenv@16.6.1: {}
 
   dset@3.1.4: {}
 
@@ -11701,7 +11718,7 @@ snapshots:
       gaxios: 5.1.3(encoding@0.1.13)
       gcp-metadata: 5.3.0(encoding@0.1.13)
       gtoken: 6.1.2(encoding@0.1.13)
-      jws: 4.0.0
+      jws: 4.0.1
       lru-cache: 6.0.0
     transitivePeerDependencies:
       - encoding
@@ -11772,7 +11789,7 @@ snapshots:
     dependencies:
       gaxios: 5.1.3(encoding@0.1.13)
       google-p12-pem: 4.0.1
-      jws: 4.0.0
+      jws: 4.0.1
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -12197,7 +12214,7 @@ snapshots:
       safe-buffer: 5.2.1
     optional: true
 
-  jws@4.0.0:
+  jws@4.0.1:
     dependencies:
       jwa: 2.0.1
       safe-buffer: 5.2.1
@@ -14551,10 +14568,6 @@ snapshots:
       yargs-parser: 21.1.1
 
   yocto-queue@0.1.0: {}
-
-  zod-to-json-schema@3.25.0(zod@3.25.76):
-    dependencies:
-      zod: 3.25.76
 
   zod-to-json-schema@3.25.1(zod@3.25.76):
     dependencies:

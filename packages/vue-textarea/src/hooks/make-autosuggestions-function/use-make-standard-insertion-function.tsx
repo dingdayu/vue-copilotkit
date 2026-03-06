@@ -1,41 +1,14 @@
 import { DocumentPointer, useCopilotContext } from '@dingdayu/vue-copilotkit-core'
-import { COPILOT_CLOUD_PUBLIC_API_KEY_HEADER, randomId } from '@copilotkit/shared'
-import {
-  CopilotRuntimeClient,
-  Message,
-  Role,
-  TextMessage,
-  convertGqlOutputToMessages,
-  convertMessagesToGqlInput,
-  CopilotRequestType
-} from '@copilotkit/runtime-client-gql'
+import { COPILOT_CLOUD_PUBLIC_API_KEY_HEADER } from '@copilotkit/shared'
+import { Message, Role, TextMessage } from '@copilotkit/runtime-client-gql'
 import { retry } from '../../lib/retry'
+import { runAgentTextStream } from '../../lib/run-agent'
 import {
   EditingEditorState,
   Generator_InsertionOrEditingSuggestion
 } from '../../types/base/autosuggestions-bare-function'
 import { InsertionsApiConfig } from '../../types/autosuggestions-config/insertions-api-config'
 import { EditingApiConfig } from '../../types/autosuggestions-config/editing-api-config'
-
-type StreamResponse = ReturnType<CopilotRuntimeClient['generateCopilotResponse']>
-
-function getAsStream(runtimeClient: CopilotRuntimeClient): CopilotRuntimeClient['asStream'] {
-  if (typeof runtimeClient.asStream === 'function') {
-    return runtimeClient.asStream.bind(runtimeClient)
-  }
-
-  const staticAsStream = (
-    CopilotRuntimeClient as unknown as {
-      asStream?: CopilotRuntimeClient['asStream']
-    }
-  ).asStream
-
-  if (typeof staticAsStream === 'function') {
-    return staticAsStream
-  }
-
-  throw new Error('CopilotRuntimeClient does not provide asStream in this runtime-client-gql version')
-}
 
 export function useMakeStandardInsertionOrEditingFunction(
   textareaPurpose: string,
@@ -47,47 +20,6 @@ export function useMakeStandardInsertionOrEditingFunction(
 
   const headers = {
     ...(copilotApiConfig.publicApiKey ? { [COPILOT_CLOUD_PUBLIC_API_KEY_HEADER]: copilotApiConfig.publicApiKey } : {})
-  }
-
-  const runtimeClient = new CopilotRuntimeClient({
-    url: copilotApiConfig.chatApiEndpoint,
-    publicApiKey: copilotApiConfig.publicApiKey,
-    headers,
-    credentials: copilotApiConfig.credentials
-  })
-
-  async function runtimeClientResponseToStringStream(responsePromise: StreamResponse) {
-    const messagesStream = await getAsStream(runtimeClient)(responsePromise)
-
-    return new ReadableStream({
-      async start(controller) {
-        const reader = messagesStream.getReader()
-        let sentContent = ''
-
-        while (true) {
-          const { done, value } = await reader.read()
-          if (done) {
-            break
-          }
-
-          const messages = convertGqlOutputToMessages(value.generateCopilotResponse.messages)
-
-          let newContent = ''
-
-          for (const message of messages) {
-            if (message instanceof TextMessage) {
-              newContent += message.content
-            }
-          }
-          if (newContent) {
-            const contentToSend = newContent.slice(sentContent.length)
-            controller.enqueue(contentToSend)
-            sentContent += contentToSend
-          }
-        }
-        controller.close()
-      }
-    })
   }
 
   async function insertionFunction(
@@ -117,21 +49,17 @@ export function useMakeStandardInsertionOrEditingFunction(
         })
       ]
 
-      return runtimeClientResponseToStringStream(
-        runtimeClient.generateCopilotResponse({
-          data: {
-            frontend: {
-              actions: []
-            },
-            messages: convertMessagesToGqlInput(messages),
-            metadata: {
-              requestType: CopilotRequestType.TextareaCompletion
-            }
-          },
-          properties: copilotApiConfig.properties,
-          signal: abortSignal
-        })
-      )
+      return runAgentTextStream({
+        url: copilotApiConfig.chatApiEndpoint,
+        headers: {
+          ...(copilotApiConfig.headers || {}),
+          ...headers
+        },
+        credentials: copilotApiConfig.credentials,
+        signal: abortSignal,
+        messages,
+        forwardedProps: copilotApiConfig.properties || {}
+      })
     })
 
     return res
@@ -168,21 +96,17 @@ export function useMakeStandardInsertionOrEditingFunction(
         })
       ]
 
-      return runtimeClientResponseToStringStream(
-        runtimeClient.generateCopilotResponse({
-          data: {
-            frontend: {
-              actions: []
-            },
-            messages: convertMessagesToGqlInput(messages),
-            metadata: {
-              requestType: CopilotRequestType.TextareaCompletion
-            }
-          },
-          properties: copilotApiConfig.properties,
-          signal: abortSignal
-        })
-      )
+      return runAgentTextStream({
+        url: copilotApiConfig.chatApiEndpoint,
+        headers: {
+          ...(copilotApiConfig.headers || {}),
+          ...headers
+        },
+        credentials: copilotApiConfig.credentials,
+        signal: abortSignal,
+        messages,
+        forwardedProps: copilotApiConfig.properties || {}
+      })
     })
 
     return res

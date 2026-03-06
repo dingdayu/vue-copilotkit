@@ -10,9 +10,11 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@copilotkit/runtime": "^1.53.0",
+    "@copilotkit/runtime": "1.53.0",
+    "@ai-sdk/openai-compatible": "^2.0.35",
     "@vitejs/plugin-vue": "^5.0.5",
     "@vitejs/plugin-vue-jsx": "^4.0.0",
+    "dotenv": "^16.6.1",
     "openai": "^4.55.5",
     "typescript": "^5.2.2",
     "unocss": "^0.62.4",
@@ -21,8 +23,8 @@
     "vite-plugin-pages": "^0.32.3"
   },
   "dependencies": {
-    "@copilotkit/runtime-client-gql": "^1.53.0",
-    "@copilotkit/shared": "^1.53.0",
+    "@copilotkit/runtime-client-gql": "1.53.0",
+    "@copilotkit/shared": "1.53.0",
     "@dingdayu/vue-copilotkit-core": "workspace:*",
     "@dingdayu/vue-textarea": "workspace:*",
     "@dingdayu/vue-copilotkit-ui": "workspace:*",

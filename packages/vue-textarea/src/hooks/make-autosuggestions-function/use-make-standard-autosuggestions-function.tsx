@@ -4,15 +4,8 @@ import { retry } from '../../lib/retry'
 import { AutosuggestionsBareFunction } from '../../types'
 import { InsertionEditorState } from '../../types/base/autosuggestions-bare-function'
 import { SuggestionsApiConfig } from '../../types/autosuggestions-config/suggestions-api-config'
-import {
-  CopilotRuntimeClient,
-  Message,
-  Role,
-  TextMessage,
-  convertGqlOutputToMessages,
-  convertMessagesToGqlInput,
-  CopilotRequestType
-} from '@copilotkit/runtime-client-gql'
+import { Message, Role, TextMessage } from '@copilotkit/runtime-client-gql'
+import { runAgentText } from '../../lib/run-agent'
 
 export function useMakeStandardAutosuggestionFunction(
   textareaPurpose: string,
@@ -49,45 +42,18 @@ export function useMakeStandardAutosuggestionFunction(
         })
       ]
 
-      const runtimeClient = new CopilotRuntimeClient({
+      return runAgentText({
         url,
-        publicApiKey,
         headers,
-        credentials
+        credentials,
+        signal: abortSignal,
+        messages,
+        forwardedProps: {
+          ...(properties || {}),
+          ...(maxTokens ? { maxOutputTokens: maxTokens } : {}),
+          ...(stop?.length ? { stopSequences: stop } : {})
+        }
       })
-
-      const response = await runtimeClient
-        .generateCopilotResponse({
-          data: {
-            frontend: {
-              actions: []
-            },
-            messages: convertMessagesToGqlInput(messages),
-            metadata: {
-              requestType: CopilotRequestType.TextareaCompletion
-            },
-            forwardedParameters: {
-              maxTokens,
-              stop
-            }
-          },
-          properties,
-          signal: abortSignal
-        })
-        .toPromise()
-
-      let result = ''
-      for (const message of convertGqlOutputToMessages(response.data?.generateCopilotResponse?.messages ?? [])) {
-        if (abortSignal.aborted) {
-          break
-        }
-        if (message instanceof TextMessage) {
-          result += message.content
-          console.log(message.content)
-        }
-      }
-
-      return result
     })
 
     return res
