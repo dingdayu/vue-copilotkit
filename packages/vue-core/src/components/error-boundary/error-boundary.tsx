@@ -1,4 +1,4 @@
-import { defineComponent, onErrorCaptured, ref } from 'vue'
+import { defineComponent, onErrorCaptured, ref, renderSlot } from 'vue'
 import { useToast } from '../toast/toast-provider'
 
 export const CopilotErrorBoundary = defineComponent({
@@ -26,7 +26,7 @@ export const CopilotErrorBoundary = defineComponent({
     })
 
     return () => {
-      return slots.default?.()
+      return renderSlot(slots, 'default')
     }
   }
 })

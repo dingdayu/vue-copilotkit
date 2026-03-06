@@ -24,6 +24,7 @@ import {
 
 import { CopilotApiConfig } from '../context'
 import { CopilotAgentSession } from '../context/copilot-context'
+import { HumanInTheLoopEvent } from '../context'
 
 export type UseChatOptions = {
   initialMessages?: Message[]
@@ -37,6 +38,7 @@ export type UseChatOptions = {
   makeSystemMessageCallback: () => TextMessage
   isLoading: Ref<boolean>
   setIsLoading: any
+  setHumanInTheLoopEvent?: (event: HumanInTheLoopEvent | null) => void
 }
 
 function buildRunInput(actions: Action[], threadId: string | null, messagesWithContext: Message[]) {
@@ -154,7 +156,8 @@ export function useChat(options: UseChatOptions) {
     getActions,
     body,
     getAgentSession,
-    onFunctionCall
+    onFunctionCall,
+    setHumanInTheLoopEvent
   } = options
 
   const abortControllerRef = ref<AbortController>()
@@ -237,6 +240,20 @@ export function useChat(options: UseChatOptions) {
           if (eventType === 'RunError') {
             const errorEvent = event as { message?: string }
             reject(new Error(errorEvent.message || 'Runtime returned RunError'))
+            return
+          }
+
+          if (eventType === 'MetaEvent') {
+            const metaEvent = event as { name?: string; value?: unknown }
+            if (
+              metaEvent.name === 'LangGraphInterruptEvent' ||
+              metaEvent.name === 'CopilotKitLangGraphInterruptEvent'
+            ) {
+              setHumanInTheLoopEvent?.({
+                name: metaEvent.name,
+                value: metaEvent.value
+              })
+            }
             return
           }
 

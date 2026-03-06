@@ -1,4 +1,4 @@
-import { defineComponent, ref, provide, inject, PropType, TransitionGroup } from 'vue'
+import { defineComponent, ref, provide, inject, PropType, TransitionGroup, renderSlot } from 'vue'
 import { ExclamationMarkIcon } from './exclamation-mark-icon'
 
 export interface Toast {
@@ -49,7 +49,7 @@ export const ToastProvider = defineComponent({
 
     return () => (
       <>
-        {slots.default?.()}
+        {renderSlot(slots, 'default')}
         <div
           style={{
             position: 'fixed',

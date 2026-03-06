@@ -22,9 +22,7 @@
     "lib": ["ESNext", "DOM", "DOM.Iterable", "ScriptHost"],
     "paths": {
       "@dingdayu/vue-copilotkit-core": ["packages/vue-core/src/index.ts"],
-      "@dingdayu/vue-copilotkit-ui": ["packages/vue-ui/src/index.ts"],
-      "@dingdayu/vue-textarea": ["packages/vue-textarea/src/index.ts"],
-      "@dingdayu/vue-copilotkit-vite-config": ["packages/vite-config/src/index.ts"]
+      "@dingdayu/vue-copilotkit-ui": ["packages/vue-ui/src/index.ts"]
     }
   }
 }

@@ -1,3 +1,8 @@
+export interface CopilotSuggestionItem {
+  title: string
+  message: string
+}
+
 export interface CopilotChatSuggestionConfiguration {
   /**
    * A prompt or instructions for the GPT to generate suggestions.
@@ -15,6 +20,12 @@ export interface CopilotChatSuggestionConfiguration {
    * @default 1
    */
   maxSuggestions?: number
+
+  /**
+   * Explicit suggestion items to show in chat UI.
+   * When provided, these items are prioritized over generic defaults.
+   */
+  suggestions?: CopilotSuggestionItem[]
 
   /**
    * An optional class name to apply to the suggestions.

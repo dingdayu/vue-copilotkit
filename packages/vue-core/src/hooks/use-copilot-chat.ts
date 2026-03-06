@@ -55,6 +55,7 @@ export function useCopilotChat({ makeSystemMessage, ...options }: UseCopilotChat
     setMessages,
     isLoading,
     setIsLoading,
+    setHumanInTheLoopEvent,
     chatInstructions,
     actions,
     agentSession
@@ -87,7 +88,8 @@ export function useCopilotChat({ makeSystemMessage, ...options }: UseCopilotChat
     setMessages,
     makeSystemMessageCallback,
     isLoading,
-    setIsLoading
+    setIsLoading,
+    setHumanInTheLoopEvent
   })
 
   return {

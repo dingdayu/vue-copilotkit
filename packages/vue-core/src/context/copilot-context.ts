@@ -123,6 +123,9 @@ export interface CopilotContextParams {
   chatInstructions: Ref<string>
   setChatInstructions: any
 
+  humanInTheLoopEvent: Ref<HumanInTheLoopEvent | null>
+  setHumanInTheLoopEvent: (event: HumanInTheLoopEvent | null) => void
+
   // api endpoints
   copilotApiConfig: CopilotApiConfig
 
@@ -130,6 +133,11 @@ export interface CopilotContextParams {
 
   usageError: Ref<CopilotKitError | null>
   setUsageError: (error: CopilotKitError | null) => void
+}
+
+export interface HumanInTheLoopEvent {
+  name: string
+  value: unknown
 }
 
 export const CopilotKitContext = Symbol('CopilotKitContext')

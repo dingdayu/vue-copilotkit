@@ -111,6 +111,7 @@ export const CopilotKit = defineComponent({
     const isLoading = ref(false)
     const chatInstructions = ref('')
     const chatSuggestionConfiguration = ref<Record<string, CopilotChatSuggestionConfiguration>>({})
+    const humanInTheLoopEvent = ref<CopilotContextParams['humanInTheLoopEvent']['value']>(null)
 
     const setMessages = (value: Message[]) => {
       messages.value = value
@@ -120,6 +121,9 @@ export const CopilotKit = defineComponent({
     }
     const setChatInstructions = (value: string) => {
       chatInstructions.value = value
+    }
+    const setHumanInTheLoopEvent = (value: CopilotContextParams['humanInTheLoopEvent']['value']) => {
+      humanInTheLoopEvent.value = value
     }
 
     const usageError = ref<CopilotKitError | null>(null)
@@ -248,6 +252,8 @@ export const CopilotKit = defineComponent({
       removeChatSuggestionConfiguration,
       chatInstructions,
       setChatInstructions,
+      humanInTheLoopEvent,
+      setHumanInTheLoopEvent,
       showDevConsole: props.showDevConsole || 'auto',
       usageError,
       setUsageError

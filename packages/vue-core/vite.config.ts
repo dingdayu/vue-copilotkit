@@ -1,13 +1,21 @@
-import type { UserConfig } from 'vite'
-import { defineConfig } from '@dingdayu/vue-copilotkit-vite-config'
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import vueJsx from '@vitejs/plugin-vue-jsx'
+import dts from 'vite-plugin-dts'
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
 
-// https://vitejs.dev/config/
-const config: UserConfig = defineConfig({
+export default defineConfig({
+  plugins: [vue(), vueJsx(), dts({ rollupTypes: true }), nodePolyfills()],
   build: {
+    lib: {
+      entry: 'src/index.ts',
+      formats: ['es', 'cjs'],
+      fileName: 'index'
+    },
+    minify: false,
+    cssMinify: false,
     rollupOptions: {
       external: ['vue', '@copilotkit/runtime-client-gql', '@copilotkit/shared']
     }
   }
 })
-
-export default config

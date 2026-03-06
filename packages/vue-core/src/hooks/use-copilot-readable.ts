@@ -1,4 +1,4 @@
-import { onUnmounted, ref, watch } from 'vue'
+import { onUnmounted, ref, unref, watch } from 'vue'
 import { useCopilotContext } from '../context'
 
 /**
@@ -40,16 +40,14 @@ export function useCopilotReadable({ description, value, parentId, categories, c
 
   convert = convert || convertToJSON
 
-  const information = convert(description, value)
-
   watch(
-    () => [description, value, parentId, categories],
+    () => [description, unref(value), parentId, categories],
     (_next, _prev, onInvalidate) => {
       if (idRef.value) {
         removeContext(idRef.value)
       }
 
-      const nextInformation = convert(description, value)
+      const nextInformation = convert(description, unref(value))
       idRef.value = addContext(nextInformation, parentId, categories)
 
       onInvalidate(() => {

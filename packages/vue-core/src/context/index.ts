@@ -5,5 +5,6 @@ export type {
   InChatRenderFunction,
   DefaultToolRenderFunction,
   DefaultToolRendererPayload,
-  CopilotAgentSession
+  CopilotAgentSession,
+  HumanInTheLoopEvent
 } from './copilot-context'
