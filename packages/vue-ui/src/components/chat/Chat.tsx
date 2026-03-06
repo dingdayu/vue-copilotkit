@@ -1,10 +1,10 @@
-import { defineComponent,PropType, ref, watch } from "vue";
-import { SystemMessageFunction, useCopilotChat, useCopilotContext } from "@dingdayu/vue-copilotkit-core";
-import { randomId } from "@copilotkit/shared";
-import { Message, Role, TextMessage } from "@copilotkit/runtime-client-gql";
-import { CopilotChatSuggestion } from "../../types/suggestions";
-import { reloadSuggestions } from "./Suggestion";
-import { useChatContext, ChatContextProvider, CopilotChatLabels } from "./ChatContext";
+import { defineComponent, PropType, ref, watch } from 'vue'
+import { SystemMessageFunction, useCopilotChat, useCopilotContext } from '@dingdayu/vue-copilotkit-core'
+import { randomId } from '@copilotkit/shared'
+import { Message, Role, TextMessage } from '@copilotkit/runtime-client-gql'
+import { CopilotChatSuggestion } from '../../types/suggestions'
+import { reloadSuggestions } from './Suggestion'
+import { useChatContext, ChatContextProvider, CopilotChatLabels } from './ChatContext'
 
 export const CopilotChat = defineComponent({
   props: {
@@ -14,7 +14,7 @@ export const CopilotChat = defineComponent({
     },
     onSubmitMessage: {
       type: Function as PropType<(messageContent: string) => void>,
-      default: () => { }
+      default: () => {}
     },
     makeSystemMessage: {
       type: Function as PropType<SystemMessageFunction>,
@@ -26,7 +26,7 @@ export const CopilotChat = defineComponent({
     },
     onInProgress: {
       type: Function as PropType<(isLoading: boolean) => void>,
-      default: () => { }
+      default: () => {}
     },
     className: {
       type: String,
@@ -38,22 +38,20 @@ export const CopilotChat = defineComponent({
     }
   },
   setup(props, { slots }) {
-    const context = useCopilotContext();
-    watch(() => props.instructions, (instructions) => {
-      // context.setMakeSystemMessage?.(instructions || "")
-    }, { immediate: true })
+    const context = useCopilotContext()
+    watch(
+      () => props.instructions,
+      instructions => {
+        // context.setMakeSystemMessage?.(instructions || "")
+      },
+      { immediate: true }
+    )
 
-    const {
-      visibleMessages,
-      isLoading,
-      currentSuggestions,
-      sendMessage,
-      stopGeneration,
-      reloadMessages,
-    } = useCopilotChatLogic(props.makeSystemMessage, props.onInProgress, props.onSubmitMessage);
+    const { visibleMessages, isLoading, currentSuggestions, sendMessage, stopGeneration, reloadMessages } =
+      useCopilotChatLogic(props.makeSystemMessage, props.onInProgress, props.onSubmitMessage)
 
-    const chatContext = useChatContext();
-    const isVisible = chatContext ? chatContext.open : true;
+    const chatContext = useChatContext()
+    const isVisible = chatContext ? chatContext.open : true
     return () => {
       return (
         <WrappedCopilotChat labels={props.labels} className={props.className}>
@@ -69,7 +67,24 @@ export const CopilotChat = defineComponent({
           {/* <Messages messages={visibleMessages.value} inProgress={isLoading.value} >
               {props.showResponseButton && visibleMessages.value.length > 0 && <ResponseButton inProgress={isLoading.value} hClick={isLoading.value ? stopGeneration : reloadMessages} />}
             </Messages> */}
-          {slots.messages && slots.messages({ messages: visibleMessages.value, inProgress: isLoading.value, children: { default: () => <>{props.showResponseButton && visibleMessages.value.length > 0 && (slots.responseButton && slots.responseButton({ inProgress: isLoading.value, hClick: isLoading.value ? stopGeneration : reloadMessages }))}</> } })}
+          {slots.messages &&
+            slots.messages({
+              messages: visibleMessages.value,
+              inProgress: isLoading.value,
+              children: {
+                default: () => (
+                  <>
+                    {props.showResponseButton &&
+                      visibleMessages.value.length > 0 &&
+                      slots.responseButton &&
+                      slots.responseButton({
+                        inProgress: isLoading.value,
+                        hClick: isLoading.value ? stopGeneration : reloadMessages
+                      })}
+                  </>
+                )
+              }
+            })}
           {slots.input && slots.input({ send: sendMessage, inProgress: isLoading.value, isVisible: isVisible })}
           {/* {slots.input ? slots.input({ send:sendMessage, inProgress: isLoading.value, isVisible: isVisible }) : <DefaultInput inProgress={isLoading.value} send={sendMessage} isVisible={isVisible} />} */}
         </WrappedCopilotChat>
@@ -81,102 +96,106 @@ export const CopilotChat = defineComponent({
     }
   }
 })
-export function WrappedCopilotChat({
-  labels,
-  className,
-}: {
-  labels?: CopilotChatLabels;
-  className?: string;
-}, { slots }: any) {
-  const chatContext = useChatContext();
+export function WrappedCopilotChat(
+  {
+    labels,
+    className
+  }: {
+    labels?: CopilotChatLabels
+    className?: string
+  },
+  { slots }: any
+) {
+  const chatContext = useChatContext()
   if (!chatContext) {
     return (
-      <ChatContextProvider labels={labels} open={true} setOpen={() => { }}>
+      <ChatContextProvider labels={labels} open={true} setOpen={() => {}}>
         <div class={`copilotKitChat ${className}`}>{slots.default?.()}</div>
       </ChatContextProvider>
-    );
+    )
   }
-  return <>{slots.default?.()}</>;
+  return <>{slots.default?.()}</>
 }
 
-const SUGGESTIONS_DEBOUNCE_TIMEOUT = 1000;
+const SUGGESTIONS_DEBOUNCE_TIMEOUT = 1000
 
 export const useCopilotChatLogic = (
   makeSystemMessage?: SystemMessageFunction,
   onInProgress?: (isLoading: boolean) => void,
-  onSubmitMessage?: (messageContent: string) => void,
+  onSubmitMessage?: (messageContent: string) => void
 ) => {
-  const { visibleMessages, appendMessage, reloadMessages, stopGeneration, isLoading } =
-    useCopilotChat({
-      id: randomId(),
-      makeSystemMessage,
-    });
+  const { visibleMessages, appendMessage, reloadMessages, stopGeneration, isLoading } = useCopilotChat({
+    id: randomId(),
+    makeSystemMessage
+  })
   const currentSuggestions = ref<CopilotChatSuggestion[]>([])
   const setCurrentSuggestions = (value: CopilotChatSuggestion[]) => {
     currentSuggestions.value = value
   }
-  const suggestionsAbortControllerRef = ref<AbortController | null>(null);
-  const debounceTimerRef = ref<any>();
+  const suggestionsAbortControllerRef = ref<AbortController | null>(null)
+  const debounceTimerRef = ref<any>()
 
   const abortSuggestions = () => {
-    suggestionsAbortControllerRef.value?.abort();
-    suggestionsAbortControllerRef.value = null;
-  };
+    suggestionsAbortControllerRef.value?.abort()
+    suggestionsAbortControllerRef.value = null
+  }
 
-  const context = useCopilotContext();
+  const context = useCopilotContext()
   watch(
-    () => [isLoading, context.chatSuggestionConfiguration],
-    () => {
-      onInProgress?.(isLoading.value);
+    () => [isLoading.value, context.chatSuggestionConfiguration.value],
+    (_value, _prevValue, onInvalidate) => {
+      onInProgress?.(isLoading.value)
 
-      abortSuggestions();
-      debounceTimerRef.value = setTimeout(
+      abortSuggestions()
+
+      const timeout = setTimeout(
         () => {
-          if (!isLoading && Object.keys(context.chatSuggestionConfiguration).length !== 0) {
-            suggestionsAbortControllerRef.value = new AbortController();
+          if (!isLoading.value && Object.keys(context.chatSuggestionConfiguration.value).length !== 0) {
+            suggestionsAbortControllerRef.value = new AbortController()
             reloadSuggestions?.(
               context,
-              context.chatSuggestionConfiguration,
+              context.chatSuggestionConfiguration.value,
               setCurrentSuggestions,
-              suggestionsAbortControllerRef,
-            );
+              suggestionsAbortControllerRef
+            )
           }
         },
-        currentSuggestions.value.length == 0 ? 0 : SUGGESTIONS_DEBOUNCE_TIMEOUT,
-      );
+        currentSuggestions.value.length === 0 ? 0 : SUGGESTIONS_DEBOUNCE_TIMEOUT
+      )
+      debounceTimerRef.value = timeout
 
-      return () => {
-        clearTimeout(debounceTimerRef.value);
-      };
+      onInvalidate(() => {
+        clearTimeout(timeout)
+      })
     },
     {
       immediate: true,
-      deep: true,
+      deep: true
     }
   )
 
   const sendMessage = async (messageContent: string) => {
-    abortSuggestions();
-    setCurrentSuggestions([]);
+    abortSuggestions()
+    setCurrentSuggestions([])
 
     const message: Message = new TextMessage({
       content: messageContent,
-      role: Role.User,
-    });
+      role: Role.User
+    })
 
     // Append the message immediately to make it visible
-    appendMessage(message);
+    appendMessage(message)
 
     if (onSubmitMessage) {
       try {
-        await onSubmitMessage(messageContent);
+        await onSubmitMessage(messageContent)
       } catch (error) {
-        console.error("Error in onSubmitMessage:", error);
+        console.error('Error in onSubmitMessage:', error)
       }
     }
 
-    return message;
-  };
+    return message
+  }
 
   return {
     visibleMessages,
@@ -184,6 +203,6 @@ export const useCopilotChatLogic = (
     currentSuggestions,
     sendMessage,
     stopGeneration,
-    reloadMessages,
-  };
-};
+    reloadMessages
+  }
+}

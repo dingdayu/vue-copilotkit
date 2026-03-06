@@ -8,15 +8,16 @@
   "scripts": {
     "dev": "pnpm run -F examples dev",
     "build": "turbo build",
-    "clean": "lerna clean"
+    "clean": "lerna clean",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
     "vue": "^3.4.31"
   },
   "devDependencies": {
     "@types/node": "^18.11.17",
-    "@copilotkit/runtime": "^1.1.1",
-    "openai": "^4.55.5",
     "fs-extra": "^11.2.0",
     "glob": "^11.0.0",
     "lerna": "^8.1.8",

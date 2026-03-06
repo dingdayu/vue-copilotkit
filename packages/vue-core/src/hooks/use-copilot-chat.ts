@@ -1,4 +1,6 @@
+import { computed } from 'vue'
 import { Message, Role, TextMessage } from '@copilotkit/runtime-client-gql'
+import { Action } from '@copilotkit/shared'
 
 import { useCopilotContext } from '../context/copilot-context'
 
@@ -73,16 +75,16 @@ export function useCopilotChat({ makeSystemMessage, ...options }: UseCopilotChat
     })
   }
 
+  const actionList = computed(() => Object.values(actions.value) as Action[])
+
   const { append, reload, stop } = useChat({
     ...options,
-    // @ts-ignore
-    actions: Object.values(actions.value),
+    actions: actionList.value,
     copilotConfig: copilotApiConfig,
     initialMessages: options.initialMessages || [],
     onFunctionCall: getFunctionCallHandler(),
     messages,
     setMessages,
-    // @ts-ignore
     makeSystemMessageCallback,
     isLoading,
     setIsLoading

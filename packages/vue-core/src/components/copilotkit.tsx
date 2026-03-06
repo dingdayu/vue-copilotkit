@@ -108,7 +108,7 @@ export const CopilotKit = defineComponent({
     const messages = ref<Message[]>([])
     const isLoading = ref(false)
     const chatInstructions = ref('')
-    const chatSuggestionConfiguration = ref({})
+    const chatSuggestionConfiguration = ref<Record<string, CopilotChatSuggestionConfiguration>>({})
 
     const setMessages = (value: Message[]) => {
       messages.value = value
@@ -157,15 +157,25 @@ export const CopilotKit = defineComponent({
       return entryPointsToFunctionCallHandler(Object.values(customEntryPoints || actions.value))
     }
 
-    const getDocumentsContext = (categories: string[]) => returnAndThrowInDebug([])
+    const getDocumentsContext = (categories: string[]) => allDocuments(categories)
     const addDocumentContext = (
       documentPointer: DocumentPointer,
       categories: string[] = defaultCopilotContextCategories
-    ) => returnAndThrowInDebug('')
-    const removeDocumentContext = (documentId: string) => { }
+    ) => addDocument(documentPointer, categories)
+    const removeDocumentContext = (documentId: string) => {
+      removeDocument(documentId)
+    }
 
-    const addChatSuggestionConfiguration = (id: string, suggestion: CopilotChatSuggestionConfiguration) => { }
-    const removeChatSuggestionConfiguration = (id: string) => { }
+    const addChatSuggestionConfiguration = (id: string, suggestion: CopilotChatSuggestionConfiguration) => {
+      chatSuggestionConfiguration.value = {
+        ...chatSuggestionConfiguration.value,
+        [id]: suggestion
+      }
+    }
+    const removeChatSuggestionConfiguration = (id: string) => {
+      const { [id]: _removed, ...rest } = chatSuggestionConfiguration.value
+      chatSuggestionConfiguration.value = rest
+    }
 
     if (!props.publicApiKey) {
       if (props.cloudRestrictToTopic) {

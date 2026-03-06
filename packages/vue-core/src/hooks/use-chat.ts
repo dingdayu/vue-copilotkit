@@ -82,9 +82,10 @@ async function handleActionExecution(
   responseStatus: any
 ): Promise<Message[]> {
   const newMessages: Message[] = []
+  const messageScope = 'scope' in message ? (message as { scope?: string | null }).scope : null
   if (
     message.status.code !== MessageStatusCode.Pending &&
-    (message.scope === 'client' || message.scope === null) &&
+    (messageScope === 'client' || messageScope === null) &&
     onFunctionCall
   ) {
     if (!(message.id in results)) {
@@ -129,16 +130,19 @@ export function useChat(options: UseChatOptions) {
     ...(publicApiKey ? { [COPILOT_CLOUD_PUBLIC_API_KEY_HEADER]: publicApiKey } : {})
   }
 
-  const runtimeClient = new CopilotRuntimeClient({
-    url: copilotConfig.chatApiEndpoint,
-    publicApiKey: copilotConfig.publicApiKey,
-    headers,
-    credentials: copilotConfig.credentials
-  })
-
-  const runChatCompletion = async (previousMessages: Message[]) => {
-    setIsLoading(true)
-
+  const runtimeClientRef = ref<CopilotRuntimeClient | null>(null)
+  const getRuntimeClient = () => {
+    if (!runtimeClientRef.value) {
+      runtimeClientRef.value = new CopilotRuntimeClient({
+        url: copilotConfig.chatApiEndpoint,
+        publicApiKey: copilotConfig.publicApiKey,
+        headers,
+        credentials: copilotConfig.credentials
+      })
+    }
+    return runtimeClientRef.value
+  }
+  const runChatCompletionOnce = async (previousMessages: Message[]) => {
     let newMessages: Message[] = [new TextMessage({ content: '', role: Role.Assistant })]
     const abortController = new AbortController()
     abortControllerRef.value = abortController
@@ -155,6 +159,7 @@ export function useChat(options: UseChatOptions) {
       messagesWithContext
     )
 
+    const runtimeClient = getRuntimeClient()
     const stream = runtimeClient.asStream(
       runtimeClient.generateCopilotResponse({
         data: requestData,
@@ -167,60 +172,67 @@ export function useChat(options: UseChatOptions) {
     const reader = stream.getReader()
     let results: { [id: string]: string } = {}
 
-    try {
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
-        if (!value?.generateCopilotResponse) continue
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
+      if (!value?.generateCopilotResponse) continue
 
-        threadIdRef.value = value.generateCopilotResponse.threadId || null
-        runIdRef.value = value.generateCopilotResponse.runId || null
+      threadIdRef.value = value.generateCopilotResponse.threadId || null
+      runIdRef.value = value.generateCopilotResponse.runId || null
 
-        const messages = convertGqlOutputToMessages(value.generateCopilotResponse.messages)
-        if (messages.length === 0) continue
+      const messages = convertGqlOutputToMessages(value.generateCopilotResponse.messages)
+      if (messages.length === 0) continue
 
-        newMessages = []
+      newMessages = []
 
-        if (
-          value.generateCopilotResponse.status?.__typename === 'FailedResponseStatus' &&
-          value.generateCopilotResponse.status.reason === 'GUARDRAILS_VALIDATION_FAILED'
-        ) {
-          newMessages = [
-            new TextMessage({
-              role: MessageRole.Assistant,
-              content: value.generateCopilotResponse.status.details?.guardrailsReason || ''
-            })
-          ]
-        } else {
-          for (const message of messages) {
-            newMessages.push(message)
-            if (message instanceof ActionExecutionMessage && onFunctionCall) {
-              const actionResults = await handleActionExecution(
-                message,
-                results,
-                previousMessages,
-                onFunctionCall,
-                guardrailsEnabled,
-                value.generateCopilotResponse.status
-              )
-              newMessages.push(...actionResults)
-            }
+      if (
+        value.generateCopilotResponse.status?.__typename === 'FailedResponseStatus' &&
+        value.generateCopilotResponse.status.reason === 'GUARDRAILS_VALIDATION_FAILED'
+      ) {
+        newMessages = [
+          new TextMessage({
+            role: MessageRole.Assistant,
+            content: value.generateCopilotResponse.status.details?.guardrailsReason || ''
+          })
+        ]
+      } else {
+        for (const message of messages) {
+          newMessages.push(message)
+          if (message instanceof ActionExecutionMessage && onFunctionCall) {
+            const actionResults = await handleActionExecution(
+              message,
+              results,
+              previousMessages,
+              onFunctionCall,
+              guardrailsEnabled,
+              value.generateCopilotResponse.status
+            )
+            newMessages.push(...actionResults)
           }
-        }
-
-        if (newMessages.length > 0) {
-          setMessages([...previousMessages, ...newMessages])
         }
       }
 
-      if (
-        Object.values(results).length ||
-        (newMessages.length && newMessages[newMessages.length - 1] instanceof ResultMessage)
-      ) {
+      if (newMessages.length > 0) {
+        setMessages([...previousMessages, ...newMessages])
+      }
+    }
+
+    const needsFollowup =
+      Object.values(results).length ||
+      (newMessages.length && newMessages[newMessages.length - 1] instanceof ResultMessage)
+
+    return { newMessages: newMessages.slice(), needsFollowup }
+  }
+
+  const runChatCompletion = async (previousMessages: Message[]) => {
+    setIsLoading(true)
+    try {
+      let currentMessages = previousMessages
+      while (true) {
+        const { newMessages, needsFollowup } = await runChatCompletionOnce(currentMessages)
+        if (!needsFollowup) return newMessages
         await new Promise(resolve => setTimeout(resolve, 10))
-        return await runChatCompletion([...previousMessages, ...newMessages])
-      } else {
-        return newMessages.slice()
+        currentMessages = [...currentMessages, ...newMessages]
       }
     } finally {
       setIsLoading(false)

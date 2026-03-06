@@ -1,71 +1,72 @@
-import { defineComponent, ref, watch } from "vue";
-import { InputProps } from "./props";
-import { ActivityIcon, SendIcon, PushToTalkIcon } from "./Icon";
-import { AutoResizingTextarea } from "./Textarea";
-import { Message } from "@copilotkit/runtime-client-gql";
-
+import { defineComponent, ref, watch } from 'vue'
+import { InputProps } from './props'
+import { ActivityIcon, SendIcon, PushToTalkIcon } from './Icon'
+import { AutoResizingTextarea } from './Textarea'
+import { Message } from '@copilotkit/runtime-client-gql'
 
 export const Input = defineComponent({
   props: {
     inProgress: {
       type: Boolean,
-      required: true,
+      required: true
     },
     send: {
       type: Function,
-      default: (text: string) => Promise<Message>
+      default: async (_text: string) => ({}) as Message
     },
     isVisible: {
       type: Boolean,
-      required: true,
+      required: true
     }
   },
-  setup: (_p,) => {
+  setup: _p => {
     const textareaRef = ref<any | null>(null)
 
     const handleDivClick = (event: MouseEvent) => {
       // Check if the clicked element is not the textarea itself
-      if (event.target !== event.currentTarget) return;
-      textareaRef.value?.$el?.focus();
-    };
-    const text = ref('')
-    const hsend = () => {
-      if (_p.inProgress) return;
-      _p.send(text.value);
-      text.value = '';
-      textareaRef.value?.$el?.focus();
+      if (event.target !== event.currentTarget) return
+      textareaRef.value?.$el?.focus()
     }
-    watch(() => _p.isVisible, () => {
-      textareaRef.value?.$el?.focus();
-    })
+    const text = ref('')
+    const hsend = async () => {
+      if (_p.inProgress) return
+      const content = text.value.trim()
+      if (!content) return
+      await _p.send(content)
+      text.value = ''
+      textareaRef.value?.$el?.focus()
+    }
+    watch(
+      () => _p.isVisible,
+      () => {
+        textareaRef.value?.$el?.focus()
+      }
+    )
 
     const sendIcon = SendIcon
     const showPushToTalk = false
     const sendDisabled = _p.inProgress
 
-
     return () => (
       <div class="copilotKitInput" onClick={handleDivClick}>
         <AutoResizingTextarea
-          ref={e => textareaRef.value = e}
+          ref={e => (textareaRef.value = e)}
           placeholder="Type a message..."
           autoFocus={true}
           maxRows={5}
           value={text.value}
-          onChange={e => text.value = e.target.value}
+          onChange={e => (text.value = e.target.value)}
           onKeyDown={e => {
+            if (e.isComposing) return
             if (e.key === 'Enter' && !e.shiftKey) {
-              e.preventDefault();
-              hsend();
+              e.preventDefault()
+              hsend()
             }
           }}
         />
         <div class="copilotKitInputControls">
           {showPushToTalk && (
-            <button
-              onClick={() => { }}
-              class="copilotKitPushToTalkRecording"
-            >
+            <button onClick={() => {}} class="copilotKitPushToTalkRecording">
               <PushToTalkIcon />
             </button>
           )}

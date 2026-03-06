@@ -9,8 +9,10 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@copilotkit/runtime": "^1.1.1",
     "@vitejs/plugin-vue": "^5.0.5",
     "@vitejs/plugin-vue-jsx": "^4.0.0",
+    "openai": "^4.55.5",
     "typescript": "^5.2.2",
     "unocss": "^0.62.4",
     "vite": "^5.3.4",
