@@ -7,7 +7,6 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { resolve } from 'path'
 import fs from 'fs-extra'
 import { glob } from 'glob'
-import UnoCSS from 'unocss/vite'
 
 function getWorkspaceAlias() {
   const basePath = resolve(__dirname, '../')
@@ -36,10 +35,9 @@ export default defineConfig({
     vue(),
     vueJsx(),
     Pages({
-      extensions: ['vue', 'tsx']
+      extensions: ['vue']
     }),
-    nodePolyfills(),
-    UnoCSS()
+    nodePolyfills()
   ],
   resolve: {
     alias: {
