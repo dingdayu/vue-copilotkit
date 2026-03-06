@@ -1,4 +1,3 @@
-import { computed } from 'vue'
 import { Message, Role, TextMessage } from '@copilotkit/runtime-client-gql'
 import { Action } from '@copilotkit/shared'
 
@@ -35,7 +34,7 @@ export interface UseCopilotChatOptions {
    * })
    * ```
    */
-  body?: object
+  body?: Record<string, unknown>
   /**
    * System messages of the chat. Defaults to an empty array.
    */
@@ -57,7 +56,8 @@ export function useCopilotChat({ makeSystemMessage, ...options }: UseCopilotChat
     isLoading,
     setIsLoading,
     chatInstructions,
-    actions
+    actions,
+    agentSession
   } = useCopilotContext()
 
   const deleteMessage = (messageId: string) => {
@@ -75,12 +75,12 @@ export function useCopilotChat({ makeSystemMessage, ...options }: UseCopilotChat
     })
   }
 
-  const actionList = computed(() => Object.values(actions.value) as Action[])
-
   const { append, reload, stop } = useChat({
     ...options,
-    actions: actionList.value,
+    getActions: () => Object.values(actions.value).map(action => ({ ...action }) as Action),
     copilotConfig: copilotApiConfig,
+    body: options.body || {},
+    getAgentSession: () => agentSession.value,
     initialMessages: options.initialMessages || [],
     onFunctionCall: getFunctionCallHandler(),
     messages,

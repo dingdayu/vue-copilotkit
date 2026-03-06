@@ -2,7 +2,7 @@
   <div class="todo-item">
     <el-checkbox :model-value="todo.isCompleted" @change="toggleComplete(todo.id)">
       <span class="todo_task">Task{{ todo.sort }}</span>
-      <span :class="{ 'completed': todo.isCompleted }" class="todo_text">{{ todo.text }}</span>
+      <span :class="{ completed: todo.isCompleted }" class="todo_text">{{ todo.text }}</span>
     </el-checkbox>
     <svg
       class="delete-icon"

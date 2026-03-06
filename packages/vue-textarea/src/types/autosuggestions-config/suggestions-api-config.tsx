@@ -1,17 +1,14 @@
-import { Message, Role, TextMessage } from "@copilotkit/runtime-client-gql";
-import { MakeSystemPrompt } from "./subtypes/make-system-prompt";
+import { Message, Role, TextMessage } from '@copilotkit/runtime-client-gql'
+import { MakeSystemPrompt } from './subtypes/make-system-prompt'
 
 export interface SuggestionsApiConfig {
-  makeSystemPrompt: MakeSystemPrompt;
-  fewShotMessages: Message[];
-  maxTokens?: number;
-  stop?: string[];
+  makeSystemPrompt: MakeSystemPrompt
+  fewShotMessages: Message[]
+  maxTokens?: number
+  stop?: string[]
 }
 
-export const defaultSuggestionsMakeSystemPrompt: MakeSystemPrompt = (
-  textareaPurpose,
-  contextString,
-) => {
+export const defaultSuggestionsMakeSystemPrompt: MakeSystemPrompt = (textareaPurpose, contextString) => {
   return `You are a versatile writing assistant.
   
 The user is writing some text.
@@ -33,42 +30,40 @@ The following external context is also provided. Use it to help you make better 
 \`\`\`
 ${contextString}
 \`\`\`
-`;
-};
+`
+}
 
 export const defaultSuggestionsFewShotMessages: Message[] = [
   new TextMessage({
     role: Role.User,
-    content:
-      "<TextAfterCursor>While I was there I also picked up some apples, oranges, and bananas.</TextAfterCursor>",
+    content: '<TextAfterCursor>While I was there I also picked up some apples, oranges, and bananas.</TextAfterCursor>'
   }),
   new TextMessage({
     role: Role.User,
-    content: "This morning I woke up and went straight to the grocery store.",
+    content: 'This morning I woke up and went straight to the grocery store.'
+  }),
+  new TextMessage({
+    role: Role.Assistant,
+    content: ' When I arrived I went straight to the produce section and picked out a big watermelon. '
+  }),
+  new TextMessage({
+    role: Role.User,
+    content:
+      "<TextAfterCursor>and (iii) to the appointment of the Equityholders' Representative pursuant to Section 10.7 of the Merger Agreement and to the provisions thereof.</TextAfterCursor>"
+  }),
+  new TextMessage({
+    role: Role.User,
+    content:
+      '<TextBeforeCursor>The Optionholder, in the Optionholder\'s capacity as a holder of vested Options, hereby irrevocably and unconditionally agrees: (i) that the Optionholder shall be deemed an "Equityholder" under the Merger Agreement and shall be entitled to the rights and benefits, and subject to the obligations, of an "Equityholder" thereunder;</TextBeforeCursor>'
   }),
   new TextMessage({
     role: Role.Assistant,
     content:
-      " When I arrived I went straight to the produce section and picked out a big watermelon. ",
-  }),
-  new TextMessage({
-    role: Role.User,
-    content:
-      "<TextAfterCursor>and (iii) to the appointment of the Equityholders' Representative pursuant to Section 10.7 of the Merger Agreement and to the provisions thereof.</TextAfterCursor>",
-  }),
-  new TextMessage({
-    role: Role.User,
-    content:
-      '<TextBeforeCursor>The Optionholder, in the Optionholder\'s capacity as a holder of vested Options, hereby irrevocably and unconditionally agrees: (i) that the Optionholder shall be deemed an "Equityholder" under the Merger Agreement and shall be entitled to the rights and benefits, and subject to the obligations, of an "Equityholder" thereunder;</TextBeforeCursor>',
-  }),
-  new TextMessage({
-    role: Role.Assistant,
-    content:
-      ' (ii) that, for purposes of this Agreement and the Merger Agreement, the applicable percentage set forth opposite the name of the Optionholder in the Distribution Waterfall shall be such the Optionholder\'s "Pro Rata Share"; ',
-  }),
-];
+      ' (ii) that, for purposes of this Agreement and the Merger Agreement, the applicable percentage set forth opposite the name of the Optionholder in the Distribution Waterfall shall be such the Optionholder\'s "Pro Rata Share"; '
+  })
+]
 
 export const defaultSuggestionsApiConfig: SuggestionsApiConfig = {
   makeSystemPrompt: defaultSuggestionsMakeSystemPrompt,
-  fewShotMessages: defaultSuggestionsFewShotMessages,
-};
+  fewShotMessages: defaultSuggestionsFewShotMessages
+}

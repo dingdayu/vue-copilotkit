@@ -1,4 +1,4 @@
-import { ref, onMounted, onUnmounted, watchEffect, watch } from 'vue'
+import { onUnmounted, ref, watch } from 'vue'
 import { useCopilotContext } from '../context'
 
 /**
@@ -42,20 +42,32 @@ export function useCopilotReadable({ description, value, parentId, categories, c
 
   const information = convert(description, value)
 
-  // watchEffect(() => {
-  //   const id = addContext(information, parentId, categories)
-  //   idRef.value = id
-  //   if (idRef.value) {
-  //     // removeContext(idRef.value)
-  //   }
-  // })
-  watch(() => [description, value,parentId,categories], () => {
-    const information = convert(description, value)
-    const id = addContext(information, parentId, categories)
-    idRef.value = id
-  },{
-    deep: true,
-    immediate: true
+  watch(
+    () => [description, value, parentId, categories],
+    (_next, _prev, onInvalidate) => {
+      if (idRef.value) {
+        removeContext(idRef.value)
+      }
+
+      const nextInformation = convert(description, value)
+      idRef.value = addContext(nextInformation, parentId, categories)
+
+      onInvalidate(() => {
+        if (idRef.value) {
+          removeContext(idRef.value)
+        }
+      })
+    },
+    {
+      deep: true,
+      immediate: true
+    }
+  )
+
+  onUnmounted(() => {
+    if (idRef.value) {
+      removeContext(idRef.value)
+    }
   })
 }
 

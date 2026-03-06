@@ -1,7 +1,7 @@
 {
   "name": "@dingdayu/vue-textarea",
   "private": false,
-  "version": "0.0.3",
+  "version": "0.0.2",
   "author": "dingdayu <dingxiaoyu.ddy@gmail.com>",
   "license": "MIT",
   "repository": {
@@ -31,8 +31,9 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@copilotkit/runtime-client-gql": "^1.8.14",
-    "@copilotkit/shared": "^1.8.14",
+    "@ag-ui/core": "^0.0.47",
+    "@copilotkit/runtime-client-gql": "^1.53.0",
+    "@copilotkit/shared": "^1.53.0",
     "@dingdayu/vue-copilotkit-core": "workspace:*",
     "@tiptap/core": "^2.6.5",
     "@tiptap/extension-placeholder": "^2.6.5",

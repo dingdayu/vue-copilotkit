@@ -46,21 +46,20 @@
  * ```
  * For more information about how to customize the styles, check out the [Customize Look & Feel](/concepts/customize-look-and-feel) guide.
  */
-import { CopilotModal, CopilotModalProps } from "./Modal";
-import { ref } from "vue";
+import { CopilotModal, CopilotModalProps } from './Modal'
+import { ref } from 'vue'
 
 export function CopilotSidebar(props: CopilotModalProps) {
   props = {
     ...props,
-    className: props.className ? props.className + " copilotKitSidebar" : "copilotKitSidebar",
-  };
-  const expandedClassName = ref(props.defaultOpen ? "sidebarExpanded" : "",)
-
+    className: props.className ? props.className + ' copilotKitSidebar' : 'copilotKitSidebar'
+  }
+  const expandedClassName = ref(props.defaultOpen ? 'sidebarExpanded' : '')
 
   const onSetOpen = (open: boolean) => {
-    props.onSetOpen?.(open);
-    expandedClassName.value = open ? "sidebarExpanded" : "";
-  };
+    props.onSetOpen?.(open)
+    expandedClassName.value = open ? 'sidebarExpanded' : ''
+  }
 
   return (
     <div class={`copilotKitSidebarContentWrapper ${expandedClassName}`}>
@@ -68,5 +67,5 @@ export function CopilotSidebar(props: CopilotModalProps) {
         {props.children}
       </CopilotModal>
     </div>
-  );
+  )
 }

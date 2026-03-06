@@ -12,22 +12,22 @@ export function streamPromiseFlatten<A>(promise: Promise<ReadableStream<A>>): Re
   return new ReadableStream<A>({
     async start(controller) {
       try {
-        const stream = await promise;
-        const reader = stream.getReader();
+        const stream = await promise
+        const reader = stream.getReader()
 
         while (true) {
-          const { done, value } = await reader.read();
+          const { done, value } = await reader.read()
 
           if (done) {
-            controller.close();
-            return;
+            controller.close()
+            return
           }
 
-          controller.enqueue(value);
+          controller.enqueue(value)
         }
       } catch (error) {
-        controller.error(error);
+        controller.error(error)
       }
-    },
-  });
+    }
+  })
 }

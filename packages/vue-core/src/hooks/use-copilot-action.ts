@@ -9,7 +9,7 @@ export function useCopilotAction<const T extends Parameter[] | [] = []>(action: 
   const idRef = ref<string>(randomId())
 
   const registerAction = () => {
-    setAction(idRef.value, action as any)
+    setAction(idRef.value, action)
     if (typeof action.render === 'function' && chatComponentsCache.value !== null) {
       chatComponentsCache.value[action.name] = action.render
     }
@@ -19,5 +19,8 @@ export function useCopilotAction<const T extends Parameter[] | [] = []>(action: 
 
   onUnmounted(() => {
     removeAction(idRef.value)
+    if (chatComponentsCache.value[action.name] === action.render) {
+      delete chatComponentsCache.value[action.name]
+    }
   })
 }

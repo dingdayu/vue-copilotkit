@@ -45,12 +45,12 @@
  * For more information about how to customize the styles, check out the [Customize Look & Feel](/concepts/customize-look-and-feel) guide.
  */
 
-import { CopilotModal, CopilotModalProps } from "./Modal";
+import { CopilotModal, CopilotModalProps } from './Modal'
 
 export function CopilotPopup(props: CopilotModalProps, { slots }: any) {
   props = {
     ...props,
-    className: props.className ? props.className + " copilotKitPopup" : "copilotKitPopup",
-  };
-  return <CopilotModal {...props}>{slots}</CopilotModal>;
+    className: props.className ? props.className + ' copilotKitPopup' : 'copilotKitPopup'
+  }
+  return <CopilotModal {...props}>{slots}</CopilotModal>
 }

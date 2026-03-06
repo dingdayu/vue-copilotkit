@@ -22,12 +22,15 @@ import {
 } from '@copilotkit/runtime-client-gql'
 
 import { CopilotApiConfig } from '../context'
+import { CopilotAgentSession } from '../context/copilot-context'
 
 export type UseChatOptions = {
   initialMessages?: Message[]
   onFunctionCall?: FunctionCallHandler
-  actions: Action[]
+  getActions: () => Action[]
   copilotConfig: CopilotApiConfig
+  body?: Record<string, unknown>
+  getAgentSession?: () => CopilotAgentSession | null
   messages: Ref<Message[]>
   setMessages: any
   makeSystemMessageCallback: () => TextMessage
@@ -35,28 +38,10 @@ export type UseChatOptions = {
   setIsLoading: any
 }
 
-type StreamResponse = ReturnType<CopilotRuntimeClient['generateCopilotResponse']>
-function getAsStream(runtimeClient: CopilotRuntimeClient): CopilotRuntimeClient['asStream'] {
-  if (typeof runtimeClient.asStream === 'function') {
-    return runtimeClient.asStream.bind(runtimeClient)
-  }
-
-  const staticAsStream = (
-    CopilotRuntimeClient as unknown as {
-      asStream?: CopilotRuntimeClient['asStream']
-    }
-  ).asStream
-
-  if (typeof staticAsStream === 'function') {
-    return staticAsStream
-  }
-
-  throw new Error('CopilotRuntimeClient does not provide asStream in this runtime-client-gql version')
-}
-
 function buildCopilotRequest(
   actions: Action[],
   copilotConfig: CopilotApiConfig,
+  agentSession: CopilotAgentSession | null,
   threadId: string | null,
   runId: string | null,
   messagesWithContext: Message[]
@@ -71,6 +56,15 @@ function buildCopilotRequest(
     },
     threadId,
     runId,
+    ...(agentSession
+      ? {
+          agentSession: {
+            agentName: agentSession.agentName,
+            ...(agentSession.nodeName ? { nodeName: agentSession.nodeName } : {}),
+            ...(agentSession.threadId ? { threadId: agentSession.threadId } : {})
+          }
+        }
+      : {}),
     messages: convertMessagesToGqlInput(messagesWithContext),
     ...(copilotConfig.cloud
       ? {
@@ -136,7 +130,9 @@ export function useChat(options: UseChatOptions) {
     setIsLoading,
     initialMessages,
     isLoading,
-    actions,
+    getActions,
+    body,
+    getAgentSession,
     onFunctionCall
   } = options
 
@@ -171,22 +167,25 @@ export function useChat(options: UseChatOptions) {
     const messagesWithContext = [systemMessage, ...(initialMessages || []), ...previousMessages]
 
     const requestData = buildCopilotRequest(
-      actions,
+      getActions(),
       copilotConfig,
+      getAgentSession?.() || null,
       threadIdRef.value,
       runIdRef.value,
       messagesWithContext
     )
 
     const runtimeClient = getRuntimeClient()
-
-    const responsePromise = runtimeClient.generateCopilotResponse({
-      data: requestData,
-      properties: copilotConfig.properties,
-      signal: abortControllerRef.value?.signal
-    })
-
-    const stream = getAsStream(runtimeClient)(responsePromise)
+    const stream = runtimeClient.asStream(
+      runtimeClient.generateCopilotResponse({
+        data: requestData,
+        properties: {
+          ...(copilotConfig.properties || {}),
+          ...(body || {})
+        },
+        signal: abortControllerRef.value?.signal
+      })
+    )
 
     const guardrailsEnabled = copilotConfig.cloud?.guardrails?.input?.restrictToTopic.enabled || false
     const reader = stream.getReader()

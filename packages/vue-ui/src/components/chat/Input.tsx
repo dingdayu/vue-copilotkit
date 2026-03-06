@@ -3,6 +3,7 @@ import { InputProps } from './props'
 import { ActivityIcon, SendIcon, PushToTalkIcon } from './Icon'
 import { AutoResizingTextarea } from './Textarea'
 import { Message } from '@copilotkit/runtime-client-gql'
+import { useChatContext } from './ChatContext'
 
 export const Input = defineComponent({
   props: {
@@ -20,6 +21,7 @@ export const Input = defineComponent({
     }
   },
   setup: _p => {
+    const { labels } = useChatContext()
     const textareaRef = ref<any | null>(null)
 
     const handleDivClick = (event: MouseEvent) => {
@@ -51,7 +53,7 @@ export const Input = defineComponent({
       <div class="copilotKitInput" onClick={handleDivClick}>
         <AutoResizingTextarea
           ref={e => (textareaRef.value = e)}
-          placeholder="Type a message..."
+          placeholder={labels?.placeholder || 'Type a message...'}
           autoFocus={true}
           maxRows={5}
           value={text.value}

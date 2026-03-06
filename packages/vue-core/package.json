@@ -1,7 +1,7 @@
 {
   "name": "@dingdayu/vue-copilotkit-core",
   "private": false,
-  "version": "0.0.4",
+  "version": "0.0.3",
   "author": "dingdayu <dingxiaoyu.ddy@gmail.com>",
   "license": "MIT",
   "repository": {
@@ -34,8 +34,9 @@
     "vite": "^5.3.4"
   },
   "dependencies": {
-    "@copilotkit/runtime-client-gql": "^1.8.14",
-    "@copilotkit/shared": "^1.8.14"
+    "@ag-ui/core": "^0.0.47",
+    "@copilotkit/runtime-client-gql": "^1.53.0",
+    "@copilotkit/shared": "^1.53.0"
   },
   "publishConfig": {
     "access": "public"

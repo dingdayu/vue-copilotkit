@@ -1,1 +1,1 @@
-export { CopilotErrorBoundary } from "./error-boundary";
+export { CopilotErrorBoundary } from './error-boundary'

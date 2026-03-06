@@ -2,7 +2,7 @@ import { inject, Ref } from 'vue'
 import { CopilotCloudConfig, FunctionCallHandler, CopilotKitError } from '@copilotkit/shared'
 import { Message } from '@copilotkit/runtime-client-gql'
 
-import { ActionRenderProps, FrontendAction } from '../types/frontend-action'
+import { ActionRenderProps, FrontendAction, RenderFunctionStatus } from '../types/frontend-action'
 import { DocumentPointer } from '../types'
 import { CopilotChatSuggestionConfiguration } from '../types/chat-suggestion-configuration'
 
@@ -70,12 +70,32 @@ export interface CopilotApiConfig {
 
 export type InChatRenderFunction = (props: ActionRenderProps<any>) => any
 
+export interface DefaultToolRendererPayload {
+  name: string
+  status: RenderFunctionStatus
+  parameters: Record<string, unknown>
+  result: unknown
+}
+
+export type DefaultToolRenderFunction = (payload: DefaultToolRendererPayload) => any
+
+export interface CopilotAgentSession {
+  agentName: string
+  nodeName?: string
+  threadId?: string
+}
+
 export interface CopilotContextParams {
   chatComponentsCache: Ref<Record<string, InChatRenderFunction | string>>
+  defaultToolRender: Ref<DefaultToolRenderFunction | null>
+  setDefaultToolRender: (renderer: DefaultToolRenderFunction | null) => void
   // function-calling
   actions: Ref<Record<string, FrontendAction<any>>>
   setAction: (id: string, action: FrontendAction<any>) => void
   removeAction: (id: string) => void
+
+  agentSession: Ref<CopilotAgentSession | null>
+  setAgentSession: (session: CopilotAgentSession | null) => void
 
   getFunctionCallHandler: (customEntryPoints?: Record<string, FrontendAction<any>>) => FunctionCallHandler
 

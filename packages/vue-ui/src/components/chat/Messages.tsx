@@ -1,165 +1,169 @@
-import { defineComponent, PropType, ref, watch } from "vue";
-import { MessagesProps } from "./props";
-import { useChatContext } from "./ChatContext";
-import { Markdown } from "./Markdown";
-import { RenderFunctionStatus, useCopilotContext } from "@dingdayu/vue-copilotkit-core";
-import { SpinnerIcon } from "./Icon";
+import { computed, defineComponent, PropType, ref, watch } from 'vue'
+
+import { MessagesProps } from './props'
+import { Markdown } from './Markdown'
+import { RenderFunctionStatus, useCopilotContext } from '@dingdayu/vue-copilotkit-core'
+import { SpinnerIcon } from './Icon'
 
 import {
-  MessageStatusCode,
   ActionExecutionMessage,
   Message,
+  MessageStatusCode,
   ResultMessage,
-  TextMessage,
-  Role,
-} from "@copilotkit/runtime-client-gql";
+  TextMessage
+} from '@copilotkit/runtime-client-gql'
 
 export const Messages = defineComponent({
   props: {
     messages: {
       type: Array as PropType<Message[]>,
-      required: true,
+      required: true
     },
     inProgress: {
       type: Boolean,
-      required: true,
+      required: true
     },
     children: {
-      type: Object,
-    },
+      type: Object
+    }
   },
   setup(props, { slots }) {
+    const { chatComponentsCache, defaultToolRender } = useCopilotContext()
 
-    const msgs = ref<Message[]>([]) // 定义message
-    const { chatComponentsCache } = useCopilotContext(); // chat缓存
-
-    const context = useChatContext(); // context
-    watch(() => props.messages,
-      (newMessages, oldMessages) => {
-        msgs.value = newMessages ?? [];
-      }, {
-      immediate: true
-    })
-    const functionResults: Record<string, string> = {};
-
-    for (let i = 0; i < msgs.value.length; i++) {
-      if (msgs.value[i] instanceof ActionExecutionMessage) {
-        const id = msgs.value[i].id;
-        const resultMessage: ResultMessage | undefined = msgs.value.find(
-          (message) => message instanceof ResultMessage && message.actionExecutionId === id,
-        ) as ResultMessage | undefined;
-
-        if (resultMessage) {
-          functionResults[id] = ResultMessage.decodeResult(resultMessage.result || "");
+    const messages = computed(() => props.messages || [])
+    const functionResults = computed(() => {
+      const entries = new Map<string, unknown>()
+      for (const message of messages.value) {
+        if (message instanceof ResultMessage) {
+          entries.set(message.actionExecutionId, ResultMessage.decodeResult(message.result || ''))
         }
       }
-    }
-    const messagesEndRef = ref<HTMLDivElement | null>(null)
+      return entries
+    })
 
+    const messagesEndRef = ref<HTMLDivElement | null>(null)
     const scrollToBottom = () => {
-      if (messagesEndRef.value) {
-        messagesEndRef.value?.scrollIntoView({
-          behavior: "auto",
-        });
+      messagesEndRef.value?.scrollIntoView({ behavior: 'auto' })
+    }
+
+    watch(() => messages.value.length, scrollToBottom, { flush: 'post' })
+
+    const getActionStatus = (message: ActionExecutionMessage): RenderFunctionStatus => {
+      if (functionResults.value.has(message.id)) {
+        return 'complete'
       }
-    };
-    watch(() => msgs.value, scrollToBottom);
+      if (message.status.code !== MessageStatusCode.Pending) {
+        return 'executing'
+      }
+      return 'inProgress'
+    }
+
+    const renderActionMessage = (message: ActionExecutionMessage, isCurrentMessage: boolean) => {
+      const status = getActionStatus(message)
+      const result = functionResults.value.get(message.id)
+      const renderer = chatComponentsCache.value?.[message.name]
+
+      if (typeof renderer === 'string') {
+        if (status === 'complete') {
+          return null
+        }
+        return (
+          <div class="copilotKitMessage copilotKitAssistantMessage copilotKitToolMessage">
+            {isCurrentMessage && props.inProgress ? <SpinnerIcon /> : null}
+            <span class="inProgressLabel">{renderer}</span>
+          </div>
+        )
+      }
+
+      if (typeof renderer === 'function') {
+        const dynamicRenderer = renderer as (payload: {
+          status: RenderFunctionStatus
+          args: Record<string, unknown>
+          result: unknown
+        }) => unknown
+
+        const content = dynamicRenderer({
+          status,
+          args: message.arguments,
+          result
+        })
+
+        if (!content && status === 'complete') {
+          return null
+        }
+
+        if (typeof content === 'string') {
+          return (
+            <div class="copilotKitMessage copilotKitAssistantMessage copilotKitToolMessage">
+              {isCurrentMessage && props.inProgress ? <SpinnerIcon /> : null}
+              <span class="inProgressLabel">{content}</span>
+            </div>
+          )
+        }
+
+        return <div class="copilotKitCustomAssistantMessage">{content}</div>
+      }
+
+      if (defaultToolRender.value) {
+        const content = defaultToolRender.value({
+          name: message.name,
+          status,
+          parameters: message.arguments,
+          result
+        })
+
+        if (!content && status === 'complete') {
+          return null
+        }
+
+        return <div class="copilotKitCustomAssistantMessage">{content}</div>
+      }
+
+      if (status === 'complete') {
+        return null
+      }
+
+      return (
+        <div class="copilotKitMessage copilotKitAssistantMessage copilotKitToolMessage">
+          {isCurrentMessage && props.inProgress ? <SpinnerIcon /> : null}
+          <span class="inProgressLabel">{message.name}</span>
+        </div>
+      )
+    }
 
     return () => (
       <div class="copilotKitMessages">
-        {msgs.value.map((message, index) => {
-          const isCurrentMessage = index === msgs.value.length - 1;
-          if (message instanceof TextMessage && message.role === "user") {
+        {messages.value.map((message, index) => {
+          const isCurrentMessage = index === messages.value.length - 1
+
+          if (message instanceof TextMessage && message.role === 'user') {
             return (
-              <div key={index} class="copilotKitMessage copilotKitUserMessage">
+              <div key={message.id || index} class="copilotKitMessage copilotKitUserMessage">
                 {message.content}
               </div>
-            );
-          } else if (message instanceof TextMessage && message.role === "assistant") {
+            )
+          }
+
+          if (message instanceof TextMessage && message.role === 'assistant') {
             return (
-              <div key={index} class={`copilotKitMessage copilotKitAssistantMessage`}>
+              <div key={message.id || index} class="copilotKitMessage copilotKitAssistantMessage">
                 {isCurrentMessage && props.inProgress && !message.content ? (
                   <SpinnerIcon />
                 ) : (
                   <Markdown content={message.content} />
                 )}
               </div>
-            );
-          } else if (message instanceof ActionExecutionMessage) { // to do1
-
-            if (chatComponentsCache.value !== null && chatComponentsCache.value[message.name]) {
-              const render = chatComponentsCache.value[message.name];
-              // render a static string
-              if (typeof render === "string") {
-                // when render is static, we show it only when in progress
-                if (isCurrentMessage && props.inProgress) {
-                  return (
-                    <div key={index} class={`copilotKitMessage copilotKitAssistantMessage`}>
-                      {/* {context.icons.spinnerIcon}  */}
-                      <span class="inProgressLabel">{render}</span>
-                    </div>
-                  );
-                }
-                // Done - silent by default to avoid a series of "done" messages
-                else {
-                  return null;
-                }
-              }
-              // render is a function
-              else {
-                const args = message.arguments;
-
-                let status: RenderFunctionStatus = "inProgress";
-
-                if (functionResults[message.id] !== undefined) {
-                  status = "complete";
-                } else if (message.status.code !== MessageStatusCode.Pending) {
-                  status = "executing";
-                }
-
-                const toRender = render({
-                  status: status as any,
-                  args,
-                  result: functionResults[message.id],
-                });
-
-                // No result and complete: stay silent
-                if (!toRender && status === "complete") {
-                  return null;
-                }
-
-                if (typeof toRender === "string") {
-                  return (
-                    <div key={index} class={`copilotKitMessage copilotKitAssistantMessage`}>
-                      {isCurrentMessage && props.inProgress} {toRender}
-                      {/* { && context.icons.spinnerIcon} */}
-                    </div>
-                  );
-                } else {
-                  return (
-                    <div key={index} class="copilotKitCustomAssistantMessage">
-                      {toRender}
-                    </div>
-                  );
-                }
-              }
-            }
-            // No render function found- show the default message
-            else if (!props.inProgress || !isCurrentMessage) {
-              // Done - silent by default to avoid a series of "done" messages
-              return null;
-            } else {
-              // In progress
-              return (
-                <div key={index} class={`copilotKitMessage copilotKitAssistantMessage`}>
-                  {/* {context.icons.spinnerIcon} */}
-                </div>
-              );
-            }
+            )
           }
+
+          if (message instanceof ActionExecutionMessage) {
+            return <div key={message.id || index}>{renderActionMessage(message, isCurrentMessage)}</div>
+          }
+
+          return null
         })}
         <footer ref={messagesEndRef}>{slots.default?.()}</footer>
       </div>
     )
-  },
+  }
 })

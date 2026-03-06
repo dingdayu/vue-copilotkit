@@ -132,5 +132,9 @@
 
 .copilotKitMarkdown .md-editor-preview-wrapper {
   padding: 0;
-  background-color: var(--copilot-kit-secondary-color);
+  background-color: transparent;
+}
+
+.copilotKitMarkdown {
+  color: var(--copilot-kit-secondary-contrast-color);
 }

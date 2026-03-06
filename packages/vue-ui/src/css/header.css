@@ -1,15 +1,16 @@
 .copilotKitHeader {
-  height: 56px;
-  font-weight: 500;
+  height: 58px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
-  background-color: var(--copilot-kit-primary-color);
+  background: linear-gradient(120deg, var(--copilot-kit-primary-color) 0%, var(--copilot-kit-accent-color) 100%);
   color: var(--copilot-kit-contrast-color);
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-  border-bottom: 1px solid var(--copilot-kit-separator-color);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .copilotKitSidebar .copilotKitHeader {
@@ -18,26 +19,30 @@
 
 @media (min-width: 640px) {
   .copilotKitHeader {
-    padding-left: 24px;
-    padding-right: 24px;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
+    padding: 0 24px;
+    border-top-left-radius: var(--copilot-kit-radius-xl);
+    border-top-right-radius: var(--copilot-kit-radius-xl);
   }
 }
 
 .copilotKitHeader > button {
   border: 0;
-  padding: 0px;
+  padding: 0;
   position: absolute;
   top: 50%;
-  right: 16px;
+  right: 14px;
   transform: translateY(-50%);
   outline: none;
   color: var(--copilot-kit-contrast-color);
   background-color: transparent;
   cursor: pointer;
+  opacity: 0.9;
+  transition:
+    transform 0.15s ease,
+    opacity 0.15s ease;
 }
 
-.copilotKitHeader > button:focus {
-  outline: none;
+.copilotKitHeader > button:hover {
+  transform: translateY(-50%) scale(1.08);
+  opacity: 1;
 }

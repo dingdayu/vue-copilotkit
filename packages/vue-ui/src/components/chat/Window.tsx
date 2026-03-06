@@ -1,38 +1,38 @@
-import { defineComponent, onMounted, onBeforeUnmount, ref, watch, PropType } from 'vue';
+import { defineComponent, onMounted, onBeforeUnmount, ref, watch, PropType } from 'vue'
 
 export const Window = defineComponent({
   props: {
     open: {
       type: Boolean as PropType<boolean>,
-      required: true,
+      required: true
     },
     setOpen: {
       type: Function as PropType<(open: boolean) => void>,
-      required: true,
+      required: true
     },
     clickOutsideToClose: {
       type: Boolean as PropType<boolean>,
-      default: false,
+      default: false
     },
     shortcut: {
       type: String as PropType<string>,
-      default: '',
+      default: ''
     },
     hitEscapeToClose: {
       type: Boolean as PropType<boolean>,
-      default: true,
-    },
+      default: true
+    }
   },
   setup(props, { slots }) {
-    const windowRef = ref<HTMLDivElement | null>(null);
+    const windowRef = ref<HTMLDivElement | null>(null)
 
     const handleClickOutside = (event: MouseEvent) => {
-      if (!props.clickOutsideToClose) return;
+      if (!props.clickOutsideToClose) return
 
-      const parentElement = windowRef.value?.parentElement;
-      let className = '';
+      const parentElement = windowRef.value?.parentElement
+      let className = ''
       if (event.target instanceof HTMLElement) {
-        className = event.target.className;
+        className = event.target.className
       }
 
       if (
@@ -41,115 +41,110 @@ export const Window = defineComponent({
         !parentElement.contains(event.target as Node) &&
         !className.includes('copilotKitDebugMenu')
       ) {
-        props.setOpen(false);
+        props.setOpen(false)
       }
-    };
+    }
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      const target = event.target as HTMLElement;
+      const target = event.target as HTMLElement
       const isInput =
         target.tagName === 'INPUT' ||
         target.tagName === 'SELECT' ||
         target.tagName === 'TEXTAREA' ||
-        target.isContentEditable;
+        target.isContentEditable
 
-      const isDescendantOfWrapper = windowRef.value?.contains(target);
+      const isDescendantOfWrapper = windowRef.value?.contains(target)
 
-      if (
-        props.open &&
-        event.key === 'Escape' &&
-        (!isInput || isDescendantOfWrapper) &&
-        props.hitEscapeToClose
-      ) {
-        props.setOpen(false);
+      if (props.open && event.key === 'Escape' && (!isInput || isDescendantOfWrapper) && props.hitEscapeToClose) {
+        props.setOpen(false)
       } else if (
         event.key === props.shortcut &&
         ((isMacOS() && event.metaKey) || (!isMacOS() && event.ctrlKey)) &&
         (!isInput || isDescendantOfWrapper)
       ) {
-        props.setOpen(!props.open);
+        props.setOpen(!props.open)
       }
-    };
+    }
 
     const adjustForMobile = () => {
-      const copilotKitWindow = windowRef.value;
-      const vv = window.visualViewport;
-      if (!copilotKitWindow || !vv) return;
+      const copilotKitWindow = windowRef.value
+      const vv = window.visualViewport
+      if (!copilotKitWindow || !vv) return
 
       if (window.innerWidth < 640 && props.open) {
-        copilotKitWindow.style.height = `${vv.height}px`;
-        copilotKitWindow.style.left = `${vv.offsetLeft}px`;
-        copilotKitWindow.style.top = `${vv.offsetTop}px`;
+        copilotKitWindow.style.height = `${vv.height}px`
+        copilotKitWindow.style.left = `${vv.offsetLeft}px`
+        copilotKitWindow.style.top = `${vv.offsetTop}px`
 
-        document.body.style.position = 'fixed';
-        document.body.style.width = '100%';
-        document.body.style.height = `${window.innerHeight}px`;
-        document.body.style.overflow = 'hidden';
-        document.body.style.touchAction = 'none';
+        document.body.style.position = 'fixed'
+        document.body.style.width = '100%'
+        document.body.style.height = `${window.innerHeight}px`
+        document.body.style.overflow = 'hidden'
+        document.body.style.touchAction = 'none'
 
         document.body.addEventListener('touchmove', preventScroll, {
-          passive: false,
-        });
+          passive: false
+        })
       } else {
-        copilotKitWindow.style.height = '';
-        copilotKitWindow.style.left = '';
-        copilotKitWindow.style.top = '';
-        document.body.style.position = '';
-        document.body.style.height = '';
-        document.body.style.width = '';
-        document.body.style.overflow = '';
-        document.body.style.top = '';
-        document.body.style.touchAction = '';
+        copilotKitWindow.style.height = ''
+        copilotKitWindow.style.left = ''
+        copilotKitWindow.style.top = ''
+        document.body.style.position = ''
+        document.body.style.height = ''
+        document.body.style.width = ''
+        document.body.style.overflow = ''
+        document.body.style.top = ''
+        document.body.style.touchAction = ''
 
-        document.body.removeEventListener('touchmove', preventScroll);
+        document.body.removeEventListener('touchmove', preventScroll)
       }
-    };
+    }
 
     onMounted(() => {
-      document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener('mousedown', handleClickOutside)
+      document.addEventListener('keydown', handleKeyDown)
       if (window.visualViewport) {
-        window.visualViewport.addEventListener('resize', adjustForMobile);
-        adjustForMobile();
+        window.visualViewport.addEventListener('resize', adjustForMobile)
+        adjustForMobile()
       }
-    });
+    })
 
     onBeforeUnmount(() => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('keydown', handleKeyDown)
       if (window.visualViewport) {
-        window.visualViewport.removeEventListener('resize', adjustForMobile);
+        window.visualViewport.removeEventListener('resize', adjustForMobile)
       }
-    });
+    })
 
-    watch(() => props.open, adjustForMobile);
+    watch(() => props.open, adjustForMobile)
 
     return () => (
       <div class={`copilotKitWindow${props.open ? ' open' : ''}`} ref={windowRef}>
         {slots.default && slots.default()}
       </div>
-    );
-  },
-});
+    )
+  }
+})
 
 const preventScroll = (event: TouchEvent): void => {
-  let targetElement = event.target as Element;
+  let targetElement = event.target as Element
 
   const hasParentWithClass = (element: Element, className: string): boolean => {
     while (element && element !== document.body) {
       if (element.classList.contains(className)) {
-        return true;
+        return true
       }
-      element = element.parentElement!;
+      element = element.parentElement!
     }
-    return false;
-  };
+    return false
+  }
 
   if (!hasParentWithClass(targetElement, 'copilotKitMessages')) {
-    event.preventDefault();
+    event.preventDefault()
   }
-};
+}
 
 function isMacOS() {
-  return /Mac|iMac|Macintosh/i.test(navigator.userAgent);
+  return /Mac|iMac|Macintosh/i.test(navigator.userAgent)
 }

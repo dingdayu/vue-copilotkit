@@ -103,8 +103,10 @@ export const CopilotKit = defineComponent({
     } = useFlatCategoryStore<DocumentPointer>()
 
     const chatComponentsCache = ref<Record<string, InChatRenderFunction | string>>({})
+    const defaultToolRender = ref<CopilotContextParams['defaultToolRender']['value']>(null)
 
     const actions = ref<Record<string, FrontendAction<any>>>({})
+    const agentSession = ref<CopilotContextParams['agentSession']['value']>(null)
     const messages = ref<Message[]>([])
     const isLoading = ref(false)
     const chatInstructions = ref('')
@@ -133,6 +135,14 @@ export const CopilotKit = defineComponent({
     }
     const removeAction = (id: string) => {
       delete actions.value[id]
+    }
+
+    const setDefaultToolRender = (renderer: CopilotContextParams['defaultToolRender']['value']) => {
+      defaultToolRender.value = renderer
+    }
+
+    const setAgentSession = (session: CopilotContextParams['agentSession']['value']) => {
+      agentSession.value = session
     }
 
     const getContextString = (documents: DocumentPointer[], categories: string[]) => {
@@ -214,10 +224,14 @@ export const CopilotKit = defineComponent({
 
     provide<CopilotContextParams>(CopilotKitContext, {
       chatComponentsCache,
+      defaultToolRender,
+      setDefaultToolRender,
       actions,
       getFunctionCallHandler,
       setAction,
       removeAction,
+      agentSession,
+      setAgentSession,
       getContextString,
       addContext,
       removeContext,

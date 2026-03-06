@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "esModuleInterop": true,
     "moduleResolution": "node",
     "jsx": "preserve",
@@ -18,6 +19,12 @@
     "strictNullChecks": true,
     "noImplicitThis": true,
     "resolveJsonModule": true,
-    "lib": ["ESNext", "DOM", "DOM.Iterable", "ScriptHost"]
+    "lib": ["ESNext", "DOM", "DOM.Iterable", "ScriptHost"],
+    "paths": {
+      "@dingdayu/vue-copilotkit-core": ["packages/vue-core/src/index.ts"],
+      "@dingdayu/vue-copilotkit-ui": ["packages/vue-ui/src/index.ts"],
+      "@dingdayu/vue-textarea": ["packages/vue-textarea/src/index.ts"],
+      "@dingdayu/vue-copilotkit-vite-config": ["packages/vite-config/src/index.ts"]
+    }
   }
 }

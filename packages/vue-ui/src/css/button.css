@@ -4,23 +4,26 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
   outline: none;
   position: relative;
   transform: scale(1);
-  transition: transform 200ms;
-  background-color: var(--copilot-kit-primary-color);
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
+  background: linear-gradient(135deg, var(--copilot-kit-primary-color) 0%, var(--copilot-kit-accent-color) 100%);
   color: var(--copilot-kit-contrast-color);
   cursor: pointer;
+  box-shadow: var(--copilot-kit-shadow-md);
 }
 
 .copilotKitButton:hover {
-  transform: scale(1.1);
+  transform: translateY(-2px) scale(1.05);
 }
 
 .copilotKitButton:active {
-  transform: scale(0.75);
+  transform: scale(0.94);
 }
 
 .copilotKitButtonIcon {

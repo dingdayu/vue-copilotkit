@@ -1,4 +1,6 @@
 export { useCopilotChat } from './use-copilot-chat'
 export { useCopilotReadable } from './use-copilot-readable'
 export { useCopilotAction } from './use-copilot-action'
+export { useAgent } from './use-agent'
+export { useRenderTool, useDefaultRenderTool } from './use-render-tool'
 export { useMakeCopilotDocumentReadable } from './use-make-copilot-document-readable'

@@ -104,24 +104,21 @@ export function YourRootComponent() {
 - **autosuggestionsConfig** `AutosuggestionsConfigUserSpecified` _(required)_  
   自动建议功能的配置设置。
   有关完整参考，[去 GitHub 上的界面](/packages/vue-textarea/src/types/base/base-copilot-textarea-props.tsx)。
- 
   - **textareaPurpose** `string` _(required)_  
     纯文本文本区域的用途。
 
     示例：“The body of the email response”
- 
+
   - **chatApiConfigs** `ChatApiConfigs`
     聊天 API 配置。
- 
+
     <strong>注意：</strong>您必须指定`suggestionsApiConfig`或`insertionApiConfig`中的至少一个。
- 
     - **suggestionsApiConfig** `SuggestionsApiConfig`
-        如需完整参考，请[点击此处](/packages/vue-textarea/src/types/autosuggestions-config/suggestions-api-config.tsx)。
+      如需完整参考，请[点击此处](/packages/vue-textarea/src/types/autosuggestions-config/suggestions-api-config.tsx)。
 
     - **insertionApiConfig** `InsertionApiConfig`
-        如需完整参考，请[点击此处](/packages/vue-textarea/src/types/autosuggestions-config/insertions-api-config.tsx).
+      如需完整参考，请[点击此处](/packages/vue-textarea/src/types/autosuggestions-config/insertions-api-config.tsx).
 
- 
   - **disabled** `boolean`  
     文本区域是否被禁用。
 

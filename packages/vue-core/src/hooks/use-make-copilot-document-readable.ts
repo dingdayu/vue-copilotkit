@@ -1,4 +1,4 @@
-import { onMounted, onBeforeUnmount, ref, watchEffect } from 'vue'
+import { onBeforeUnmount, ref, watch } from 'vue'
 import { useCopilotContext } from '../context/copilot-context'
 import { DocumentPointer } from '../types'
 
@@ -12,7 +12,7 @@ import { DocumentPointer } from '../types'
 export function useMakeCopilotDocumentReadable(
   document: DocumentPointer,
   categories: string[] = [],
-  dependencies: any[] = []
+  dependencies: unknown[] = []
 ): string | undefined {
   const { addDocumentContext, removeDocumentContext } = useCopilotContext()
   const idRef = ref<string | undefined>(undefined)
@@ -22,25 +22,52 @@ export function useMakeCopilotDocumentReadable(
     idRef.value = id
   }
 
-  onMounted(() => {
-    addDocument()
-  })
-
   onBeforeUnmount(() => {
     if (idRef.value) {
       removeDocumentContext(idRef.value)
     }
   })
 
-  watchEffect(() => {
-    // Re-run the effect when dependencies change
-    addDocument()
-    return () => {
+  watch(
+    () => dependencies,
+    (_next, _prev, onInvalidate) => {
       if (idRef.value) {
         removeDocumentContext(idRef.value)
       }
+
+      addDocument()
+
+      onInvalidate(() => {
+        if (idRef.value) {
+          removeDocumentContext(idRef.value)
+        }
+      })
+    },
+    {
+      immediate: true,
+      deep: true
     }
-  })
+  )
+
+  watch(
+    () => [document, categories],
+    (_next, _prev, onInvalidate) => {
+      if (idRef.value) {
+        removeDocumentContext(idRef.value)
+      }
+
+      addDocument()
+
+      onInvalidate(() => {
+        if (idRef.value) {
+          removeDocumentContext(idRef.value)
+        }
+      })
+    },
+    {
+      deep: true
+    }
+  )
 
   return idRef.value
 }

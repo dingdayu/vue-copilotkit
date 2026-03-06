@@ -31,8 +31,9 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@copilotkit/runtime-client-gql": "^1.8.14",
-    "@copilotkit/shared": "^1.8.14",
+    "@ag-ui/core": "^0.0.47",
+    "@copilotkit/runtime-client-gql": "^1.53.0",
+    "@copilotkit/shared": "^1.53.0",
     "@dingdayu/vue-copilotkit-core": "workspace:*",
     "md-editor-v3": "4.18.1"
   },

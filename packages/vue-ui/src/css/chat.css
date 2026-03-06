@@ -1,4 +1,6 @@
-.chat-box {
-  width: 500px;
-  height: 500px;
+.copilotKitChat {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
 }

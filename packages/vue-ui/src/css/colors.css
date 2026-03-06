@@ -1,12 +1,21 @@
-html {
-  --copilot-kit-primary-color: rgb(59 130 246);
-  --copilot-kit-contrast-color: rgb(255 255 255);
-  --copilot-kit-secondary-color: rgb(243 244 246);
-  --copilot-kit-secondary-contrast-color: rgb(0 0 0);
-  --copilot-kit-background-color: rgb(255 255 255);
-  --copilot-kit-muted-color: rgb(106 106 106);
-  --copilot-kit-separator-color: rgba(0, 0, 0, 0.08);
-  --copilot-kit-scrollbar-color: rgba(0, 0, 0, 0.2);
-  --copilot-kit-response-button-color: #333;
-  --copilot-kit-response-button-background-color: #fff;
+:root {
+  --copilot-kit-font-family: 'Manrope', 'Avenir Next', 'Segoe UI', sans-serif;
+  --copilot-kit-background-color: #f3f7fb;
+  --copilot-kit-surface-color: #ffffff;
+  --copilot-kit-secondary-color: #e7eef5;
+  --copilot-kit-secondary-contrast-color: #162332;
+  --copilot-kit-primary-color: #0f766e;
+  --copilot-kit-primary-strong-color: #115e59;
+  --copilot-kit-accent-color: #0284c7;
+  --copilot-kit-contrast-color: #ffffff;
+  --copilot-kit-muted-color: #5f7388;
+  --copilot-kit-separator-color: rgba(22, 35, 50, 0.12);
+  --copilot-kit-scrollbar-color: rgba(15, 118, 110, 0.28);
+  --copilot-kit-shadow-lg: 0 18px 52px rgba(12, 34, 52, 0.2);
+  --copilot-kit-shadow-md: 0 8px 24px rgba(12, 34, 52, 0.16);
+  --copilot-kit-radius-xl: 18px;
+  --copilot-kit-radius-lg: 14px;
+  --copilot-kit-radius-md: 10px;
+  --copilot-kit-response-button-color: #0f766e;
+  --copilot-kit-response-button-background-color: #ffffff;
 }

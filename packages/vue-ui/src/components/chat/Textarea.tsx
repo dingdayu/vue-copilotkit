@@ -1,5 +1,4 @@
-import { defineComponent, onMounted, ref, watch, nextTick } from "vue";
-
+import { defineComponent, onMounted, ref, watch, nextTick } from 'vue'
 
 export const AutoResizingTextarea = defineComponent({
   props: {
@@ -29,54 +28,61 @@ export const AutoResizingTextarea = defineComponent({
     }
   },
   setup(props) {
-    const internalTextareaRef = ref<HTMLTextAreaElement | null>(null);
+    const internalTextareaRef = ref<HTMLTextAreaElement | null>(null)
     const maxHeight = ref(0)
     const calculateMaxHeight = () => {
-      const textarea = internalTextareaRef.value;
+      const textarea = internalTextareaRef.value
       if (textarea) {
-        textarea.style.height = "auto";
-        const singleRowHeight = textarea.scrollHeight;
-        maxHeight.value = singleRowHeight * props.maxRows;
+        textarea.style.height = 'auto'
+        const singleRowHeight = textarea.scrollHeight
+        maxHeight.value = singleRowHeight * props.maxRows
         if (props.autoFocus) {
-          textarea.focus();
+          textarea.focus()
         }
       }
     }
-    watch(() => props.maxRows,()=>{
-      calculateMaxHeight()
-    },{deep:true,immediate:true})
+    watch(
+      () => props.maxRows,
+      () => {
+        calculateMaxHeight()
+      },
+      { deep: true, immediate: true }
+    )
     onMounted(() => {
       calculateMaxHeight()
     })
-    watch(() => [props.value, maxHeight.value], () => {
-      const textarea = internalTextareaRef.value;
-      // debugger
-      if (textarea) {
-        textarea.style.height = "auto";
-        nextTick(() => {
-          textarea.style.height = `${Math.min(textarea.scrollHeight, maxHeight.value)}px`;
-        })
+    watch(
+      () => [props.value, maxHeight.value],
+      () => {
+        const textarea = internalTextareaRef.value
+        // debugger
+        if (textarea) {
+          textarea.style.height = 'auto'
+          nextTick(() => {
+            textarea.style.height = `${Math.min(textarea.scrollHeight, maxHeight.value)}px`
+          })
+        }
       }
-    });
+    )
 
     return () => (
       <textarea
-        ref={(e) => internalTextareaRef.value = e as HTMLTextAreaElement}
+        ref={e => (internalTextareaRef.value = e as HTMLTextAreaElement)}
         rows={1}
         placeholder={props.placeholder}
         value={props.value}
-        onInput={(event) => {
-          props.onChange(event);
+        onInput={event => {
+          props.onChange(event)
         }}
-        onKeydown={(event) => {
-          props.onKeyDown(event);
+        onKeydown={event => {
+          props.onKeyDown(event)
         }}
         style={{
-          overflow: "auto",
-          resize: "none",
-          maxHeight: `${maxHeight}px`,
+          overflow: 'auto',
+          resize: 'none',
+          maxHeight: `${maxHeight}px`
         }}
       />
-    );
+    )
   }
 })

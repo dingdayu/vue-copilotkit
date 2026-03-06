@@ -1,19 +1,20 @@
 .copilotKitWindow {
   position: fixed;
-  inset: 0px;
+  inset: 0;
   transform-origin: bottom;
-  border-color: rgb(229 231 235);
-  background-color: rgb(255 255 255);
-  border-radius: 0.75rem;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 5px 40px;
+  border: 1px solid var(--copilot-kit-separator-color);
+  background: linear-gradient(180deg, #fbfdff 0%, var(--copilot-kit-surface-color) 100%);
+  border-radius: var(--copilot-kit-radius-xl);
+  box-shadow: var(--copilot-kit-shadow-lg);
   flex-direction: column;
   transition:
-    opacity 100ms ease-out,
-    transform 200ms ease-out;
+    opacity 140ms ease-out,
+    transform 220ms ease-out;
   opacity: 0;
-  transform: scale(0.95) translateY(20px);
+  transform: scale(0.95) translateY(18px);
   display: flex;
   pointer-events: none;
+  overflow: hidden;
 }
 
 .copilotKitSidebar .copilotKitWindow {
@@ -36,14 +37,13 @@
   .copilotKitWindow {
     transform-origin: bottom right;
     bottom: 5rem;
-    right: 1rem;
+    right: 1.25rem;
     top: auto;
     left: auto;
-    border-width: 0px;
-    margin-bottom: 1rem;
-    width: 24rem;
-    height: 600px;
-    min-height: 200px;
+    margin-bottom: 0.75rem;
+    width: min(26rem, calc(100vw - 2.5rem));
+    height: min(680px, calc(100vh - 7rem));
+    min-height: 320px;
     max-height: calc(100% - 6rem);
   }
 
@@ -52,7 +52,7 @@
     right: 0;
     top: auto;
     left: auto;
-    width: 28rem;
+    width: min(29rem, 100vw);
     min-height: 100%;
     margin-bottom: 0;
     max-height: none;
