@@ -19,6 +19,34 @@ Both `@dingdayu/vue-copilotkit-core` and `@dingdayu/vue-copilotkit-ui` have been
 pnpm add @dingdayu/vue-copilotkit-core @dingdayu/vue-copilotkit-ui
 ```
 
+## Quick Start
+
+```bash
+pnpm install
+pnpm dev
+pnpm build
+```
+
+- `pnpm dev`: starts the Vue example app from the workspace root
+- `pnpm -C examples dev:runtime`: starts the local CopilotKit runtime used by the demo app
+- `pnpm typecheck`: validates the TypeScript workspace
+
+## Repository Structure
+
+| Path                         | Purpose                                                 |
+| :--------------------------- | :------------------------------------------------------ |
+| `packages/vue-core`          | Core provider, context, and runtime-facing hooks        |
+| `packages/vue-ui`            | Chat UI, popup/sidebar components, and textarea exports |
+| `examples`                   | Vue 3 + Vite demo app with practical scenarios          |
+| `README.md` / `README.zh.md` | Public project documentation in English and Chinese     |
+
+### Package Notes
+
+- `@dingdayu/vue-copilotkit-core`: install this when you need `CopilotKit`, actions, readable state, and low-level hooks.
+- `@dingdayu/vue-copilotkit-ui`: install this when you need ready-made chat UI such as `CopilotPopup`, `CopilotSidebar`, `CopilotChat`, or `CopilotTextarea`.
+- The old standalone `@dingdayu/vue-textarea` package has been merged into `@dingdayu/vue-copilotkit-ui`.
+- The former shared `vite-config` package has been removed; each package now owns its local Vite build config.
+
 ## Example
 
 ### Server
@@ -29,7 +57,7 @@ Install dependencies
 pnpm add @copilotkit/runtime @ai-sdk/openai-compatible
 ```
 
-Create `index.js` file.
+Create `index.mjs` file (or use `"type": "module"` in `package.json`).
 
 ```ts
 import { createServer } from 'node:http'
@@ -63,7 +91,7 @@ server.listen(4000, () => {
 })
 ```
 
-Run `node index.js`.
+Run `node index.mjs`.
 
 ## CopilotKit v2 API Reference Notes
 
@@ -105,6 +133,8 @@ Install dependencies
 pnpm add @dingdayu/vue-copilotkit-core @dingdayu/vue-copilotkit-ui
 ```
 
+Use the core package for the provider and hooks, and use the UI package for chat/textarea components and styles.
+
 ```diff
 // app.vue
 <script lang="ts" setup>
@@ -143,7 +173,7 @@ const tokenTheme = computed(() => {
 <template>
   <ConfigProvider :locale="antdLocale" :theme="tokenTheme">
 +    <CopilotKit
-+      runtime-url="http://10.0.7.105:4000/copilotkit"
++      runtime-url="http://localhost:4000/copilotkit"
 +      show-dev-console
 +    >
       <App>
@@ -186,13 +216,26 @@ import { Page } from '@vben/common-ui';
 1. Renamed packages for NPM registry publication
    - `@copilotkit/vue-core` → `@dingdayu/vue-copilotkit-core`
    - `@copilotkit/vue-ui` → `@dingdayu/vue-copilotkit-ui`
-   - `@copilotkit/vite-config` → `@dingdayu/vue-copilotkit-vite-config`
 2. Upgraded CopilotKit runtime/client-related packages to `1.53.0` (v2 protocol-compatible)
 3. Fixed `Window` for build errors
-4. Updated `vite.config.ts` to resolve `injection "Symbol()" not found` issue caused by vite inlining
+4. Removed the former shared `vite-config` package and inlined the required Vite config per package to resolve `injection "Symbol()" not found`
 5. Migrated chat and textarea data paths to the v2 single-route protocol (`method: agent/run`)
 6. Fixed `view.docView.domFromPos` related issues
 7. Added repository information to `package.json`
+8. Merged the former standalone `vue-textarea` package into `@dingdayu/vue-copilotkit-ui` (single UI package import)
+9. Reworked the example app with bilingual navigation, shared runtime configuration, and richer scenario pages
+
+## Documentation
+
+- Keep `README.md` and `README.zh.md` in sync for public-facing changes.
+- See `packages/vue-core/README.md` and `packages/vue-ui/README.md` for package-level usage notes.
+- See `examples/README.md` for demo app routes, runtime setup, and local development notes.
+
+## Migration Notes
+
+- Remove any dependency on the old standalone textarea package and import `CopilotTextarea` from `@dingdayu/vue-copilotkit-ui`.
+- Keep using `@dingdayu/vue-copilotkit-ui/style.css` for shared chat and textarea styles.
+- If you previously depended on the removed shared Vite config package, copy the needed build settings into your local package config instead.
 
 ## Publish
 

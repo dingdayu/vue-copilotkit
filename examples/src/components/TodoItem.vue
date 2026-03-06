@@ -1,30 +1,17 @@
 <template>
-  <div class="todo-item">
-    <el-checkbox :model-value="todo.isCompleted" @change="toggleComplete(todo.id)">
-      <span class="todo_task">Task{{ todo.sort }}</span>
-      <span :class="{ completed: todo.isCompleted }" class="todo_text">{{ todo.text }}</span>
-    </el-checkbox>
-    <svg
-      class="delete-icon"
-      @click="deleteTodo(todo.id)"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="black"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    >
-      <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-      <line x1="10" y1="11" x2="10" y2="17" />
-      <line x1="14" y1="11" x2="14" y2="17" />
-    </svg>
+  <div class="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-3 py-2">
+    <label class="flex cursor-pointer items-center gap-2">
+      <input type="checkbox" :checked="todo.isCompleted" @change="toggleComplete(todo.id)" />
+      <span class="text-xs font-bold text-slate-500">#{{ todo.sort }}</span>
+      <span :class="todo.isCompleted ? 'text-slate-400 line-through' : 'text-slate-900'">{{ todo.text }}</span>
+    </label>
+    <button class="h-7 w-7 rounded-full bg-rose-100 text-base leading-none text-rose-700" @click="deleteTodo(todo.id)">
+      ×
+    </button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue'
-
 const props = defineProps<{
   todo: {
     id: number
@@ -39,43 +26,6 @@ const emit = defineEmits<{
   (e: 'delete-todo', id: number): void
 }>()
 
-const toggleComplete = (id: number) => {
-  emit('toggle-complete', id)
-}
-
-const deleteTodo = (id: number) => {
-  emit('delete-todo', id)
-}
+const toggleComplete = (id: number) => emit('toggle-complete', id)
+const deleteTodo = (id: number) => emit('delete-todo', id)
 </script>
-
-<style scoped>
-.todo-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  background-color: #f5f5f5;
-  padding: 10px;
-  border-radius: 5px;
-  box-sizing: border-box; /* 修改盒模型为 border-box */
-  height: 52px;
-}
-
-.delete-icon {
-  cursor: pointer;
-  width: 16px;
-  height: 16px;
-}
-
-.completed {
-  text-decoration-line: line-through;
-}
-
-.todo_task {
-  margin-right: 20px;
-}
-
-.todo_text {
-  display: inline-block;
-}
-</style>

@@ -14,10 +14,12 @@
     "@ai-sdk/openai-compatible": "^2.0.35",
     "@vitejs/plugin-vue": "^5.0.5",
     "@vitejs/plugin-vue-jsx": "^4.0.0",
+    "autoprefixer": "^10.4.20",
     "dotenv": "^16.6.1",
     "openai": "^4.55.5",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.14",
     "typescript": "^5.2.2",
-    "unocss": "^0.62.4",
     "vite": "^5.3.4",
     "vite-plugin-node-polyfills": "^0.22.0",
     "vite-plugin-pages": "^0.32.3"
@@ -26,10 +28,9 @@
     "@copilotkit/runtime-client-gql": "1.53.0",
     "@copilotkit/shared": "1.53.0",
     "@dingdayu/vue-copilotkit-core": "workspace:*",
-    "@dingdayu/vue-textarea": "workspace:*",
     "@dingdayu/vue-copilotkit-ui": "workspace:*",
-    "@element-plus/icons-vue": "^2.3.1",
-    "element-plus": "^2.7.8",
+    "pinia": "^2.3.1",
+    "vue-i18n": "^9.14.0",
     "vue-router": "^4.4.3"
   }
 }

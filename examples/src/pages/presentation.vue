@@ -1,123 +1,146 @@
 <template>
-  <div class="presentation-container">
-    <div class="presentation-header">
-      <h2 class="title">🎤 Presentation Demo</h2>
-    </div>
-    <div class="presentation-wrapper">
-      <div class="slide" :class="{ active: currentSlide === index }" v-for="(slide, index) in slides" :key="index">
-        <div class="slide-content">
-          <h3 class="slide-title">{{ slide.title }}</h3>
-          <div class="slide-body" v-html="slide.content"></div>
+  <main class="demo-page bg-gradient-to-b from-rose-50 to-slate-50">
+    <div class="demo-page-shell">
+      <RouterLink class="font-semibold text-blue-700" to="/">{{ t('common.backHome') }}</RouterLink>
+
+      <section class="mt-3 grid gap-4 rounded-2xl border border-slate-200 bg-white/90 p-5">
+        <header>
+          <h1 class="text-2xl font-bold text-slate-900">{{ t('pages.presentation.title') }}</h1>
+          <p class="mt-1 text-sm text-slate-500">{{ t('pages.presentation.subtitle') }}</p>
+        </header>
+
+        <div class="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-slate-700">
+          <strong>{{ t('common.howToTry') }}</strong>
+          <ul class="mt-2 list-disc space-y-1 pl-5">
+            <li v-for="item in quickPrompts" :key="item">{{ item }}</li>
+          </ul>
         </div>
-      </div>
+
+        <div class="rounded-xl bg-slate-900 p-5 text-slate-100">
+          <h2 class="text-2xl font-semibold">{{ slides[currentSlide]?.title }}</h2>
+          <div class="mt-3 text-base leading-7" v-html="slides[currentSlide]?.content"></div>
+        </div>
+
+        <div class="inline-flex flex-wrap items-center gap-2">
+          <button
+            class="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+            :disabled="currentSlide === 0"
+            @click="prevSlide"
+          >
+            {{ t('pages.presentation.prev') }}
+          </button>
+          <span class="min-w-16 text-center text-sm text-slate-500">{{ currentSlide + 1 }} / {{ slides.length }}</span>
+          <button
+            class="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+            :disabled="currentSlide >= slides.length - 1"
+            @click="nextSlide"
+          >
+            {{ t('pages.presentation.next') }}
+          </button>
+        </div>
+
+        <div class="inline-flex flex-wrap gap-2">
+          <button class="rounded-lg border border-slate-300 px-3 py-2 text-sm" @click="addSlide">
+            {{ t('pages.presentation.add') }}
+          </button>
+          <button
+            class="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+            :disabled="slides.length === 0"
+            @click="editCurrentSlide"
+          >
+            {{ t('pages.presentation.edit') }}
+          </button>
+          <button
+            class="rounded-lg border border-rose-300 bg-rose-50 px-3 py-2 text-sm text-rose-700"
+            :disabled="slides.length === 0"
+            @click="deleteCurrentSlide"
+          >
+            {{ t('pages.presentation.remove') }}
+          </button>
+        </div>
+      </section>
     </div>
-    <div class="presentation-controls">
-      <el-button @click="prevSlide" :disabled="currentSlide === 0">Previous</el-button>
-      <span class="slide-indicator">{{ currentSlide + 1 }} / {{ slides.length }}</span>
-      <el-button @click="nextSlide" :disabled="currentSlide === slides.length - 1">Next</el-button>
-    </div>
-    <div class="presentation-actions">
-      <el-button @click="addSlide">Add Slide</el-button>
-      <el-button @click="editCurrentSlide" :disabled="slides.length === 0">Edit Current Slide</el-button>
-      <el-button @click="deleteCurrentSlide" :disabled="slides.length === 0">Delete Slide</el-button>
-    </div>
+
     <CopilotPopup />
-  </div>
+  </main>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { CopilotPopup, useCopilotChatSuggestions } from '@dingdayu/vue-copilotkit-ui'
-import { useCopilotReadable, useCopilotAction } from '@dingdayu/vue-copilotkit-core'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
-interface Slide {
+import { useCopilotAction, useCopilotReadable } from '@dingdayu/vue-copilotkit-core'
+import { CopilotPopup, useCopilotChatSuggestions } from '@dingdayu/vue-copilotkit-ui'
+
+type Slide = {
   title: string
   content: string
 }
 
+const { t, locale } = useI18n()
+
 const slides = ref<Slide[]>([
+  { title: 'Kickoff Goals', content: '<ul><li>Align scope</li><li>Confirm owners</li><li>Lock milestones</li></ul>' },
   {
-    title: 'Welcome',
-    content: '<p>Welcome to this presentation demo!</p><p>This is a simple slide deck powered by CopilotKit.</p>'
+    title: 'Execution Plan',
+    content: '<ul><li>Week 1: discovery</li><li>Week 2: implementation</li><li>Week 3: validation</li></ul>'
   },
-  {
-    title: 'Features',
-    content: '<ul><li>AI-Powered Assistance</li><li>Smart Slide Management</li><li>Real-time Suggestions</li></ul>'
-  },
-  {
-    title: 'Thank You',
-    content: '<p>Thank you for watching!</p><p>Feel free to ask the AI assistant for help.</p>'
-  }
+  { title: 'Risks', content: '<p>Key risk: delayed data handoff from external team.</p>' }
 ])
 
 const currentSlide = ref(0)
 
 const prevSlide = () => {
-  if (currentSlide.value > 0) {
-    currentSlide.value--
-  }
+  if (currentSlide.value > 0) currentSlide.value -= 1
 }
 
 const nextSlide = () => {
-  if (currentSlide.value < slides.value.length - 1) {
-    currentSlide.value++
-  }
+  if (currentSlide.value < slides.value.length - 1) currentSlide.value += 1
 }
 
 const addSlide = () => {
-  slides.value.push({
-    title: `Slide ${slides.value.length + 1}`,
-    content: '<p>New slide content</p>'
-  })
+  slides.value.push({ title: `Slide ${slides.value.length + 1}`, content: '<p>New slide content</p>' })
+  currentSlide.value = slides.value.length - 1
 }
 
 const editCurrentSlide = () => {
-  if (slides.value[currentSlide.value]) {
-    const newTitle = prompt('Enter slide title:', slides.value[currentSlide.value].title)
-    const newContent = prompt('Enter slide content (HTML):', slides.value[currentSlide.value].content)
-    if (newTitle !== null) {
-      slides.value[currentSlide.value].title = newTitle
-    }
-    if (newContent !== null) {
-      slides.value[currentSlide.value].content = newContent
-    }
-  }
+  const current = slides.value[currentSlide.value]
+  if (!current) return
+
+  const title = prompt('Slide title', current.title)
+  const content = prompt('Slide content (HTML)', current.content)
+
+  if (title !== null) current.title = title
+  if (content !== null) current.content = content
 }
 
 const deleteCurrentSlide = () => {
-  if (slides.value[currentSlide.value]) {
-    slides.value.splice(currentSlide.value, 1)
-    if (currentSlide.value >= slides.value.length) {
-      currentSlide.value = Math.max(0, slides.value.length - 1)
-    }
+  if (!slides.value[currentSlide.value]) return
+  slides.value.splice(currentSlide.value, 1)
+  if (currentSlide.value >= slides.value.length) {
+    currentSlide.value = Math.max(0, slides.value.length - 1)
   }
 }
 
 useCopilotReadable({
   description: 'The current presentation slides. Each slide has a title and HTML content.',
-  value: slides.value
+  value: slides
 })
 
 useCopilotReadable({
   description: 'The currently active slide index (0-based)',
-  value: currentSlide.value
+  value: currentSlide
 })
 
 useCopilotAction({
   name: 'setSlideTitle',
   description: 'Set the title of the current slide',
   parameters: [
-    {
-      name: 'title',
-      type: 'string',
-      description: 'The title to set for the current slide',
-      required: true
-    }
+    { name: 'title', type: 'string', description: 'The title to set for the current slide', required: true }
   ],
   handler: ({ title }) => {
-    if (slides.value[currentSlide.value]) {
-      slides.value[currentSlide.value].title = title
-    }
+    if (!slides.value[currentSlide.value]) return
+    slides.value[currentSlide.value].title = title
   }
 })
 
@@ -125,17 +148,11 @@ useCopilotAction({
   name: 'setSlideContent',
   description: 'Set the HTML content of the current slide',
   parameters: [
-    {
-      name: 'content',
-      type: 'string',
-      description: 'The HTML content to set for the current slide',
-      required: true
-    }
+    { name: 'content', type: 'string', description: 'The HTML content to set for the current slide', required: true }
   ],
   handler: ({ content }) => {
-    if (slides.value[currentSlide.value]) {
-      slides.value[currentSlide.value].content = content
-    }
+    if (!slides.value[currentSlide.value]) return
+    slides.value[currentSlide.value].content = content
   }
 })
 
@@ -143,24 +160,11 @@ useCopilotAction({
   name: 'addNewSlide',
   description: 'Add a new slide with the specified title and content',
   parameters: [
-    {
-      name: 'title',
-      type: 'string',
-      description: 'The title for the new slide',
-      required: true
-    },
-    {
-      name: 'content',
-      type: 'string',
-      description: 'The HTML content for the new slide',
-      required: true
-    }
+    { name: 'title', type: 'string', description: 'The title for the new slide', required: true },
+    { name: 'content', type: 'string', description: 'The HTML content for the new slide', required: true }
   ],
   handler: ({ title, content }) => {
-    slides.value.push({
-      title,
-      content
-    })
+    slides.value.push({ title, content })
     currentSlide.value = slides.value.length - 1
   }
 })
@@ -169,26 +173,14 @@ useCopilotAction({
   name: 'deleteCurrentSlide',
   description: 'Delete the currently active slide',
   parameters: [],
-  handler: () => {
-    if (slides.value[currentSlide.value]) {
-      slides.value.splice(currentSlide.value, 1)
-      if (currentSlide.value >= slides.value.length) {
-        currentSlide.value = Math.max(0, slides.value.length - 1)
-      }
-    }
-  }
+  handler: deleteCurrentSlide
 })
 
 useCopilotAction({
   name: 'goToSlide',
   description: 'Navigate to a specific slide',
   parameters: [
-    {
-      name: 'index',
-      type: 'number',
-      description: 'The slide index to navigate to (0-based)',
-      required: true
-    }
+    { name: 'index', type: 'number', description: 'The slide index to navigate to (0-based)', required: true }
   ],
   handler: ({ index }) => {
     if (index >= 0 && index < slides.value.length) {
@@ -197,111 +189,51 @@ useCopilotAction({
   }
 })
 
-useCopilotChatSuggestions({
-  instructions:
-    'Generate helpful suggestions for presentation creation and editing. Suggest actions like adding slides with specific topics, editing slide content, navigating slides, or creating entire presentation decks.',
-  minSuggestions: 2,
-  maxSuggestions: 4
-})
+const deckSuggestionInstructions = computed(() =>
+  locale.value === 'zh-CN'
+    ? '围绕当前演示文稿生成可执行建议，包括新增页面、改写标题内容、跳转页面和快速生成整套大纲。'
+    : 'Generate actionable presentation suggestions, including creating slides, revising title/content, navigating slides, and drafting full deck outlines.'
+)
+
+const deckSuggestions = computed(() =>
+  locale.value === 'zh-CN'
+    ? [
+        { title: '新增发布计划页', message: '新增一页“发布计划”，并给出 3 个关键执行要点。' },
+        { title: '重写当前标题', message: '把当前页标题改成 Execution Risks。' },
+        { title: '精简当前内容', message: '将当前页内容精简为 3 条更有行动性的 bullet points。' },
+        { title: '跳转并优化', message: '跳转到第 2 页，并把内容改成更适合管理层阅读的版本。' }
+      ]
+    : [
+        {
+          title: 'Add release-plan slide',
+          message: 'Add a new slide titled Release Plan with 3 key execution bullets.'
+        },
+        { title: 'Rename current title', message: 'Rename the current slide title to Execution Risks.' },
+        {
+          title: 'Simplify content',
+          message: 'Rewrite current slide content into 3 concise actionable bullet points.'
+        },
+        { title: 'Jump and refine', message: 'Go to slide 2 and revise the content for an executive audience.' }
+      ]
+)
+
+useCopilotChatSuggestions(
+  {
+    instructions: deckSuggestionInstructions,
+    minSuggestions: 2,
+    maxSuggestions: 4,
+    suggestions: deckSuggestions
+  },
+  [locale, deckSuggestions]
+)
+
+const quickPrompts = computed(() =>
+  locale.value === 'zh-CN'
+    ? ['“新增一页，主题是发布计划，包含 3 个要点”', '“把当前页标题改成 Execution Risks”', '“跳转到第 2 页并精简内容”']
+    : [
+        '"Add a new slide about release plan with 3 bullet points"',
+        '"Rename current slide title to Execution Risks"',
+        '"Go to slide 2 and simplify the content"'
+      ]
+)
 </script>
-
-<style scoped>
-.presentation-container {
-  padding: 2rem;
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.presentation-header {
-  margin-bottom: 1.5rem;
-}
-
-.title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin: 0;
-}
-
-.presentation-wrapper {
-  position: relative;
-  aspect-ratio: 16 / 9;
-  background: #000;
-  border-radius: 8px;
-  overflow: hidden;
-  margin-bottom: 1rem;
-}
-
-.slide {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  display: none;
-}
-
-.slide.active {
-  opacity: 1;
-  display: block;
-}
-
-.slide-content {
-  padding: 2rem;
-  height: 100%;
-  color: white;
-}
-
-.slide-title {
-  font-size: 2rem;
-  font-weight: 600;
-  margin: 0 0 1.5rem 0;
-  color: #4a9eff;
-}
-
-.slide-body {
-  font-size: 1.25rem;
-  line-height: 1.6;
-}
-
-.slide-body :deep(p) {
-  margin-bottom: 1rem;
-}
-
-.slide-body :deep(ul) {
-  padding-left: 1.5rem;
-}
-
-.slide-body :deep(li) {
-  margin-bottom: 0.5rem;
-}
-
-.presentation-controls {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.slide-indicator {
-  font-size: 1rem;
-  color: #666;
-  font-weight: 500;
-  min-width: 60px;
-  text-align: center;
-}
-
-.presentation-actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-}
-
-.presentation-actions .el-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-</style>
