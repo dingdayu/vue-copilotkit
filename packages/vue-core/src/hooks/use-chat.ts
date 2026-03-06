@@ -35,6 +35,25 @@ export type UseChatOptions = {
   setIsLoading: any
 }
 
+type StreamResponse = ReturnType<CopilotRuntimeClient['generateCopilotResponse']>
+function getAsStream(runtimeClient: CopilotRuntimeClient): CopilotRuntimeClient['asStream'] {
+  if (typeof runtimeClient.asStream === 'function') {
+    return runtimeClient.asStream.bind(runtimeClient)
+  }
+
+  const staticAsStream = (
+    CopilotRuntimeClient as unknown as {
+      asStream?: CopilotRuntimeClient['asStream']
+    }
+  ).asStream
+
+  if (typeof staticAsStream === 'function') {
+    return staticAsStream
+  }
+
+  throw new Error('CopilotRuntimeClient does not provide asStream in this runtime-client-gql version')
+}
+
 function buildCopilotRequest(
   actions: Action[],
   copilotConfig: CopilotApiConfig,
@@ -82,11 +101,7 @@ async function handleActionExecution(
   responseStatus: any
 ): Promise<Message[]> {
   const newMessages: Message[] = []
-  if (
-    message.status.code !== MessageStatusCode.Pending &&
-    (message.scope === 'client' || message.scope === null) &&
-    onFunctionCall
-  ) {
+  if (message.status.code !== MessageStatusCode.Pending && onFunctionCall) {
     if (!(message.id in results)) {
       if (guardrailsEnabled && responseStatus === undefined) return newMessages
       const result = await onFunctionCall({
@@ -155,13 +170,13 @@ export function useChat(options: UseChatOptions) {
       messagesWithContext
     )
 
-    const stream = runtimeClient.asStream(
-      runtimeClient.generateCopilotResponse({
-        data: requestData,
-        properties: copilotConfig.properties,
-        signal: abortControllerRef.value?.signal
-      })
-    )
+    const responsePromise = runtimeClient.generateCopilotResponse({
+      data: requestData,
+      properties: copilotConfig.properties,
+      signal: abortControllerRef.value?.signal
+    })
+
+    const stream = getAsStream(runtimeClient)(responsePromise)
 
     const guardrailsEnabled = copilotConfig.cloud?.guardrails?.input?.restrictToTopic.enabled || false
     const reader = stream.getReader()
