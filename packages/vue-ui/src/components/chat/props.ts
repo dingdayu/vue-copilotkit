@@ -8,6 +8,7 @@ export interface ButtonProps {
 export interface MessagesProps {
   messages: Message[]
   inProgress: boolean
+  maxHeight?: string | number
   children?: any
 }
 

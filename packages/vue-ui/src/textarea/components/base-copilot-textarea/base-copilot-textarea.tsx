@@ -25,6 +25,10 @@ export const BaseCopilotTextarea = defineComponent({
       type: String,
       default: ''
     },
+    placeholder: {
+      type: String,
+      default: ''
+    },
     baseAutosuggestionsConfig: {
       type: Object as () => BaseAutosuggestionsConfig,
       default: () => ({})

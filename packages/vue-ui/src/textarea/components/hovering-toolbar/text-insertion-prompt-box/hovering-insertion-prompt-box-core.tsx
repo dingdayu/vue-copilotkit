@@ -9,7 +9,6 @@ import { DocumentPointer, useCopilotContext } from '@dingdayu/vue-copilotkit-cor
 import { streamPromiseFlatten } from '../../../lib/stream-promise-flatten'
 import { IncludedFilesPreview } from './included-files-preview'
 import { useHoveringEditorContext } from '../hovering-editor-provider'
-import { ElButton } from 'element-plus'
 import '../../../css/tailwind.css'
 
 export type SuggestionState = {
@@ -227,15 +226,15 @@ export const HoveringInsertionPromptBoxCore = defineComponent({
         )}
         {generatingSuggestion.value && (
           <div class="flex w-full gap-4 justify-start">
-            <ElButton
-              type="success"
-              class=" bg-green-700 text-white"
+            <button
+              type="button"
+              class="rounded-md bg-green-700 px-3 py-2 text-sm font-medium text-white"
               onClick={() => {
                 props.performInsertion(editSuggestion.value)
               }}
             >
               Insert <i class="material-icons">check</i>
-            </ElButton>
+            </button>
           </div>
         )}
       </div>

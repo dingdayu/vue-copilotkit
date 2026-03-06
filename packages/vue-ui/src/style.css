@@ -11,4 +11,4 @@
 @import './css/popup.css';
 @import './css/sidebar.css';
 @import './css/suggestions.css';
-@import 'md-editor-v3/lib/style.css';
+@import 'markstream-vue/index.css';

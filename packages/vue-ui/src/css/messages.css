@@ -1,6 +1,7 @@
 .copilotKitMessages {
   overflow-y: auto;
   flex: 1;
+  min-height: 0;
   padding: 1rem 1.1rem;
   display: flex;
   flex-direction: column;
@@ -68,16 +69,83 @@
 
 .copilotKitToolMessage {
   display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.copilotKitToolContent {
+  width: 100%;
+}
+
+.copilotKitToolHeader {
+  display: flex;
   align-items: center;
-  gap: 0.4rem;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.copilotKitToolName {
+  font-weight: 600;
+}
+
+.copilotKitToolStatus {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--copilot-kit-muted-color);
+}
+
+.copilotKitToolBlock {
+  margin-top: 0.45rem;
+  border: 1px solid var(--copilot-kit-separator-color);
+  border-radius: 0.5rem;
+  background: var(--copilot-kit-secondary-color);
+  overflow: hidden;
+}
+
+.copilotKitToolLabel {
+  display: inline-block;
+  margin-bottom: 0.22rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--copilot-kit-muted-color);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.copilotKitToolBlock summary {
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  padding: 0.45rem 0.55rem;
+}
+
+.copilotKitToolBlock summary::-webkit-details-marker {
+  display: none;
+}
+
+.copilotKitToolBlock pre {
+  margin: 0;
+  padding: 0.45rem 0.55rem;
+  border-top: 1px solid var(--copilot-kit-separator-color);
+  font-size: 0.78rem;
+  line-height: 1.2rem;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .copilotKitMessage .inProgressLabel {
   margin-left: 10px;
 }
 
+.copilotKitPendingMessage {
+  display: flex;
+  align-items: center;
+}
+
 .copilotKitMessages footer {
-  flex-grow: 1;
+  margin-top: auto;
+  flex: 0 0 auto;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;

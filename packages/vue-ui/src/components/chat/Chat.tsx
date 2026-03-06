@@ -81,6 +81,18 @@ export const CopilotChat = defineComponent({
                         inProgress: isLoading.value,
                         hClick: isLoading.value ? stopGeneration : reloadMessages
                       })}
+                    {currentSuggestions.value.length > 0 && (
+                      <div class="suggestions">
+                        <h6>Suggestions</h6>
+                        <div class="suggestionsList">
+                          {currentSuggestions.value.map((suggestion, index) => (
+                            <button disabled={isLoading.value} onClick={() => sendMessage(suggestion.message)}>
+                              {suggestion.title}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </>
                 )
               }

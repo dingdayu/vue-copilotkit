@@ -31,15 +31,27 @@
     "build": "vite build"
   },
   "dependencies": {
+    "@ag-ui/client": "^0.0.47",
     "@ag-ui/core": "^0.0.47",
     "@copilotkit/runtime-client-gql": "1.53.0",
     "@copilotkit/shared": "1.53.0",
     "@dingdayu/vue-copilotkit-core": "workspace:*",
-    "md-editor-v3": "4.18.1"
+    "@tiptap/core": "^2.6.5",
+    "@tiptap/extension-placeholder": "^2.6.5",
+    "@tiptap/pm": "^2.6.5",
+    "@tiptap/starter-kit": "^2.6.5",
+    "@tiptap/vue-3": "^2.6.5",
+    "lodash.merge": "^4.6.2",
+    "markstream-vue": "0.0.8-beta.2",
+    "prosemirror-state": "^1.4.3"
   },
   "devDependencies": {
-    "@dingdayu/vue-copilotkit-vite-config": "workspace:*",
-    "vite": "^5.3.4"
+    "@types/lodash.merge": "^4.6.9",
+    "@vitejs/plugin-vue": "^5.0.5",
+    "@vitejs/plugin-vue-jsx": "^4.0.0",
+    "vite": "^5.3.4",
+    "vite-plugin-dts": "^4.0.1",
+    "vite-plugin-node-polyfills": "^0.22.0"
   },
   "publishConfig": {
     "access": "public"

@@ -42,6 +42,7 @@ export interface BaseCopilotTextareaProps extends Omit<HTMLAttributes, 'onChange
    * 文本区域的初始值。可以通过 `onValueChange` 进行控制。
    */
   value?: string
+  placeholder?: string
 
   /**
    * 当文本区域的值发生变化时调用的回调函数。

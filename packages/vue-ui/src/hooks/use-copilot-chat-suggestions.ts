@@ -1,48 +1,39 @@
-import { onMounted, onUnmounted } from 'vue'
-import { CopilotChatSuggestionConfiguration } from '@dingdayu/vue-copilotkit-core'
-import { useCopilotContext } from '@dingdayu/vue-copilotkit-core'
+import { type MaybeRefOrGetter } from 'vue'
+import { useConfigureSuggestions } from '@dingdayu/vue-copilotkit-core'
+import { CopilotSuggestionItem } from '@dingdayu/vue-copilotkit-core'
 
 export interface UseCopilotChatSuggestionsProps {
   /**
    * The instructions to be used for generating suggestions.
    */
-  instructions: string
+  instructions: MaybeRefOrGetter<string>
 
   /**
    * The minimum number of suggestions to generate.
    * @default 1
    */
-  minSuggestions?: number
+  minSuggestions?: MaybeRefOrGetter<number>
 
   /**
    * The maximum number of suggestions to generate.
    * @default 3
    */
-  maxSuggestions?: number
+  maxSuggestions?: MaybeRefOrGetter<number>
+
+  /**
+   * Explicit suggestions for the current page scenario.
+   */
+  suggestions?: MaybeRefOrGetter<CopilotSuggestionItem[] | undefined>
 
   /**
    * The class name to apply to the suggestions.
    */
-  className?: string
+  className?: MaybeRefOrGetter<string | undefined>
 }
 
 export function useCopilotChatSuggestions(
-  { instructions, minSuggestions = 1, maxSuggestions = 3, className }: UseCopilotChatSuggestionsProps,
-  dependencies: any[] = [] // Vue doesn't really use dependency arrays like React, but keeping signature similar
+  { instructions, minSuggestions = 1, maxSuggestions = 3, suggestions, className }: UseCopilotChatSuggestionsProps,
+  dependencies: MaybeRefOrGetter<unknown>[] = []
 ) {
-  const { addChatSuggestionConfiguration, removeChatSuggestionConfiguration } = useCopilotContext()
-  const id = Math.random().toString(36).substring(7)
-
-  onMounted(() => {
-    addChatSuggestionConfiguration(id, {
-      instructions,
-      minSuggestions,
-      maxSuggestions,
-      className
-    })
-  })
-
-  onUnmounted(() => {
-    removeChatSuggestionConfiguration(id)
-  })
+  useConfigureSuggestions({ instructions, minSuggestions, maxSuggestions, suggestions, className }, dependencies)
 }

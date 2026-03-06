@@ -1,5 +1,4 @@
-import { defineComponent, PropType, ref } from 'vue'
-import { ElTag, ElAvatar } from 'element-plus'
+import { defineComponent, PropType } from 'vue'
 import { DocumentPointer } from '@dingdayu/vue-copilotkit-core'
 
 export interface IncludedFilesPreviewProps {
@@ -58,18 +57,19 @@ export const FileChipPreview = defineComponent({
   },
   setup(props: FileChipPreviewProps) {
     return () => (
-      <ElTag closable onClose={props.onDelete} class="inline-flex items-center gap-2" size="large">
-        <div class="flex items-center">
-          <ElAvatar
+      <span class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-2 py-1 text-sm">
+        <div class="flex items-center gap-1">
+          <img
             src={props.filePointer.iconImageUri}
             alt={props.filePointer.sourceApplication}
-            size="small"
-            style={{ backgroundColor: 'transparent' }}
-            class="mr-1"
+            class="mr-1 h-4 w-4 rounded-full bg-transparent"
           />
           {props.filePointer.name}
         </div>
-      </ElTag>
+        <button class="text-slate-500 hover:text-slate-800" onClick={props.onDelete}>
+          ×
+        </button>
+      </span>
     )
   }
 })

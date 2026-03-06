@@ -1,4 +1,5 @@
-import './styles.css'
+import './style.css'
 
 export * from './components'
 export * from './hooks'
+export * from './textarea'

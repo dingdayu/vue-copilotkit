@@ -28,8 +28,7 @@ export const CopilotTextarea = defineComponent({
       ref: refTextarea
     })
 
-    // separate the AutosuggestionsConfigUserSpecified from the rest of the props
-    const { autosuggestionsConfig: autosuggestionsConfigUserSpecified, ...forwardedProps } = props
+    const { autosuggestionsConfig: autosuggestionsConfigUserSpecified } = props
 
     const autosuggestionsConfig: AutosuggestionsConfig = merge(
       defaultAutosuggestionsConfig,

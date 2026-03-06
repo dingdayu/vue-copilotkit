@@ -1,4 +1,4 @@
-import { defineComponent, provide, PropType, inject } from 'vue'
+import { defineComponent, provide, PropType, inject, renderSlot } from 'vue'
 
 /**
  * Labels for CopilotChat component.
@@ -49,6 +49,12 @@ const defaultLabels: Required<CopilotChatLabels> = {
   regenerateResponse: 'Regenerate response'
 }
 
+const defaultChatContext = {
+  labels: defaultLabels,
+  open: true,
+  setOpen: () => {}
+}
+
 export const ChatContextProvider = defineComponent({
   props: {
     labels: {
@@ -79,7 +85,7 @@ export const ChatContextProvider = defineComponent({
     }
     provide('chatContext', context)
 
-    return () => slots.default?.()
+    return () => renderSlot(slots, 'default')
   }
 })
 
@@ -88,10 +94,15 @@ interface ChatContext {
   open: boolean
   setOpen: (open: boolean) => void
 }
+
+export function useOptionalChatContext(): ChatContext | null {
+  return inject<ChatContext | null>('chatContext', null)
+}
+
 export function useChatContext(): ChatContext {
-  const context = inject('chatContext') as ChatContext
+  const context = inject<ChatContext | null>('chatContext', null)
   if (context === null || context === undefined) {
-    throw new Error('Context not found. Did you forget to wrap your app in a <ChatContextProvider> component?')
+    return defaultChatContext
   }
   return context
 }
