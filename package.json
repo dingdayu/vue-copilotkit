@@ -11,7 +11,8 @@
     "clean": "lerna clean",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "publish:packages": "pnpm -r --filter @dingdayu/* publish --access public"
   },
   "dependencies": {
     "vue": "^3.4.31"

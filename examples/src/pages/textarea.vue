@@ -36,6 +36,13 @@
         <button class="btn" @click="handleReply">Reply</button>
       </div>
     </div>
+    <!-- Copilot chat with suggestions -->
+    <CopilotPopup
+      :labels="{
+        title: 'Email Assistant',
+        initial: 'Hi! I can help you compose email replies. What would you like to respond?'
+      }"
+    />
   </div>
   <div>
     <img src="https://github.com/fe-51shebao/.github/raw/main/demo1-ok.gif" alt="智能email回复演示" />
@@ -44,10 +51,10 @@
 
 <script setup lang="ts">
 import { CopilotTextarea } from '@dingdayu/vue-textarea'
-import { useCopilotReadable, DocumentPointer, useMakeCopilotDocumentReadable } from '@dingdayu/vue-copilotkit-core'
+import { CopilotPopup, useCopilotChatSuggestions } from '@dingdayu/vue-copilotkit-ui'
+import { useCopilotReadable } from '@dingdayu/vue-copilotkit-core'
 import { ref } from 'vue'
 import emailHistory from '../lib/email-history.json'
-import { useStateWithLocalStorage } from '../hooks/utils'
 const emails = ref(emailHistory)
 
 useCopilotReadable({
@@ -70,6 +77,16 @@ const handleReply = () => {
   emails.value.push(email)
   setInput('')
 }
+
+/**
+ * Configure chat suggestions for email assistant
+ */
+useCopilotChatSuggestions({
+  instructions:
+    'Generate helpful follow-up questions and suggestions for email composition. Suggest reply templates, tone adjustments, or specific content suggestions based on the email thread context.',
+  minSuggestions: 2,
+  maxSuggestions: 4
+})
 </script>
 
 <style scoped>

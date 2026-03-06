@@ -11,7 +11,7 @@
           v-for="(todo, index) in sortedTodos"
           :key="todo.id"
           :todo="todo"
-          @toggle-complete="(id) => toggleComplete(id, !todo.isCompleted)"
+          @toggle-complete="id => toggleComplete(id, !todo.isCompleted)"
           @delete-todo="deleteTodo"
         />
       </div>
@@ -20,7 +20,7 @@
     <CopilotPopup />
   </div>
   <div>
-    <img src="https://github.com/fe-51shebao/.github/raw/main/demo3-ok.gif" alt="智能待办演示">
+    <img src="https://github.com/fe-51shebao/.github/raw/main/demo3-ok.gif" alt="智能待办演示" />
   </div>
 </template>
 
@@ -30,6 +30,7 @@ import { ElInput, ElButton } from 'element-plus'
 import TodoItem from '../components/TodoItem.vue'
 import { CopilotPopup } from '@dingdayu/vue-copilotkit-ui'
 import { useCopilotAction, useCopilotReadable } from '@dingdayu/vue-copilotkit-core'
+import { useCopilotChatSuggestions } from '@dingdayu/vue-copilotkit-ui'
 
 type Todo = {
   id: number
@@ -44,7 +45,7 @@ const todos = ref<Todo[]>([])
 const addTodo = (text: string) => {
   if (input.value.trim() || text) {
     todos.value.push({
-      id: todos.value.length ,
+      id: todos.value.length,
       text: text || input.value,
       isCompleted: false,
       sort: todos.value.length + 1
@@ -61,7 +62,6 @@ const toggleComplete = (id: number, isCompleted: boolean) => {
     sortTodos()
   }
 }
-
 
 const deleteTodo = (id: number) => {
   todos.value = todos.value.filter(t => t.id !== id)
@@ -88,65 +88,75 @@ const sortedTodos = computed(() => {
  **/
 useCopilotReadable({
   description: "The user's todo list.",
-  value: todos.value,
+  value: todos.value
 })
 
 useCopilotAction({
-    name: "addTask",
-    description: "Adds a todo to the todo list",
-    parameters: [
-      {
-        name: "text",
-        type: "string",
-        description: "The text of the todo",
-        required: true,
-      },
-    ],
-    handler: ({ text }) => {
-      console.log(text,`addTask`);
-      addTodo(text);
+  name: 'addTask',
+  description: 'Adds a todo to the todo list',
+  parameters: [
+    {
+      name: 'text',
+      type: 'string',
+      description: 'The text of the todo',
+      required: true
     }
-  });
+  ],
+  handler: ({ text }) => {
+    console.log(text, `addTask`)
+    addTodo(text)
+  }
+})
 
-  useCopilotAction({
-    name: "deleteTask",
-    description: "Deletes a todo from the todo list",
-    parameters: [
-      {
-        name: "id",
-        type: "number",
-        description: "The id of the todo",
-        required: true,
-      },
-    ],
-    handler: ({ id }) => {
-      console.log(id,`deleteTask`);
-      deleteTodo(id);
+useCopilotAction({
+  name: 'deleteTask',
+  description: 'Deletes a todo from the todo list',
+  parameters: [
+    {
+      name: 'id',
+      type: 'number',
+      description: 'The id of the todo',
+      required: true
     }
-  });
+  ],
+  handler: ({ id }) => {
+    console.log(id, `deleteTask`)
+    deleteTodo(id)
+  }
+})
 
-  useCopilotAction({
-    name: "setTaskStatus",
-    description: "Sets the status of a todo",
-    parameters: [
-      {
-        name: "id",
-        type: "number",
-        description: "The id of the todo",
-        required: true,
-      },
-      {
-        name: "isCompleted",
-        type: "boolean",
-        description: "The status of the todo",
-        required: true,
-      },
-    ],
-    handler: ({ id, isCompleted }) => {
-      console.log(id, isCompleted,`setTaskStatus`);
-      toggleComplete(id, isCompleted);
+useCopilotAction({
+  name: 'setTaskStatus',
+  description: 'Sets the status of a todo',
+  parameters: [
+    {
+      name: 'id',
+      type: 'number',
+      description: 'The id of the todo',
+      required: true
+    },
+    {
+      name: 'isCompleted',
+      type: 'boolean',
+      description: 'The status of the todo',
+      required: true
     }
-  });
+  ],
+  handler: ({ id, isCompleted }) => {
+    console.log(id, isCompleted, `setTaskStatus`)
+    toggleComplete(id, isCompleted)
+  }
+})
+
+/**
+ * 5) Configure suggestions for the todo list chat
+ */
+useCopilotChatSuggestions({
+  instructions:
+    'Generate helpful follow-up questions and suggestions for the user related to their todo list. Suggest actions like adding new tasks, completing tasks, deleting tasks, or organizing their todos.',
+  minSuggestions: 2,
+  maxSuggestions: 4
+})
 </script>
 
 <style scoped>

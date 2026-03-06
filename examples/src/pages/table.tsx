@@ -1,6 +1,6 @@
 import { defineComponent, ref } from 'vue'
 import { useCopilotReadable, useCopilotAction, useCopilotContext } from '@dingdayu/vue-copilotkit-core'
-import { CopilotSidebar } from '@dingdayu/vue-copilotkit-ui'
+import { CopilotSidebar, useCopilotChatSuggestions } from '@dingdayu/vue-copilotkit-ui'
 
 import { TextMessage, Role } from '@copilotkit/runtime-client-gql'
 
@@ -91,22 +91,22 @@ export default defineComponent({
             {
               name: 'id',
               type: 'number',
-              description: 'Represents the id associated with the record in the table.'
+              description: 'Represents id associated with the record in the table.'
             },
             {
               name: 'date',
               type: 'string',
-              description: 'Represents the date associated with the record in the table.'
+              description: 'Represents date associated with the record in the table.'
             },
             {
               name: 'name',
               type: 'string',
-              description: 'Identifies the name associated with the record in the table.'
+              description: 'Identifies name associated with the record in the table.'
             },
             {
               name: 'address',
               type: 'string',
-              description: 'Specifies the address associated with the record in the table.'
+              description: 'Specifies address associated with the record in the table.'
             }
           ]
         }
@@ -120,6 +120,13 @@ export default defineComponent({
           return item
         })
       }
+    })
+
+    useCopilotChatSuggestions({
+      instructions:
+        'Generate helpful suggestions for table operations. Suggest actions like adding new rows, deleting rows, updating specific cells, or populating the table with sample data.',
+      minSuggestions: 2,
+      maxSuggestions: 4
     })
 
     return () => {

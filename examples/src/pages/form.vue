@@ -5,7 +5,9 @@
     </el-form-item>
     <el-form-item label="性别">
       <el-radio-group v-model="form.gender">
-        <el-radio v-for="genderOption in genderOptions" :key="genderOption.value" :value="genderOption.value">{{ genderOption.label }}</el-radio>
+        <el-radio v-for="genderOption in genderOptions" :key="genderOption.value" :value="genderOption.value">
+          {{ genderOption.label }}
+        </el-radio>
       </el-radio-group>
     </el-form-item>
     <el-form-item label="电话">
@@ -16,11 +18,17 @@
     </el-form-item>
     <el-form-item label="爱好">
       <el-checkbox-group v-model="form.hobby">
-        <el-checkbox v-for="hobbyOption in hobbyOptions" :key="hobbyOption.value" :value="hobbyOption.value" :label="hobbyOption.label" name="type" />
+        <el-checkbox
+          v-for="hobbyOption in hobbyOptions"
+          :key="hobbyOption.value"
+          :value="hobbyOption.value"
+          :label="hobbyOption.label"
+          name="type"
+        />
       </el-checkbox-group>
     </el-form-item>
     <el-form-item label="出生日期">
-      <el-date-picker v-model="form.date" type="date" placeholder="Pick a day" style="width: 100%;" />
+      <el-date-picker v-model="form.date" type="date" placeholder="Pick a day" style="width: 100%" />
     </el-form-item>
     <el-form-item label="地址1">
       <el-input type="textarea" v-model="form.address1" />
@@ -39,13 +47,13 @@
   <!-- copilot -->
   <CopilotPopup />
   <div>
-    <img src="https://github.com/fe-51shebao/.github/raw/main/demo-form.gif" alt="智能填充表单演示">
+    <img src="https://github.com/fe-51shebao/.github/raw/main/demo-form.gif" alt="智能填充表单演示" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { CopilotPopup } from '@dingdayu/vue-copilotkit-ui'
+import { CopilotPopup, useCopilotChatSuggestions } from '@dingdayu/vue-copilotkit-ui'
 import { useCopilotAction, useCopilotReadable } from '@dingdayu/vue-copilotkit-core'
 
 // do not use same name with ref
@@ -76,64 +84,75 @@ useCopilotReadable({
   value: form.value
 })
 useCopilotReadable({
-  description: "The hobby list.",
+  description: 'The hobby list.',
   value: hobbyOptions
 })
 useCopilotReadable({
-  description: "The gender list.",
+  description: 'The gender list.',
   value: genderOptions
 })
 
 useCopilotAction({
-    name: "updateUserInfo",
-    description: "Update the user's information",
-    parameters: [
-      {
-        name: "name",
-        type: "string",
-        description: "The name of the user",
-      },
-      {
-        name: "gender",
-        type: "string",
-        description: "The gender of the user, the gender list is the same as the gender options",
-      },
-      {
-        name: "phone",
-        type: "string",
-        description: "The phone of the user",
-      },
-      {
-        name: "email",
-        type: "string",
-        description: "The email of the user",
-      },
-      {
-        name: "hobby",
-        type: "string[]",
-        description: "The hobby of the user, the hobby list is the same as the hobby options",
-      },
-      {
-        name: "date",
-        type: "string",
-        description: "The date of the user, format: YYYY-MM-DD",
-      },
-      {
-        name: "address1",
-        type: "string",
-        description: "The address1 of the user, contains the province and city",
-      },
-      {
-        name: "address2",
-        type: "string",
-        description: "The address2 of the user, contains the street and house number",
-      }
-    ],
-    handler: (info) => {
-      console.log(info)
-      form.value = info
+  name: 'updateUserInfo',
+  description: "Update the user's information",
+  parameters: [
+    {
+      name: 'name',
+      type: 'string',
+      description: 'The name of the user'
+    },
+    {
+      name: 'gender',
+      type: 'string',
+      description: 'The gender of the user, the gender list is the same as the gender options'
+    },
+    {
+      name: 'phone',
+      type: 'string',
+      description: 'The phone of the user'
+    },
+    {
+      name: 'email',
+      type: 'string',
+      description: 'The email of the user'
+    },
+    {
+      name: 'hobby',
+      type: 'string[]',
+      description: 'The hobby of the user, the hobby list is the same as the hobby options'
+    },
+    {
+      name: 'date',
+      type: 'string',
+      description: 'The date of the user, format: YYYY-MM-DD'
+    },
+    {
+      name: 'address1',
+      type: 'string',
+      description: 'The address1 of the user, contains the province and city'
+    },
+    {
+      name: 'address2',
+      type: 'string',
+      description: 'The address2 of the user, contains the street and house number'
     }
-  });
+  ],
+  handler: info => {
+    console.log(info)
+    form.value = info
+  }
+})
+
+/**
+ * Configure chat suggestions for form auto-fill
+ */
+useCopilotChatSuggestions({
+  instructions:
+    'Generate helpful suggestions for filling out the user information form. Suggest actions like filling the form with sample data, clearing the form, or updating specific fields.',
+  minSuggestions: 2,
+  maxSuggestions: 4
+})
+
 const onSubmit = () => {
   console.log('submit!')
 }

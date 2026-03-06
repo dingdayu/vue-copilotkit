@@ -1,14 +1,15 @@
 [English](./README.md) | [中文](./README.zh.md)
 
-| Package                                 | NPM Version                                                                                                                               |
-| :-------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------- |
-| `@dingdayu/vue-copilotkit-core`         | [![NPM version for @dingdayu/vue-copilotkit-core](https://img.shields.io/npm/v/@dingdayu/vue-copilotkit-core)](https://www.npmjs.com/package/@dingdayu/vue-copilotkit-core) |
-| `@dingdayu/vue-copilotkit-ui`           | [![NPM version for @dingdayu/vue-copilotkit-ui](https://img.shields.io/npm/v/@dingdayu/vue-copilotkit-ui)](https://www.npmjs.com/package/@dingdayu/vue-copilotkit-ui)     |
+| Package                         | NPM Version                                                                                                                                                                 |
+| :------------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@dingdayu/vue-copilotkit-core` | [![NPM version for @dingdayu/vue-copilotkit-core](https://img.shields.io/npm/v/@dingdayu/vue-copilotkit-core)](https://www.npmjs.com/package/@dingdayu/vue-copilotkit-core) |
+| `@dingdayu/vue-copilotkit-ui`   | [![NPM version for @dingdayu/vue-copilotkit-ui](https://img.shields.io/npm/v/@dingdayu/vue-copilotkit-ui)](https://www.npmjs.com/package/@dingdayu/vue-copilotkit-ui)       |
 
 ---
+
 # Vue Copilotkit
 
-*This project is forked from https://github.com/fe-51shebao/vue-copilotkit*
+_This project is forked from https://github.com/fe-51shebao/vue-copilotkit_
 
 > A Vue implementation based on the React UI library of <a href="https://github.com/CopilotKit/CopilotKit" target="_blank">CopilotKit</a>
 
@@ -31,48 +32,44 @@ pnpm add @copilotkit/runtime openai
 Create `index.js` file.
 
 ```ts
-import { createServer } from 'node:http';
-import {
-    CopilotRuntime,
-    OpenAIAdapter,
-    copilotRuntimeNodeHttpEndpoint,
-} from '@copilotkit/runtime';
-import OpenAI from 'openai';
+import { createServer } from 'node:http'
+import { CopilotRuntime, OpenAIAdapter, copilotRuntimeNodeHttpEndpoint } from '@copilotkit/runtime'
+import OpenAI from 'openai'
 
 const openai = new OpenAI({
-    apiKey: "sk-xxx", // Or read the API key from environment variables process.env["OPENAI_API_KEY"]
-    baseURL: "https://api.deepseek.com", // Optional: baseURL for relevant platforms, e.g., Bailian (阿里云百炼): https://dashscope.aliyuncs.com/compatible-mode/v1
-});
+  apiKey: 'sk-xxx', // Or read the API key from environment variables process.env["OPENAI_API_KEY"]
+  baseURL: 'https://api.deepseek.com' // Optional: baseURL for relevant platforms, e.g., Bailian (阿里云百炼): https://dashscope.aliyuncs.com/compatible-mode/v1
+})
 
 // During testing, it was found that CopilotKit 1.8.14 uses this.openai.beta.chat.completions.stream
 // This will cause an error in actual use, so an assignment is needed.
-openai.beta = openai;
+openai.beta = openai
 
 // Note the model setting here, e.g., for Qwen: qwen-max-latest
-const serviceAdapter = new OpenAIAdapter({ openai, model: "deepseek-chat", keepSystemRole: true, });
+const serviceAdapter = new OpenAIAdapter({ openai, model: 'deepseek-chat', keepSystemRole: true })
 
 const server = createServer((req, res) => {
-    const runtime = new CopilotRuntime({
-        // This is for remote Agent usage. If you need to implement it in other languages,
-        // you can refer to the sdk-python in CopilotKit.
-        // "remoteEndpoints": [
-        //     {
-        //         "url": "http://10.0.7.105:8005/copilotkit_remote",
-        //     }
-        // ]
-    });
-    const handler = copilotRuntimeNodeHttpEndpoint({
-        endpoint: '/copilotkit',
-        runtime,
-        serviceAdapter,
-    });
+  const runtime = new CopilotRuntime({
+    // This is for remote Agent usage. If you need to implement it in other languages,
+    // you can refer to the sdk-python in CopilotKit.
+    // "remoteEndpoints": [
+    //     {
+    //         "url": "http://10.0.7.105:8005/copilotkit_remote",
+    //     }
+    // ]
+  })
+  const handler = copilotRuntimeNodeHttpEndpoint({
+    endpoint: '/copilotkit',
+    runtime,
+    serviceAdapter
+  })
 
-    return handler(req, res);
-});
+  return handler(req, res)
+})
 
 server.listen(4000, () => {
-    console.log('Listening at http://localhost:4000/copilotkit');
-});
+  console.log('Listening at http://localhost:4000/copilotkit')
+})
 ```
 
 Run `node index.js`.
@@ -159,17 +156,32 @@ import { Page } from '@vben/common-ui';
 
 **Popup Example:**
 
-![Copilot Popup](./popup.png) 
+![Copilot Popup](./popup.png)
 
 ## Changes from Upstream
 
 1. Renamed packages for NPM registry publication
-    - `@copilotkit/vue-core` → `@dingdayu/vue-copilotkit-core`
-    - `@copilotkit/vue-ui` → `@dingdayu/vue-copilotkit-ui`
-    -   `@copilotkit/vite-config` → `@dingdayu/vue-copilotkit-vite-config`
+   - `@copilotkit/vue-core` → `@dingdayu/vue-copilotkit-core`
+   - `@copilotkit/vue-ui` → `@dingdayu/vue-copilotkit-ui`
+   - `@copilotkit/vite-config` → `@dingdayu/vue-copilotkit-vite-config`
 2. Upgraded @copilotkit/shared and related packages to `1.8.14`
 3. Fixed `Window` for build errors
 4. Updated `vite.config.ts` to resolve `injection "Symbol()" not found` issue caused by vite inlining
 5. Fixed `asStream` not found issue caused by incorrect `CopilotRuntimeClient` usage
 6. Fixed `view.docView.domFromPos` related issues
 7. Added repository information to `package.json`
+
+## Publish
+
+This repo is a pnpm monorepo. The packages are published from `packages/*`.
+
+```bash
+pnpm install
+pnpm build
+pnpm publish:packages
+```
+
+Notes:
+
+- Make sure you are logged in: `npm login`
+- Update package versions in `packages/*/package.json` before publishing
