@@ -8,7 +8,8 @@
   "scripts": {
     "dev": "pnpm run -F examples dev",
     "build": "turbo build",
-    "clean": "lerna clean"
+    "clean": "lerna clean",
+    "check:upstream-diff": "node ./check-upstream-diff.mjs"
   },
   "dependencies": {
     "vue": "^3.4.31"
