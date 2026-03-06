@@ -35,6 +35,25 @@ export type UseChatOptions = {
   setIsLoading: any
 }
 
+type StreamResponse = ReturnType<CopilotRuntimeClient['generateCopilotResponse']>
+function getAsStream(runtimeClient: CopilotRuntimeClient): CopilotRuntimeClient['asStream'] {
+  if (typeof runtimeClient.asStream === 'function') {
+    return runtimeClient.asStream.bind(runtimeClient)
+  }
+
+  const staticAsStream = (
+    CopilotRuntimeClient as unknown as {
+      asStream?: CopilotRuntimeClient['asStream']
+    }
+  ).asStream
+
+  if (typeof staticAsStream === 'function') {
+    return staticAsStream
+  }
+
+  throw new Error('CopilotRuntimeClient does not provide asStream in this runtime-client-gql version')
+}
+
 function buildCopilotRequest(
   actions: Action[],
   copilotConfig: CopilotApiConfig,
@@ -160,13 +179,14 @@ export function useChat(options: UseChatOptions) {
     )
 
     const runtimeClient = getRuntimeClient()
-    const stream = runtimeClient.asStream(
-      runtimeClient.generateCopilotResponse({
-        data: requestData,
-        properties: copilotConfig.properties,
-        signal: abortControllerRef.value?.signal
-      })
-    )
+
+    const responsePromise = runtimeClient.generateCopilotResponse({
+      data: requestData,
+      properties: copilotConfig.properties,
+      signal: abortControllerRef.value?.signal
+    })
+
+    const stream = getAsStream(runtimeClient)(responsePromise)
 
     const guardrailsEnabled = copilotConfig.cloud?.guardrails?.input?.restrictToTopic.enabled || false
     const reader = stream.getReader()

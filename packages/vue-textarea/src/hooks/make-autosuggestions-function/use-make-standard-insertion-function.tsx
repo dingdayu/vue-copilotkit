@@ -17,6 +17,26 @@ import {
 import { InsertionsApiConfig } from '../../types/autosuggestions-config/insertions-api-config'
 import { EditingApiConfig } from '../../types/autosuggestions-config/editing-api-config'
 
+type StreamResponse = ReturnType<CopilotRuntimeClient['generateCopilotResponse']>
+
+function getAsStream(runtimeClient: CopilotRuntimeClient): CopilotRuntimeClient['asStream'] {
+  if (typeof runtimeClient.asStream === 'function') {
+    return runtimeClient.asStream.bind(runtimeClient)
+  }
+
+  const staticAsStream = (
+    CopilotRuntimeClient as unknown as {
+      asStream?: CopilotRuntimeClient['asStream']
+    }
+  ).asStream
+
+  if (typeof staticAsStream === 'function') {
+    return staticAsStream
+  }
+
+  throw new Error('CopilotRuntimeClient does not provide asStream in this runtime-client-gql version')
+}
+
 export function useMakeStandardInsertionOrEditingFunction(
   textareaPurpose: string,
   contextCategories: string[],
@@ -36,10 +56,8 @@ export function useMakeStandardInsertionOrEditingFunction(
     credentials: copilotApiConfig.credentials
   })
 
-  async function runtimeClientResponseToStringStream(
-    responsePromise: ReturnType<typeof runtimeClient.generateCopilotResponse>
-  ) {
-    const messagesStream = await runtimeClient.asStream(responsePromise)
+  async function runtimeClientResponseToStringStream(responsePromise: StreamResponse) {
+    const messagesStream = await getAsStream(runtimeClient)(responsePromise)
 
     return new ReadableStream({
       async start(controller) {

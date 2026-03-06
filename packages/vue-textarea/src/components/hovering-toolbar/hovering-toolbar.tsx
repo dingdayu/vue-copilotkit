@@ -46,8 +46,16 @@ export const HoveringToolbar = defineComponent({
       const editorRect = view.dom.getBoundingClientRect()
       // 获取光标的范围并计算其像素位置
       const range = document.createRange()
-      range.setStart(domNode, offset)
-      range.setEnd(domNode, offset)
+      if (domNode.nodeType === Node.TEXT_NODE) {
+        const textNode = domNode as Text
+        const safeOffset = Math.min(offset, textNode.length)
+        range.setStart(textNode, safeOffset)
+        range.setEnd(textNode, safeOffset)
+      } else {
+        const safeOffset = Math.min(offset, domNode.childNodes.length)
+        range.setStart(domNode, safeOffset)
+        range.setEnd(domNode, safeOffset)
+      }
 
       let rect = range.getBoundingClientRect()
       if (rect.width === 0 && rect.height === 0) {
