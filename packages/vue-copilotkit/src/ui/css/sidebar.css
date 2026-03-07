@@ -1,0 +1,26 @@
+.copilotKitSidebar {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 30;
+  line-height: 1.5;
+  font-family: var(--copilot-kit-font-family);
+  touch-action: manipulation;
+}
+
+.copilotKitSidebar svg {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.copilotKitSidebarContentWrapper {
+  overflow: visible;
+  margin-right: 0;
+  transition: margin-right 0.3s ease;
+}
+
+@media (min-width: 640px) {
+  .copilotKitSidebarContentWrapper.sidebarExpanded {
+    margin-right: 28rem;
+  }
+}

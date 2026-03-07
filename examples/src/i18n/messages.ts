@@ -96,11 +96,10 @@ export const messages = {
       },
       presentation: {
         title: '演示文稿助手',
-        subtitle: '管理幻灯片标题与内容，支持跳转和增删。',
+        subtitle: '使用 Marp Markdown 生成演示文稿，切换模板并导出为 PPTX。',
         prev: '上一页',
         next: '下一页',
         add: '新增页',
-        edit: '编辑当前页',
         remove: '删除当前页'
       },
       sdk: {
@@ -225,11 +224,10 @@ export const messages = {
       },
       presentation: {
         title: 'Presentation assistant',
-        subtitle: 'Manage slide titles/content with navigation and CRUD.',
+        subtitle: 'Generate presentations from Marp Markdown, switch themes, and export to PPTX.',
         prev: 'Previous',
         next: 'Next',
         add: 'Add slide',
-        edit: 'Edit current',
         remove: 'Delete current'
       },
       sdk: {

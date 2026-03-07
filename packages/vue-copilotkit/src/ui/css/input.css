@@ -1,0 +1,90 @@
+.copilotKitInput {
+  border-top: 1px solid var(--copilot-kit-separator-color);
+  padding: 0.8rem 0.85rem 0.85rem;
+  display: flex;
+  align-items: center;
+  cursor: text;
+  position: relative;
+  border-bottom-left-radius: var(--copilot-kit-radius-xl);
+  border-bottom-right-radius: var(--copilot-kit-radius-xl);
+  background-color: var(--copilot-kit-surface-color);
+  gap: 0.6rem;
+}
+
+.copilotKitInput > .copilotKitInputControls > button {
+  padding: 0.32rem;
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    color 180ms ease,
+    background-color 180ms ease;
+  transform: scale(1);
+  color: rgba(22, 35, 50, 0.4);
+  -webkit-appearance: button;
+  appearance: button;
+  background-color: transparent;
+  background-image: none;
+  text-transform: none;
+  font-family: inherit;
+  font-size: 100%;
+  font-weight: inherit;
+  line-height: inherit;
+  border: 0;
+  margin: 0;
+  text-indent: 0px;
+  text-shadow: none;
+  display: inline-block;
+  text-align: center;
+  margin-left: 0.15rem;
+  border-radius: 8px;
+}
+
+.copilotKitInput > .copilotKitInputControls > button:not([disabled]) {
+  color: var(--copilot-kit-primary-color);
+}
+
+.copilotKitInput > .copilotKitInputControls > button:not([disabled]):hover {
+  transform: scale(1.04);
+  background-color: rgba(15, 118, 110, 0.08);
+}
+
+.copilotKitInput > .copilotKitInputControls > button[disabled] {
+  color: var(--copilot-kit-muted-color);
+}
+
+.copilotKitInputControls {
+  display: flex;
+}
+
+.copilotKitInput > textarea {
+  flex: 1;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  resize: none;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  cursor: text;
+  font-size: 0.93rem;
+  line-height: 1.35rem;
+  margin: 0;
+  padding: 0.2rem 0.35rem;
+  font-family: inherit;
+  font-weight: inherit;
+  color: var(--copilot-kit-secondary-contrast-color);
+  border: 0;
+  background-color: transparent;
+}
+
+.copilotKitInput > textarea::placeholder {
+  color: var(--copilot-kit-muted-color);
+  opacity: 1;
+}
+
+.copilotKitInput > .copilotKitInputControls > button.copilotKitPushToTalkRecording {
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  animation: copilotKitPulseAnimation 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

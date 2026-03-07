@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
-import '@dingdayu/vue-copilotkit-ui/style.css'
+import '@dingdayu/vue-copilotkit/style.css'
 
 import App from './App.vue'
 import i18n from './i18n'

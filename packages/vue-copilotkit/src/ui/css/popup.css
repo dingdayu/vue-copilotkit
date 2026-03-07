@@ -1,0 +1,14 @@
+.copilotKitPopup {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 30;
+  line-height: 1.5;
+  font-family: var(--copilot-kit-font-family);
+  touch-action: manipulation;
+}
+
+.copilotKitPopup svg {
+  display: inline-block;
+  vertical-align: middle;
+}

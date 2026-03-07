@@ -1,8 +1,6 @@
 <template>
   <main class="demo-page bg-gradient-to-b from-violet-50 to-slate-50">
     <div class="demo-page-shell demo-page-shell--sidebar">
-      <RouterLink class="font-semibold text-blue-700" to="/">{{ t('common.backHome') }}</RouterLink>
-
       <section class="mt-3 grid gap-4 rounded-2xl border border-slate-200 bg-white/90 p-5">
         <header>
           <h1 class="text-2xl font-bold text-slate-900">{{ t('pages.sdk.title') }}</h1>
@@ -101,8 +99,8 @@
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { useAgent, useConfigureSuggestions, useCopilotContext, useHumanInTheLoop } from '@dingdayu/vue-copilotkit-core'
-import { CopilotChat, CopilotPopup, CopilotSidebar } from '@dingdayu/vue-copilotkit-ui'
+import { useAgent, useConfigureSuggestions, useCopilotContext, useHumanInTheLoop } from '@dingdayu/vue-copilotkit'
+import { CopilotChat, CopilotPopup, CopilotSidebar } from '@dingdayu/vue-copilotkit'
 
 const { t, locale } = useI18n()
 

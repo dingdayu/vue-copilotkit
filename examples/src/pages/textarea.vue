@@ -1,8 +1,6 @@
 <template>
   <main class="demo-page bg-gradient-to-b from-emerald-50 to-slate-50">
     <div class="demo-page-shell">
-      <RouterLink class="font-semibold text-blue-700" to="/">{{ t('common.backHome') }}</RouterLink>
-
       <section class="mt-3 grid gap-4 rounded-2xl border border-slate-200 bg-white/90 p-5">
         <header>
           <h1 class="text-2xl font-bold text-slate-900">{{ t('pages.textarea.title') }}</h1>
@@ -37,12 +35,25 @@
           <CopilotTextarea
             :value="text"
             :placeholder="t('pages.textarea.replyPlaceholder')"
+            :brandingLabel="textareaBrandingLabel"
+            :suggestionsStyle="{
+              color: '#0f766e',
+              fontWeight: 600,
+              letterSpacing: '0.02em'
+            }"
             :autosuggestionsConfig="{
               textareaPurpose: 'Assist with replying to this email thread and keep important details.',
               chatApiConfigs: {}
             }"
             :onChange="e => setInput(e)"
           />
+          <p class="text-xs text-slate-500">
+            {{
+              locale.value === 'zh-CN'
+                ? '右下角品牌文案已自定义（示例：AI Reply Lab）。'
+                : 'Bottom-right branding is customized (example: AI Reply Lab).'
+            }}
+          </p>
           <button class="w-fit rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white" @click="handleReply">
             {{ t('pages.textarea.reply') }}
           </button>
@@ -66,8 +77,8 @@
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { useCopilotReadable } from '@dingdayu/vue-copilotkit-core'
-import { CopilotPopup, CopilotTextarea, useCopilotChatSuggestions } from '@dingdayu/vue-copilotkit-ui'
+import { useCopilotReadable } from '@dingdayu/vue-copilotkit'
+import { CopilotPopup, CopilotTextarea, useCopilotChatSuggestions } from '@dingdayu/vue-copilotkit'
 
 type EmailItem = {
   from: string
@@ -99,6 +110,7 @@ useCopilotReadable({
 })
 
 const text = ref('')
+const textareaBrandingLabel = computed(() => (locale.value === 'zh-CN' ? 'AI 回复实验室' : 'AI Reply Lab'))
 
 const setInput = (val: unknown) => {
   if (typeof val === 'string') {

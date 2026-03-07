@@ -6,6 +6,18 @@
       {{ isConfigured ? t('app.toolbar.configured') : t('app.toolbar.notConfigured') }}
     </span>
 
+    <nav class="hidden items-center gap-1 lg:flex">
+      <RouterLink
+        v-for="item in quickRoutes"
+        :key="item.to"
+        :to="item.to"
+        class="rounded-md px-2 py-1 text-slate-600 no-underline transition hover:bg-slate-100 hover:text-slate-900"
+        :class="route.path === item.to ? 'bg-blue-50 text-blue-700' : ''"
+      >
+        {{ item.label }}
+      </RouterLink>
+    </nav>
+
     <div class="ml-auto flex items-center gap-2">
       <div class="relative">
         <button
@@ -99,10 +111,12 @@
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 
 import { useAppConfigStore } from '../stores/app-config'
 
 const { t } = useI18n()
+const route = useRoute()
 const store = useAppConfigStore()
 const { apiKey, runtimeUrl, language } = storeToRefs(store)
 
@@ -131,6 +145,18 @@ watch(
 )
 
 const isConfigured = computed(() => Boolean(runtimeUrl.value || apiKey.value))
+
+const quickRoutes = computed(() => [
+  { to: '/', label: t('common.backHome') },
+  { to: '/todolist', label: t('home.cards.todolistTitle') },
+  { to: '/form', label: t('home.cards.formTitle') },
+  { to: '/textarea', label: t('home.cards.textareaTitle') },
+  { to: '/table', label: t('home.cards.tableTitle') },
+  { to: '/chat-with-your-data', label: t('home.cards.dataTitle') },
+  { to: '/spreadsheet', label: t('home.cards.sheetTitle') },
+  { to: '/presentation', label: t('home.cards.deckTitle') },
+  { to: '/sdk', label: t('home.cards.sdkTitle') }
+])
 
 const openConfigDialog = () => {
   isLanguageMenuOpen.value = false

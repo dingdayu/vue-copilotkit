@@ -2,6 +2,7 @@
 
 | Package                         | NPM Version                                                                                                                                                                 |
 | :------------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@dingdayu/vue-copilotkit`      | _新的统一包（core + ui）_                                                                                                                                                   |
 | `@dingdayu/vue-copilotkit-core` | [![NPM version for @dingdayu/vue-copilotkit-core](https://img.shields.io/npm/v/@dingdayu/vue-copilotkit-core)](https://www.npmjs.com/package/@dingdayu/vue-copilotkit-core) |
 | `@dingdayu/vue-copilotkit-ui`   | [![NPM version for @dingdayu/vue-copilotkit-ui](https://img.shields.io/npm/v/@dingdayu/vue-copilotkit-ui)](https://www.npmjs.com/package/@dingdayu/vue-copilotkit-ui)       |
 
@@ -13,7 +14,13 @@ _此项目 fork 自 https://github.com/fe-51shebao/vue-copilotkit_
 
 > 一个基于 <a href="https://github.com/CopilotKit/CopilotKit" target="_blank">CopilotKit</a> React UI 库的 Vue 实现。
 
-`@dingdayu/vue-copilotkit-core` 和 `@dingdayu/vue-copilotkit-ui` 均已发布到 NPM 仓库，你可以使用以下命令将其添加到你的项目中：
+推荐新项目优先使用统一包 `@dingdayu/vue-copilotkit`：
+
+```bash
+pnpm add @dingdayu/vue-copilotkit
+```
+
+如果你希望分包使用，也可以继续安装 `@dingdayu/vue-copilotkit-core` 和 `@dingdayu/vue-copilotkit-ui`：
 
 ```bash
 pnpm add @dingdayu/vue-copilotkit-core @dingdayu/vue-copilotkit-ui
@@ -130,7 +137,7 @@ v2 single-route 支持的 `method`：
 安装依赖
 
 ```bash
-pnpm add @dingdayu/vue-copilotkit-core @dingdayu/vue-copilotkit-ui
+pnpm add @dingdayu/vue-copilotkit
 ```
 
 其中 `core` 负责 Provider 和 hooks，`ui` 负责聊天、弹窗、侧栏与 textarea 组件及样式。
@@ -143,7 +150,7 @@ import { computed } from 'vue';
 import { useAntdDesignTokens } from '@vben/hooks';
 import { preferences, usePreferences } from '@vben/preferences';
 
-+import { CopilotKit } from '@dingdayu/vue-copilotkit-core';
++import { CopilotKit } from '@dingdayu/vue-copilotkit';
 import { App, ConfigProvider, theme } from 'ant-design-vue';
 
 import { antdLocale } from '#/locales';
@@ -191,10 +198,10 @@ const tokenTheme = computed(() => {
 <script setup lang="ts">
 import { Page } from '@vben/common-ui';
 
-+import { CopilotPopup } from '@dingdayu/vue-copilotkit-ui';
++import { CopilotPopup } from '@dingdayu/vue-copilotkit';
 
 // 如果需要，可以全局导入 CSS
-+import '@dingdayu/vue-copilotkit-ui/style.css';
++import '@dingdayu/vue-copilotkit/style.css';
 </script>
 
 <template>

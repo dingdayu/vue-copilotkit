@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import { CopilotKit } from '@dingdayu/vue-copilotkit-core'
+import { CopilotKit } from '@dingdayu/vue-copilotkit'
 import { storeToRefs } from 'pinia'
 import { computed, watch } from 'vue'
 import { useRoute } from 'vue-router'

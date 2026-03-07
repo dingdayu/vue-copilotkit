@@ -1,0 +1,60 @@
+.copilotKitWindow {
+  position: fixed;
+  inset: 0;
+  transform-origin: bottom;
+  border: 1px solid var(--copilot-kit-separator-color);
+  background: linear-gradient(180deg, #fbfdff 0%, var(--copilot-kit-surface-color) 100%);
+  border-radius: var(--copilot-kit-radius-xl);
+  box-shadow: var(--copilot-kit-shadow-lg);
+  flex-direction: column;
+  transition:
+    opacity 140ms ease-out,
+    transform 220ms ease-out;
+  opacity: 0;
+  transform: scale(0.95) translateY(18px);
+  display: flex;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.copilotKitSidebar .copilotKitWindow {
+  border-radius: 0;
+  opacity: 1;
+  transform: translateX(100%);
+}
+
+.copilotKitWindow.open {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  pointer-events: auto;
+}
+
+.copilotKitSidebar .copilotKitWindow.open {
+  transform: translateX(0);
+}
+
+@media (min-width: 640px) {
+  .copilotKitWindow {
+    transform-origin: bottom right;
+    bottom: 5rem;
+    right: 1.25rem;
+    top: auto;
+    left: auto;
+    margin-bottom: 0.75rem;
+    width: min(26rem, calc(100vw - 2.5rem));
+    height: min(680px, calc(100vh - 7rem));
+    min-height: 320px;
+    max-height: calc(100% - 6rem);
+  }
+
+  .copilotKitSidebar .copilotKitWindow {
+    bottom: 0;
+    right: 0;
+    top: auto;
+    left: auto;
+    width: min(29rem, 100vw);
+    min-height: 100%;
+    margin-bottom: 0;
+    max-height: none;
+  }
+}

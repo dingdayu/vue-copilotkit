@@ -1,0 +1,30 @@
+.copilotKitResponseButton {
+  background-color: var(--copilot-kit-response-button-background-color);
+  border: 1px solid var(--copilot-kit-separator-color);
+  border-radius: 999px;
+  color: var(--copilot-kit-response-button-color);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  height: 34px;
+  line-height: 32px;
+  margin: 0;
+  padding: 0 14px;
+  text-align: center;
+  text-decoration: none;
+  text-transform: none;
+  white-space: nowrap;
+  margin-top: 12px;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.copilotKitResponseButton:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--copilot-kit-shadow-md);
+}
+
+.copilotKitResponseButton > span {
+  margin-right: 0.5rem;
+}

@@ -1,11 +1,10 @@
 # CopilotKit Vue Examples
 
-This app is a curated set of practical demos for `@dingdayu/vue-copilotkit-*`.
+This app is a curated set of practical demos for `@dingdayu/vue-copilotkit`.
 
-It demonstrates the current package split:
+It demonstrates the unified package:
 
-- `@dingdayu/vue-copilotkit-core` for provider + hooks
-- `@dingdayu/vue-copilotkit-ui` for chat UI and `CopilotTextarea`
+- `@dingdayu/vue-copilotkit` for provider, hooks, chat UI, and `CopilotTextarea`
 
 ## Start
 
@@ -59,4 +58,4 @@ The demo supports both Chinese and English using `vue-i18n`.
 
 - The demo uses `vue-i18n` for bilingual copy.
 - Shared state is handled with `pinia`.
-- Global UI styles are imported from `@dingdayu/vue-copilotkit-ui/style.css`.
+- Global UI styles are imported from `@dingdayu/vue-copilotkit/style.css`.
