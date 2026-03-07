@@ -1,10 +1,10 @@
 [English](./README.md) | [中文](./README.zh.md)
 
-| Package                         | NPM Version                                                                                                                                                                 |
-| :------------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@dingdayu/vue-copilotkit`      | _new unified package (core + ui)_                                                                                                                                           |
-| `@dingdayu/vue-copilotkit-core` | [![NPM version for @dingdayu/vue-copilotkit-core](https://img.shields.io/npm/v/@dingdayu/vue-copilotkit-core)](https://www.npmjs.com/package/@dingdayu/vue-copilotkit-core) |
-| `@dingdayu/vue-copilotkit-ui`   | [![NPM version for @dingdayu/vue-copilotkit-ui](https://img.shields.io/npm/v/@dingdayu/vue-copilotkit-ui)](https://www.npmjs.com/package/@dingdayu/vue-copilotkit-ui)       |
+| Package                         | Status        | NPM Version                                                                                                                                                                 |
+| :------------------------------ | :------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@dingdayu/vue-copilotkit`      | 🟢 Active     | [![NPM version for @dingdayu/vue-copilotkit](https://img.shields.io/npm/v/@dingdayu/vue-copilotkit)](https://www.npmjs.com/package/@dingdayu/vue-copilotkit)                |
+| `@dingdayu/vue-copilotkit-core` | 🔴 Deprecated | [![NPM version for @dingdayu/vue-copilotkit-core](https://img.shields.io/npm/v/@dingdayu/vue-copilotkit-core)](https://www.npmjs.com/package/@dingdayu/vue-copilotkit-core) |
+| `@dingdayu/vue-copilotkit-ui`   | 🔴 Deprecated | [![NPM version for @dingdayu/vue-copilotkit-ui](https://img.shields.io/npm/v/@dingdayu/vue-copilotkit-ui)](https://www.npmjs.com/package/@dingdayu/vue-copilotkit-ui)       |
 
 ---
 
@@ -140,7 +140,7 @@ Install dependencies
 pnpm add @dingdayu/vue-copilotkit
 ```
 
-Use the core package for the provider and hooks, and use the UI package for chat/textarea components and styles.
+Use the unified package for both provider/hooks and chat UI components.
 
 ```diff
 // app.vue
@@ -199,9 +199,6 @@ Documentation: https://docs.copilotkit.ai/reference/components/chat/CopilotChat
 import { Page } from '@vben/common-ui';
 
 +import { CopilotPopup } from '@dingdayu/vue-copilotkit';
-
-// CSS can be imported globally if necessary
-+import '@dingdayu/vue-copilotkit/style.css';
 </script>
 
 <template>
@@ -213,6 +210,8 @@ import { Page } from '@vben/common-ui';
 </template>
 
 ```
+
+No extra CSS import is required when you import from `@dingdayu/vue-copilotkit` root, because `style.css` is already loaded in the package entry. If you import from subpaths only, manually import `@dingdayu/vue-copilotkit/style.css`.
 
 **Popup Example:**
 

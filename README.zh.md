@@ -1,10 +1,10 @@
 [English](./README.md) | [中文](./README.zh.md)
 
-| Package                         | NPM Version                                                                                                                                                                 |
-| :------------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@dingdayu/vue-copilotkit`      | _新的统一包（core + ui）_                                                                                                                                                   |
-| `@dingdayu/vue-copilotkit-core` | [![NPM version for @dingdayu/vue-copilotkit-core](https://img.shields.io/npm/v/@dingdayu/vue-copilotkit-core)](https://www.npmjs.com/package/@dingdayu/vue-copilotkit-core) |
-| `@dingdayu/vue-copilotkit-ui`   | [![NPM version for @dingdayu/vue-copilotkit-ui](https://img.shields.io/npm/v/@dingdayu/vue-copilotkit-ui)](https://www.npmjs.com/package/@dingdayu/vue-copilotkit-ui)       |
+| Package                         | 状态    | NPM Version                                                                                                                                                                 |
+| :------------------------------ | :------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@dingdayu/vue-copilotkit`      | 🟢 活跃 | [![NPM version for @dingdayu/vue-copilotkit](https://img.shields.io/npm/v/@dingdayu/vue-copilotkit)](https://www.npmjs.com/package/@dingdayu/vue-copilotkit)                |
+| `@dingdayu/vue-copilotkit-core` | 🔴 弃用 | [![NPM version for @dingdayu/vue-copilotkit-core](https://img.shields.io/npm/v/@dingdayu/vue-copilotkit-core)](https://www.npmjs.com/package/@dingdayu/vue-copilotkit-core) |
+| `@dingdayu/vue-copilotkit-ui`   | 🔴 弃用 | [![NPM version for @dingdayu/vue-copilotkit-ui](https://img.shields.io/npm/v/@dingdayu/vue-copilotkit-ui)](https://www.npmjs.com/package/@dingdayu/vue-copilotkit-ui)       |
 
 ---
 
@@ -140,7 +140,7 @@ v2 single-route 支持的 `method`：
 pnpm add @dingdayu/vue-copilotkit
 ```
 
-其中 `core` 负责 Provider 和 hooks，`ui` 负责聊天、弹窗、侧栏与 textarea 组件及样式。
+统一包同时包含 Provider/hooks 与聊天 UI 组件。
 
 ```diff
 // app.vue
@@ -199,9 +199,6 @@ const tokenTheme = computed(() => {
 import { Page } from '@vben/common-ui';
 
 +import { CopilotPopup } from '@dingdayu/vue-copilotkit';
-
-// 如果需要，可以全局导入 CSS
-+import '@dingdayu/vue-copilotkit/style.css';
 </script>
 
 <template>
@@ -212,6 +209,8 @@ import { Page } from '@vben/common-ui';
   </div>
 </template>
 ```
+
+如果你是从 `@dingdayu/vue-copilotkit` 根入口导入组件，则**无需**额外手动导入 CSS，因为包入口已自动引入 `style.css`。只有在仅使用子路径导入时，才需要手动引入 `@dingdayu/vue-copilotkit/style.css`。
 
 **Popup 效果:**
 
