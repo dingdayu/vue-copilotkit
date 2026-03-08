@@ -1,6 +1,27 @@
 {
   "name": "vue-copilotkit",
-  "private": false,
+  "private": true,
+  "description": "Vue 3 CopilotKit monorepo with unified package and demo app.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dingdayu/vue-copilotkit.git"
+  },
+  "homepage": "https://github.com/dingdayu/vue-copilotkit#readme",
+  "bugs": {
+    "url": "https://github.com/dingdayu/vue-copilotkit/issues"
+  },
+  "keywords": [
+    "vue",
+    "copilotkit",
+    "ai",
+    "assistant",
+    "monorepo"
+  ],
+  "engines": {
+    "node": ">=18",
+    "pnpm": ">=9.5.0"
+  },
   "workspaces": [
     "examples",
     "packages/*"
@@ -12,8 +33,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "publish:packages": "pnpm -r --filter @dingdayu/* publish --access public",
-    "check:upstream-diff": "node ./check-upstream-diff.mjs"
+    "publish:packages": "pnpm -r --filter @dingdayu/* publish --access public"
   },
   "dependencies": {
     "vue": "^3.4.31"
