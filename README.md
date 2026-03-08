@@ -100,21 +100,21 @@ import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
 const provider = createOpenAICompatible({
   name: 'openai-compatible',
   apiKey: process.env.OPENAI_API_KEY,
-  baseURL: process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1'
+  baseURL: process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1',
 })
 
 const runtime = new CopilotRuntime({
   agents: {
     default: new BuiltInAgent({
       model: provider.chatModel(process.env.OPENAI_MODEL || 'deepseek-chat'),
-      forwardSystemMessages: true
-    })
-  }
+      forwardSystemMessages: true,
+    }),
+  },
 })
 
 const handler = copilotRuntimeNodeHttpEndpoint({
   endpoint: '/copilotkit',
-  runtime
+  runtime,
 })
 
 const server = createServer((req, res) => handler(req, res))
@@ -146,7 +146,7 @@ import { App, ConfigProvider, theme } from 'ant-design-vue'
 import { CopilotKit } from '@dingdayu/vue-copilotkit'
 
 const tokenTheme = computed(() => ({
-  algorithm: [theme.defaultAlgorithm]
+  algorithm: [theme.defaultAlgorithm],
 }))
 </script>
 
@@ -179,9 +179,13 @@ If you import from the package root, styles are already included. If you only us
 import '@dingdayu/vue-copilotkit/style.css'
 ```
 
-**Popup example:**
+### UI Screenshots
 
-![Copilot Popup](./popup.png)
+| Popup                                          | Sidebar                                            |
+| :--------------------------------------------- | :------------------------------------------------- |
+| ![Copilot Popup](./docs/screenshots/popup.png) | ![Copilot Sidebar](./docs/screenshots/sidebar.png) |
+
+For additional `examples` page screenshots, store assets in `docs/screenshots/examples/` and reference them from `examples/README.md`.
 
 ## CopilotKit v2 Protocol Notes
 
@@ -224,6 +228,10 @@ The demo app in `examples/` includes:
 - scenario routes such as todo, form, textarea, table, spreadsheet, presentation, and SDK demos
 
 For route-level details, see [`examples/README.md`](./examples/README.md).
+
+## Contributing
+
+Contributions are welcome. See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for local setup, coding conventions, and pre-PR checks.
 
 ## Changes from Upstream
 

@@ -100,21 +100,21 @@ import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
 const provider = createOpenAICompatible({
   name: 'openai-compatible',
   apiKey: process.env.OPENAI_API_KEY,
-  baseURL: process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1'
+  baseURL: process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1',
 })
 
 const runtime = new CopilotRuntime({
   agents: {
     default: new BuiltInAgent({
       model: provider.chatModel(process.env.OPENAI_MODEL || 'deepseek-chat'),
-      forwardSystemMessages: true
-    })
-  }
+      forwardSystemMessages: true,
+    }),
+  },
 })
 
 const handler = copilotRuntimeNodeHttpEndpoint({
   endpoint: '/copilotkit',
-  runtime
+  runtime,
 })
 
 const server = createServer((req, res) => handler(req, res))
@@ -146,7 +146,7 @@ import { App, ConfigProvider, theme } from 'ant-design-vue'
 import { CopilotKit } from '@dingdayu/vue-copilotkit'
 
 const tokenTheme = computed(() => ({
-  algorithm: [theme.defaultAlgorithm]
+  algorithm: [theme.defaultAlgorithm],
 }))
 </script>
 
@@ -179,9 +179,13 @@ import { CopilotPopup } from '@dingdayu/vue-copilotkit'
 import '@dingdayu/vue-copilotkit/style.css'
 ```
 
-**Popup 效果：**
+### UI 截图
 
-![Copilot Popup](./popup.png)
+| Popup                                          | Sidebar                                            |
+| :--------------------------------------------- | :------------------------------------------------- |
+| ![Copilot Popup](./docs/screenshots/popup.png) | ![Copilot Sidebar](./docs/screenshots/sidebar.png) |
+
+如果需要补充 `examples` 页面截图，统一存放到 `docs/screenshots/examples/`，并在 `examples/README.md` 中引用。
 
 ## CopilotKit v2 协议说明
 
@@ -224,6 +228,10 @@ single-route 支持的 `method`：
 - todo、form、textarea、table、spreadsheet、presentation、SDK 等场景页面
 
 更多路由和运行说明见 [`examples/README.md`](./examples/README.md)。
+
+## 参与贡献
+
+欢迎贡献。请先阅读 [`CONTRIBUTING.md`](./CONTRIBUTING.md) 了解本地开发流程、编码规范和 PR 前检查项。
 
 ## 与上游版本的差异
 
