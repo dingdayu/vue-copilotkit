@@ -8,19 +8,26 @@
 
 ---
 
-# Vue Copilotkit
+# Vue CopilotKit
 
-_此项目 fork 自 https://github.com/fe-51shebao/vue-copilotkit_
+Vue CopilotKit 是一个受 [CopilotKit](https://github.com/CopilotKit/CopilotKit) React UI 层启发的 Vue 3 实现。这个仓库为新项目提供统一包，同时保留旧的拆分包以兼容已有集成。
 
-> 一个基于 <a href="https://github.com/CopilotKit/CopilotKit" target="_blank">CopilotKit</a> React UI 库的 Vue 实现。
+> 新项目推荐直接使用：`@dingdayu/vue-copilotkit`
 
-推荐新项目优先使用统一包 `@dingdayu/vue-copilotkit`：
+## 这个仓库提供什么？
+
+- 统一包，包含 Provider、composables、聊天 UI、Popup / Sidebar 和 `CopilotTextarea`
+- 基于 Vue 3 + Vite 的双语示例应用，覆盖多个实际场景
+- 兼容 CopilotKit v2 single-route runtime 协议
+- 基于 pnpm monorepo，方便统一开发、构建和发布
+
+## 安装
 
 ```bash
 pnpm add @dingdayu/vue-copilotkit
 ```
 
-如果你希望分包使用，也可以继续安装 `@dingdayu/vue-copilotkit-core` 和 `@dingdayu/vue-copilotkit-ui`：
+如果你仍需要旧的拆分包，它们依然可以使用，但已经标记为弃用：
 
 ```bash
 pnpm add @dingdayu/vue-copilotkit-core @dingdayu/vue-copilotkit-ui
@@ -28,43 +35,61 @@ pnpm add @dingdayu/vue-copilotkit-core @dingdayu/vue-copilotkit-ui
 
 ## 快速开始
 
+### 运行本地示例
+
 ```bash
 pnpm install
+
+# 终端 1：启动本地 runtime
+pnpm -C examples dev:runtime
+
+# 终端 2：启动 Vue 示例应用
 pnpm dev
-pnpm build
 ```
 
-- `pnpm dev`：从仓库根目录启动 Vue 示例应用
-- `pnpm -C examples dev:runtime`：启动示例应用默认使用的本地 CopilotKit runtime
-- `pnpm typecheck`：检查整个 TypeScript workspace
+常用工作区命令：
+
+- `pnpm dev`：从仓库根目录启动 Vite 示例应用
+- `pnpm -C examples dev:runtime`：启动示例默认使用的本地 CopilotKit runtime
+- `pnpm typecheck`：执行根级 TypeScript 检查
+- `pnpm build`：通过 Turbo 构建整个 workspace
+
+本地 runtime 默认地址：`http://localhost:4000/copilotkit`
 
 ## 仓库结构
 
-| 路径                         | 说明                                            |
-| :--------------------------- | :---------------------------------------------- |
-| `packages/vue-core`          | Provider、上下文与面向 runtime 的核心 hooks     |
-| `packages/vue-ui`            | Chat UI、Popup/Sidebar 组件，以及 textarea 导出 |
-| `examples`                   | Vue 3 + Vite 示例应用，覆盖多个典型场景         |
-| `README.md` / `README.zh.md` | 项目对外文档（中英文）                          |
+| 路径                         | 说明                                                          |
+| :--------------------------- | :------------------------------------------------------------ |
+| `packages/vue-copilotkit`    | 推荐使用的统一包：Provider、composables、chat UI、textarea 等 |
+| `packages/vue-core`          | 已弃用的 core 包，保留底层 runtime 集成与 composables         |
+| `packages/vue-ui`            | 已弃用的 UI 包，保留 chat、popup/sidebar 和 textarea 组件     |
+| `examples`                   | Vue 3 + Vite 双语示例应用，包含多个场景页面                   |
+| `README.md` / `README.zh.md` | 面向外部用户的中英文项目文档                                  |
 
-### 包说明
+## 包说明
 
-- `@dingdayu/vue-copilotkit-core`：提供 `CopilotKit`、action/readable 等底层能力。
-- `@dingdayu/vue-copilotkit-ui`：提供 `CopilotPopup`、`CopilotSidebar`、`CopilotChat`、`CopilotTextarea` 等现成 UI。
-- 原独立的 `@dingdayu/vue-textarea` 已并入 `@dingdayu/vue-copilotkit-ui`。
-- 之前的共享 `vite-config` 包已移除，改为各个包自行维护本地 Vite 构建配置。
+- `@dingdayu/vue-copilotkit`：推荐入口，统一导出 Provider、composables、聊天 UI、Popup、Sidebar 和 `CopilotTextarea`
+- `@dingdayu/vue-copilotkit-core`：历史遗留的底层 Provider 与 runtime hooks 包
+- `@dingdayu/vue-copilotkit-ui`：历史遗留的预构建 UI 包
 
-## 示例
+延伸阅读：
 
-### 服务端
+- [`packages/vue-copilotkit/README.md`](./packages/vue-copilotkit/README.md)
+- [`packages/vue-core/README.md`](./packages/vue-core/README.md)
+- [`packages/vue-ui/README.md`](./packages/vue-ui/README.md)
+- [`examples/README.md`](./examples/README.md)
 
-安装依赖
+## 集成示例
+
+### 1. 服务端 runtime
+
+安装 runtime 相关依赖：
 
 ```bash
 pnpm add @copilotkit/runtime @ai-sdk/openai-compatible
 ```
 
-创建 `index.mjs` 文件（或在 `package.json` 中声明 `"type": "module"`）。
+创建 `index.mjs` 文件（或者在 `package.json` 中启用 `"type": "module"`）：
 
 ```ts
 import { createServer } from 'node:http'
@@ -94,17 +119,75 @@ const handler = copilotRuntimeNodeHttpEndpoint({
 
 const server = createServer((req, res) => handler(req, res))
 server.listen(4000, () => {
-  console.log('监听地址 http://localhost:4000/copilotkit')
+  console.log('Listening at http://localhost:4000/copilotkit')
 })
 ```
 
-运行 `node index.mjs`。
+运行方式：
 
-## CopilotKit v2 API Reference 速览
+```bash
+node index.mjs
+```
+
+### 2. 客户端接入
+
+安装统一包：
+
+```bash
+pnpm add @dingdayu/vue-copilotkit
+```
+
+使用 `CopilotKit` 包裹应用，并指向你的 runtime 地址：
+
+```vue
+<script lang="ts" setup>
+import { computed } from 'vue'
+import { App, ConfigProvider, theme } from 'ant-design-vue'
+import { CopilotKit } from '@dingdayu/vue-copilotkit'
+
+const tokenTheme = computed(() => ({
+  algorithm: [theme.defaultAlgorithm]
+}))
+</script>
+
+<template>
+  <ConfigProvider :theme="tokenTheme">
+    <CopilotKit runtime-url="http://localhost:4000/copilotkit" show-dev-console>
+      <App>
+        <RouterView />
+      </App>
+    </CopilotKit>
+  </ConfigProvider>
+</template>
+```
+
+在需要的位置渲染现成 UI 组件：
+
+```vue
+<script setup lang="ts">
+import { CopilotPopup } from '@dingdayu/vue-copilotkit'
+</script>
+
+<template>
+  <CopilotPopup />
+</template>
+```
+
+如果你从包根入口导入，样式会自动引入；如果只使用子路径导入，请手动添加：
+
+```ts
+import '@dingdayu/vue-copilotkit/style.css'
+```
+
+**Popup 效果：**
+
+![Copilot Popup](./popup.png)
+
+## CopilotKit v2 协议说明
 
 官方文档：https://docs.copilotkit.ai/reference/v2
 
-本项目当前使用 v2 的 single-route 协议，运行时请求包格式如下：
+本仓库遵循 runtime 端点使用的 v2 single-route 请求格式：
 
 ```json
 {
@@ -122,7 +205,7 @@ server.listen(4000, () => {
 }
 ```
 
-v2 single-route 支持的 `method`：
+single-route 支持的 `method`：
 
 - `agent/run`
 - `agent/connect`
@@ -130,121 +213,44 @@ v2 single-route 支持的 `method`：
 - `info`
 - `transcribe`
 
-注意：该端点只接受 JSON envelope（`Content-Type: application/json`），否则会返回 `invalid_request`。
+该端点只接受 JSON envelope（`Content-Type: application/json`），非 JSON 请求会返回 `invalid_request`。
 
-### 客户端
+## 示例应用说明
 
-安装依赖
+`examples/` 目录下的示例应用包含：
 
-```bash
-pnpm add @dingdayu/vue-copilotkit
-```
+- 双语界面（`en` / `zh`）
+- 顶部工具栏中的 runtime URL 和 API key 配置
+- todo、form、textarea、table、spreadsheet、presentation、SDK 等场景页面
 
-统一包同时包含 Provider/hooks 与聊天 UI 组件。
-
-```diff
-// app.vue
-<script lang="ts" setup>
-import { computed } from 'vue';
-
-import { useAntdDesignTokens } from '@vben/hooks';
-import { preferences, usePreferences } from '@vben/preferences';
-
-+import { CopilotKit } from '@dingdayu/vue-copilotkit';
-import { App, ConfigProvider, theme } from 'ant-design-vue';
-
-import { antdLocale } from '#/locales';
-
-defineOptions({ name: 'App' });
-
-const { isDark } = usePreferences();
-const { tokens } = useAntdDesignTokens();
-
-const tokenTheme = computed(() => {
-  const algorithm = isDark.value
-    ? [theme.darkAlgorithm]
-    : [theme.defaultAlgorithm];
-
-  // antd 紧凑模式算法
-  if (preferences.app.compact) {
-    algorithm.push(theme.compactAlgorithm);
-  }
-
-  return {
-    algorithm,
-    token: tokens,
-  };
-});
-</script>
-
-<template>
-  <ConfigProvider :locale="antdLocale" :theme="tokenTheme">
-+    <CopilotKit
-+      runtime-url="http://localhost:4000/copilotkit"
-+      show-dev-console
-+    >
-      <App>
-        <RouterView />
-      </App>
-+    </CopilotKit>
-  </ConfigProvider>
-</template>
-```
-
-在页面中使用。此示例使用 `CopilotPopup`，但也可以考虑使用 `CopilotChat` 或 `CopilotSidebar`。  
-文档：https://docs.copilotkit.ai/reference/components/chat/CopilotChat
-
-```diff
-<script setup lang="ts">
-import { Page } from '@vben/common-ui';
-
-+import { CopilotPopup } from '@dingdayu/vue-copilotkit';
-</script>
-
-<template>
-  <div>
-    <Page>
-+      <CopilotPopup />
-    </Page>
-  </div>
-</template>
-```
-
-如果你是从 `@dingdayu/vue-copilotkit` 根入口导入组件，则**无需**额外手动导入 CSS，因为包入口已自动引入 `style.css`。只有在仅使用子路径导入时，才需要手动引入 `@dingdayu/vue-copilotkit/style.css`。
-
-**Popup 效果:**
-
-![Copilot Popup](./popup.png)
+更多路由和运行说明见 [`examples/README.md`](./examples/README.md)。
 
 ## 与上游版本的差异
 
-1.  为 NPM 仓库发布重命名了包名
-    - `@copilotkit/vue-core` → `@dingdayu/vue-copilotkit-core`
-    - `@copilotkit/vue-ui` → `@dingdayu/vue-copilotkit-ui`
-2.  将 CopilotKit runtime/client 相关包升级到 `1.53.0`（兼容 v2 协议）
-3.  修复了 `Window` 组件导致的构建错误
-4.  移除了原共享 `vite-config` 包，并将所需 Vite 配置内联到各个包中，以解决 `injection "Symbol()" not found` 问题
-5.  将 chat 与 textarea 的请求链路迁移到 v2 single-route 协议（`method: agent/run`）
-6.  修复了与 `view.docView.domFromPos` 相关的问题
-7.  在 `package.json` 中添加了仓库信息
-8.  原独立 `vue-textarea` 包已并入 `@dingdayu/vue-copilotkit-ui`（统一从 UI 包导入）
-9.  重做了示例应用：加入双语导航、共享运行时配置和更完整的场景页面
+_此项目 fork 自 https://github.com/fe-51shebao/vue-copilotkit_
 
-## 文档说明
-
-- 对外改动请同步更新 `README.md` 与 `README.zh.md`。
-- 包级使用说明见 `packages/vue-core/README.md` 与 `packages/vue-ui/README.md`。
-- 示例应用的运行方式、路由和配置入口见 `examples/README.md`。
+1. 为 npm 发布重命名了包名
+   - `@copilotkit/vue-core` → `@dingdayu/vue-copilotkit-core`
+   - `@copilotkit/vue-ui` → `@dingdayu/vue-copilotkit-ui`
+2. 新增统一包 `@dingdayu/vue-copilotkit`，作为推荐接入方式
+3. 将 CopilotKit runtime/client 相关包升级到 `1.53.0`，兼容 v2 协议
+4. 修复了与 `Window` 相关的构建问题
+5. 移除了原共享 `vite-config` 包，并将所需 Vite 配置内联到各个包中
+6. 将 chat 和 textarea 的数据链路迁移到 v2 single-route 协议（`method: agent/run`）
+7. 修复了 `view.docView.domFromPos` 相关问题
+8. 在包清单中补充了仓库元信息
+9. 重做了示例应用，加入双语导航、共享 runtime 配置和更完整的场景页面
 
 ## 迁移提示
 
-- 如果你之前依赖独立的 textarea 包，请改为从 `@dingdayu/vue-copilotkit-ui` 导入 `CopilotTextarea`。
-- 聊天与 textarea 的共享样式仍统一从 `@dingdayu/vue-copilotkit-ui/style.css` 引入。
-- 如果你之前依赖已移除的共享 Vite 配置包，请将需要的构建配置复制到你自己的包内配置中。
+- 新项目优先使用 `@dingdayu/vue-copilotkit`
+- 如果你之前使用独立 textarea 包，请改为从 `@dingdayu/vue-copilotkit` 或 `@dingdayu/vue-copilotkit-ui` 导入 `CopilotTextarea`
+- 聊天与 textarea 的共享样式仍可通过 `@dingdayu/vue-copilotkit/style.css` 引入
+- 如果你依赖已移除的共享 Vite 配置包，请把需要的构建配置复制到自己的包配置中
 
 ## 发布
 
-这是一个 pnpm monorepo，包发布于 `packages/*`。
+这是一个 pnpm monorepo，实际发布的包位于 `packages/*`。
 
 ```bash
 pnpm install
@@ -252,7 +258,8 @@ pnpm build
 pnpm publish:packages
 ```
 
-注意事项：
+发布前请确认：
 
-- 确保已登录：`npm login`
-- 发布前请更新 `packages/*/package.json` 中的版本号
+- 已执行 `npm login`
+- 已更新相关 `packages/*/package.json` 中的版本号
+- 整个 workspace 可以正常构建

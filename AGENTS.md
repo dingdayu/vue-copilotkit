@@ -1,7 +1,14 @@
 # Guidelines for Contributors
 
-This repository is a pnpm monorepo containing several packages under the `packages` folder and a demo project in `examples`.
-Each package is written in TypeScript and built with Vite. The `examples` folder shows how to integrate the packages in a Vue 3 application.
+This repository is a pnpm monorepo containing several packages under `packages/` and a demo project in `examples/`.
+Each package is written in TypeScript and built with Vite. The `examples/` app demonstrates how to integrate Vue CopilotKit into a Vue 3 application.
+
+## Repository overview
+
+- `packages/vue-copilotkit` is the recommended unified package for new integrations.
+- `packages/vue-core` and `packages/vue-ui` are deprecated compatibility packages and should generally not be the first choice for new documentation or examples.
+- `examples/` is the primary local demo app and runtime integration reference.
+- Top-level `README.md` and `README.zh.md` are public-facing documents and must stay aligned.
 
 ## Local setup
 
@@ -9,7 +16,9 @@ Each package is written in TypeScript and built with Vite. The `examples` folder
 - Install dependencies with `pnpm install`.
 - Build all packages with `pnpm build` before committing to verify that the packages compile.
 - Node.js 18+ is recommended. Other versions may lead to type or build errors.
-- The example project under `examples/` can be started with `pnpm dev`.
+- Start the example app with `pnpm dev` from the repository root.
+- Start the local CopilotKit runtime for the demo with `pnpm -C examples dev:runtime`.
+- Run `pnpm typecheck` when changes may affect TypeScript types across the workspace.
 
 ## Coding conventions
 
@@ -29,6 +38,9 @@ Each package is written in TypeScript and built with Vite. The `examples` folder
 ## Documentation
 
 - Keep both `README.md` and `README.zh.md` updated when making documentation changes.
+- Prefer documenting the unified package `@dingdayu/vue-copilotkit` as the primary integration path.
+- When describing repository structure or setup, keep package status accurate: `vue-copilotkit` is active, `vue-core` and `vue-ui` are deprecated compatibility packages.
+- Keep command examples aligned with the actual workspace scripts (`pnpm dev`, `pnpm -C examples dev:runtime`, `pnpm typecheck`, `pnpm build`).
 - Public packages should include a `README.md` describing usage and exported APIs.
 
 ## Commit style
