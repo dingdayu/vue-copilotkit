@@ -9,35 +9,24 @@ dotenv.config() // Load environment variables from .env file
 const port = Number(process.env.PORT || 4000)
 const endpoint = process.env.COPILOT_RUNTIME_ENDPOINT || '/copilotkit'
 
-const model = process.env.OPENAI_MODEL || 'deepseek-chat'
-
-const normalizeBaseUrl = rawBaseUrl => {
-  const fallback = 'https://api.openai.com/v1'
-  const input = rawBaseUrl || fallback
-
-  try {
-    const url = new URL(input)
-    if (url.pathname === '/' || url.pathname === '') {
-      url.pathname = '/v1'
-      return url.toString().replace(/\/$/, '')
-    }
-    return input.replace(/\/$/, '')
-  } catch {
-    return input.replace(/\/$/, '')
-  }
-}
+const model = process.env.OPENAI_MODEL || 'Qwen/Qwen3.5-9B'
+const baseURL = process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1'
+const apiKey = process.env.OPENAI_API_KEY
 
 const provider = createOpenAICompatible({
   name: 'openai-compatible',
-  baseURL: normalizeBaseUrl(process.env.OPENAI_BASE_URL),
-  apiKey: process.env.OPENAI_API_KEY
+  baseURL,
+  apiKey,
 })
 
 const runtime = new CopilotRuntime({
   agents: {
     default: new BuiltInAgent({
       model: provider.chatModel(model),
-      forwardSystemMessages: true
+      forwardSystemMessages: true,
+      topP: 0.8,
+      temperature: 0.7,
+      presencePenalty: 1.5,
     })
   }
 })
