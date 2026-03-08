@@ -1,30 +1,35 @@
-ChangeLog
+# Changelog
 
-### 20260307
+All notable changes to this repository are documented in this file.
 
-- 合并 `@dingdayu/vue-copilotkit-core` `@dingdayu/vue-copilotkit-ui` 为 `@dingdayu/vue-copilotkit`
+## 2026-03-07
 
+### Changed
 
-### 20260306
+- Promoted `@dingdayu/vue-copilotkit` as the unified package for new integrations.
+- Aligned root documentation (`README.md`, `README.zh.md`, `AGENTS.md`) with the current package and demo workflow.
 
-- 从上游更新代码
-- Remove @dingdayu/vue-copilotkit-vite-config package and inline Vite config in each package
-- Merge standalone vue-textarea package into @dingdayu/vue-copilotkit-ui
-- Migration: import `CopilotTextarea` from `@dingdayu/vue-copilotkit-ui` and keep using `@dingdayu/vue-copilotkit-ui/style.css`
-- Migration: run the demo with `pnpm -C examples dev:runtime` and `pnpm dev` in separate terminals
-- Refresh root/examples/package README files to match the new package layout and example app flow
-- 增加 publish packages to package.json
+### Maintained Upstream Differences
 
-## Changes from Upstream
+1. Renamed packages for npm publication.
+   - `@copilotkit/vue-core` -> `@dingdayu/vue-copilotkit-core`
+   - `@copilotkit/vue-ui` -> `@dingdayu/vue-copilotkit-ui`
+2. Upgraded CopilotKit runtime/client-related packages to `1.53.0` (v2 protocol compatible).
+3. Fixed `Window`-related build errors.
+4. Removed the former shared `vite-config` package and inlined required Vite config per package.
+5. Migrated chat and textarea data flows to the v2 single-route protocol (`method: agent/run`).
+6. Fixed `view.docView.domFromPos`-related issues.
+7. Added repository metadata to package manifests.
+8. Merged the former standalone `vue-textarea` package into `@dingdayu/vue-copilotkit-ui`.
+9. Reworked the example app with bilingual navigation, shared runtime configuration, and richer scenario pages.
 
-1. Renamed packages for NPM registry publication
-   - `@copilotkit/vue-core` → `@dingdayu/vue-copilotkit-core`
-   - `@copilotkit/vue-ui` → `@dingdayu/vue-copilotkit-ui`
-2. Upgraded CopilotKit runtime/client-related packages to `1.53.0` (v2 protocol-compatible)
-3. Fixed `Window` for build errors
-4. Removed the former shared `vite-config` package and inlined the required Vite config per package to resolve `injection "Symbol()" not found`
-5. Migrated chat and textarea data paths to the v2 single-route protocol (`method: agent/run`)
-6. Fixed `view.docView.domFromPos` related issues
-7. Added repository information to `package.json`
-8. Merged the former standalone `vue-textarea` package into `@dingdayu/vue-copilotkit-ui` (single UI package import)
-9. Reworked the example app with bilingual navigation, shared runtime configuration, and richer scenario pages
+## 2026-03-06
+
+### Changed
+
+- Synced fork with upstream updates.
+- Removed `@dingdayu/vue-copilotkit-vite-config` and inlined Vite config into each package.
+- Merged standalone `vue-textarea` into `@dingdayu/vue-copilotkit-ui`.
+- Updated migration notes for `CopilotTextarea` and runtime startup commands.
+- Refreshed root, examples, and package-level README files.
+- Added `publish:packages` script in root `package.json`.

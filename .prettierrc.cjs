@@ -1,16 +1,16 @@
 module.exports = {
-  // 每一行代码允许的字符数
+  // Maximum line length.
   printWidth: 120,
-  // 指定每行缩进的空格数
+  // Spaces per indentation level.
   tabWidth: 2,
-  // 结尾不带分号
+  // Omit semicolons.
   semi: false,
-  // 使用单引号
+  // Prefer single quotes.
   singleQuote: true,
-  // 关闭尾逗号
-  trailingComma: 'none',
-  // 指定 HTML 文件的全局空白区域敏感度
+  // Use ES5-style trailing commas.
+  trailingComma: 'es5',
+  // Keep HTML formatting less whitespace-sensitive.
   htmlWhitespaceSensitivity: 'ignore',
-  // always 始终保留括号，avoid 不保留括号
-  arrowParens: 'avoid'
+  // Omit parens for single-arg arrow functions.
+  arrowParens: 'avoid',
 }
