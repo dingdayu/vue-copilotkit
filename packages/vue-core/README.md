@@ -15,6 +15,7 @@ pnpm add @dingdayu/vue-copilotkit-core
 - `useCopilotReadable`
 - `useCopilotChat`
 - `useAgent`
+- `useAgentContext`
 - `useConfigureSuggestions`
 - `useHumanInTheLoop`
 

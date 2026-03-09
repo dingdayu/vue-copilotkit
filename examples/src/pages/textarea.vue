@@ -39,11 +39,10 @@
             :suggestionsStyle="{
               color: '#0f766e',
               fontWeight: 600,
-              letterSpacing: '0.02em'
+              letterSpacing: '0.02em',
             }"
             :autosuggestionsConfig="{
               textareaPurpose: 'Assist with replying to this email thread and keep important details.',
-              chatApiConfigs: {}
             }"
             :onChange="e => setInput(e)"
           />
@@ -67,7 +66,7 @@
         initial:
           locale.value === 'zh-CN'
             ? '我可以根据邮件上下文帮你起草、改写或压缩回复。'
-            : 'I can draft, rewrite, or shorten replies based on your thread context.'
+            : 'I can draft, rewrite, or shorten replies based on your thread context.',
       }"
     />
   </main>
@@ -94,19 +93,19 @@ const emails = ref<EmailItem[]>([
     from: 'Alice Wong <alice@acme.com>',
     to: 'Project Team <team@acme.com>',
     body: 'Can we lock the final agenda before Thursday? We still need owner updates for the launch checklist.',
-    timestamp: '2026-03-01 09:20'
+    timestamp: '2026-03-01 09:20',
   },
   {
     from: 'Marco Li <marco@acme.com>',
     to: 'Alice Wong <alice@acme.com>',
     body: 'I can provide product and ops updates by Wednesday noon. Please include risks and mitigation in the deck.',
-    timestamp: '2026-03-01 10:05'
-  }
+    timestamp: '2026-03-01 10:05',
+  },
 ])
 
 useCopilotReadable({
   description: 'The history of this email thread',
-  value: emails
+  value: emails,
 })
 
 const text = ref('')
@@ -131,7 +130,7 @@ const handleReply = () => {
     from: 'Me <me@acme.com>',
     to: 'Project Team <team@acme.com>',
     body: content,
-    timestamp: new Date().toLocaleString()
+    timestamp: new Date().toLocaleString(),
   })
   text.value = ''
 }
@@ -148,22 +147,22 @@ const mailSuggestions = computed(() =>
         { title: '起草跟进回复', message: '起草一封礼貌但坚定的跟进邮件，要求周三中午前给出 owner updates。' },
         { title: '语气改写', message: '把当前回复改成更专业、简洁，控制在 80 字以内。' },
         { title: '强调截止时间', message: '在回复中明确强调：参会名单需在下周二前确认。' },
-        { title: '补充风险项', message: '补充一句对风险和缓解措施的请求，保持协作口吻。' }
+        { title: '补充风险项', message: '补充一句对风险和缓解措施的请求，保持协作口吻。' },
       ]
     : [
         {
           title: 'Draft follow-up',
-          message: 'Draft a polite but firm follow-up asking for owner updates by Wednesday noon.'
+          message: 'Draft a polite but firm follow-up asking for owner updates by Wednesday noon.',
         },
         {
           title: 'Professional rewrite',
-          message: 'Rewrite my current reply in a more professional tone within 80 words.'
+          message: 'Rewrite my current reply in a more professional tone within 80 words.',
         },
         { title: 'Stress deadline', message: 'Emphasize that attendee confirmation is required before next Tuesday.' },
         {
           title: 'Add risk request',
-          message: 'Add one sentence requesting risks and mitigation details in a collaborative tone.'
-        }
+          message: 'Add one sentence requesting risks and mitigation details in a collaborative tone.',
+        },
       ]
 )
 
@@ -172,7 +171,7 @@ useCopilotChatSuggestions(
     instructions: mailSuggestionInstructions,
     minSuggestions: 2,
     maxSuggestions: 4,
-    suggestions: mailSuggestions
+    suggestions: mailSuggestions,
   },
   [locale, mailSuggestions]
 )
@@ -183,7 +182,7 @@ const quickPrompts = computed(() =>
     : [
         '"Draft a polite but firm follow-up reply"',
         '"Make the tone more professional and keep it under 80 words"',
-        '"Emphasize that attendee confirmation is needed before next Tuesday"'
+        '"Emphasize that attendee confirmation is needed before next Tuesday"',
       ]
 )
 </script>

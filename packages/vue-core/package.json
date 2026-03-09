@@ -4,6 +4,11 @@
   "version": "0.1.0",
   "author": "dingdayu <dingxiaoyu.ddy@gmail.com>",
   "license": "MIT",
+  "description": "Core runtime integration for Vue CopilotKit.",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/dingdayu/vue-copilotkit.git",
@@ -44,5 +49,8 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "peerDependencies": {
+    "vue": "^3.0.0"
   }
 }

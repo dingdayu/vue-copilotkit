@@ -18,14 +18,14 @@ export const CopilotTextarea = defineComponent({
   props: {
     autosuggestionsConfig: {
       type: Object as PropType<AutosuggestionsConfigUserSpecified>,
-      default: () => ({})
+      default: () => ({}),
     },
-    ...BaseCopilotTextarea.props
+    ...BaseCopilotTextarea.props,
   },
   setup(props: CopilotTextareaProps, { expose }) {
     const refTextarea = ref<HTMLCopilotTextAreaElement | null>(null)
     expose({
-      ref: refTextarea
+      ref: refTextarea,
     })
 
     const { autosuggestionsConfig: autosuggestionsConfigUserSpecified } = props
@@ -38,14 +38,14 @@ export const CopilotTextarea = defineComponent({
     const autosuggestionsFunction = useMakeStandardAutosuggestionFunction(
       autosuggestionsConfig.textareaPurpose,
       autosuggestionsConfig.contextCategories,
-      autosuggestionsConfig.chatApiConfigs.suggestionsApiConfig
+      autosuggestionsConfig.suggestionsApiConfig!
     )
 
     const insertionOrEditingFunction = useMakeStandardInsertionOrEditingFunction(
       autosuggestionsConfig.textareaPurpose,
       autosuggestionsConfig.contextCategories,
-      autosuggestionsConfig.chatApiConfigs.insertionApiConfig,
-      autosuggestionsConfig.chatApiConfigs.editingApiConfig
+      autosuggestionsConfig.insertionApiConfig!,
+      autosuggestionsConfig.editingApiConfig!
     )
 
     return () => (
@@ -58,12 +58,12 @@ export const CopilotTextarea = defineComponent({
               ...autosuggestionsConfig,
               apiConfig: {
                 insertionOrEditingFunction,
-                autosuggestionsFunction
-              }
+                autosuggestionsFunction,
+              },
             }}
           />
         </HoveringEditorProvider>
       </div>
     )
-  }
+  },
 })

@@ -2,8 +2,13 @@
   "name": "@dingdayu/vue-copilotkit",
   "private": false,
   "version": "0.0.1",
+  "description": "Vue 3 integration for CopilotKit - build AI-powered applications with ease.",
   "author": "dingdayu <dingxiaoyu.ddy@gmail.com>",
   "license": "MIT",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/dingdayu/vue-copilotkit.git",
@@ -69,5 +74,8 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "peerDependencies": {
+    "vue": "^3.0.0"
   }
 }

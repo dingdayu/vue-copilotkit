@@ -48,6 +48,32 @@ import '@dingdayu/vue-copilotkit/style.css'
   - `@dingdayu/vue-copilotkit/types`
   - `@dingdayu/vue-copilotkit/style.css`
 
+## Migration from Legacy Packages
+
+If you are migrating from `@dingdayu/vue-copilotkit-core` or `@dingdayu/vue-copilotkit-ui`:
+
+| Old Import Path                 | New Unified Path           |
+| :------------------------------ | :------------------------- |
+| `@dingdayu/vue-copilotkit-core` | `@dingdayu/vue-copilotkit` |
+| `@dingdayu/vue-copilotkit-ui`   | `@dingdayu/vue-copilotkit` |
+
+**Breaking Changes in `CopilotTextarea`:**
+The `autosuggestionsConfig` has been flattened. Instead of nesting under `chatApiConfigs`, you can now pass `suggestionsApiConfig`, `insertionApiConfig`, and `editingApiConfig` directly at the top level of the config object.
+
+```ts
+// Old
+autosuggestionsConfig: {
+  chatApiConfigs: {
+    suggestionsApiConfig: { ... }
+  }
+}
+
+// New (Simplified)
+autosuggestionsConfig: {
+  suggestionsApiConfig: { ... }
+}
+```
+
 ## Notes
 
 - This repository targets the CopilotKit v2 single-route runtime protocol.

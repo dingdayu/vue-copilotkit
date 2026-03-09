@@ -11,7 +11,7 @@ pnpm add @dingdayu/vue-copilotkit-ui
 ## Exports
 
 - Chat UI: `CopilotChat`, `CopilotPopup`, `CopilotSidebar`
-- View primitives: `CopilotChatInput`, `CopilotChatView`
+- View primitives: `CopilotChatInput`, `CopilotChatView`, `CopilotChatMessageView`, `CopilotChatAssistantMessage`, `CopilotChatUserMessage`
 - Suggestions hook: `useCopilotChatSuggestions`
 - Textarea UI: `CopilotTextarea`
 

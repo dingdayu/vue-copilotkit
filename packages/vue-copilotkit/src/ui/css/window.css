@@ -3,7 +3,11 @@
   inset: 0;
   transform-origin: bottom;
   border: 1px solid var(--copilot-kit-separator-color);
-  background: linear-gradient(180deg, #fbfdff 0%, var(--copilot-kit-surface-color) 100%);
+  background: linear-gradient(
+    180deg,
+    var(--copilot-kit-surface-elevated-color) 0%,
+    var(--copilot-kit-surface-color) 100%
+  );
   border-radius: var(--copilot-kit-radius-xl);
   box-shadow: var(--copilot-kit-shadow-lg);
   flex-direction: column;

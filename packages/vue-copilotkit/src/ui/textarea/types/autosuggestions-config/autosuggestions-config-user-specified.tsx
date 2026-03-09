@@ -10,10 +10,8 @@ export interface InsertionsApiConfigUserSpecified extends Partial<InsertionsApiC
 
 // Mostly mirrors a partial AutosuggestionsConfig, but with some fields MANDATORY.
 export interface AutosuggestionsConfigUserSpecified
-  extends Partial<Omit<AutosuggestionsConfig, 'chatApiConfigs' | 'textareaPurpose'>> {
+  extends Partial<Omit<AutosuggestionsConfig, 'suggestionsApiConfig' | 'insertionApiConfig' | 'textareaPurpose'>> {
   textareaPurpose: string // the user MUST specify textareaPurpose - it's not optional
-  chatApiConfigs: {
-    suggestionsApiConfig?: SuggestionsApiConfigUserSpecified
-    insertionApiConfig?: InsertionsApiConfigUserSpecified
-  }
+  suggestionsApiConfig?: SuggestionsApiConfigUserSpecified
+  insertionApiConfig?: InsertionsApiConfigUserSpecified
 }

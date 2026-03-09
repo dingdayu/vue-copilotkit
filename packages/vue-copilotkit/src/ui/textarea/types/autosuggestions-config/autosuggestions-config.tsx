@@ -9,19 +9,15 @@ import { defaultCopilotContextCategories } from '../../../../core'
 // 2. instead of apiConfigs, we have chatApiConfigs: a higher-level abstraction that uses a ChatGPT-like API endpoint.
 export interface AutosuggestionsConfig extends Omit<BaseAutosuggestionsConfig, 'apiConfig'> {
   contextCategories: string[]
-  chatApiConfigs: {
-    suggestionsApiConfig: SuggestionsApiConfig
-    insertionApiConfig: InsertionsApiConfig
-    editingApiConfig: EditingApiConfig
-  }
+  suggestionsApiConfig?: SuggestionsApiConfig
+  insertionApiConfig?: InsertionsApiConfig
+  editingApiConfig?: EditingApiConfig
 }
 
 export const defaultAutosuggestionsConfig: Omit<AutosuggestionsConfig, 'textareaPurpose' | 'apiEndpoint'> = {
   ...defaultBaseAutosuggestionsConfig,
   contextCategories: defaultCopilotContextCategories,
-  chatApiConfigs: {
-    suggestionsApiConfig: defaultSuggestionsApiConfig,
-    insertionApiConfig: defaultInsertionsApiConfig,
-    editingApiConfig: defaultEditingApiConfig
-  }
+  suggestionsApiConfig: defaultSuggestionsApiConfig,
+  insertionApiConfig: defaultInsertionsApiConfig,
+  editingApiConfig: defaultEditingApiConfig,
 }
