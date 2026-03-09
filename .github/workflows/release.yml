@@ -6,8 +6,10 @@ on:
       - main
 
 permissions:
-  id-token: write # Required for OIDC
-  contents: read
+  id-token: write
+  contents: write
+  pull-requests: write
+  packages: write
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
