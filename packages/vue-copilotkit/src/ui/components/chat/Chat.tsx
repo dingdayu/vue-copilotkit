@@ -2,43 +2,103 @@ import { defineComponent, PropType, ref, watch } from 'vue'
 import { SystemMessageFunction, useCopilotChat, useCopilotContext } from '../../../core'
 import { randomId } from '@copilotkit/shared'
 import { Message, Role, TextMessage } from '@copilotkit/runtime-client-gql'
-import { CopilotChatSuggestion } from '../../types/suggestions'
+import type { CopilotChatSuggestion } from '../../types/suggestions'
 import { reloadSuggestions } from './Suggestion'
+import { SuggestionsBar } from './SuggestionsBar'
+import type { SuggestionsVariant } from './SuggestionsBar'
+import type { CopilotSuggestionsLayout } from '../../../core/types/chat-suggestion-configuration'
 import { useChatContext, ChatContextProvider, CopilotChatLabels } from './ChatContext'
+
+type ChatSuggestionSectionState = {
+  title?: string
+  variant?: SuggestionsVariant
+  layout?: CopilotSuggestionsLayout
+  scrollable?: boolean
+  className?: string
+  onItemClick?: ((info: { data: CopilotChatSuggestion; index: number }) => void | Promise<void>) | undefined
+  items: CopilotChatSuggestion[]
+}
+
+type CopilotChatLogicResult = {
+  visibleMessages: any
+  isLoading: any
+  currentSuggestions: { value: unknown }
+  sendMessage: (messageContent: string) => Promise<Message>
+  stopGeneration: () => void
+  reloadMessages: () => void
+}
+
+function toSuggestionSection(value: unknown): ChatSuggestionSectionState | null {
+  if (!value || typeof value !== 'object') {
+    return null
+  }
+
+  const candidate = value as Partial<ChatSuggestionSectionState>
+  return {
+    title: candidate.title,
+    variant: candidate.variant,
+    layout: candidate.layout,
+    scrollable: candidate.scrollable,
+    className: candidate.className,
+    onItemClick: candidate.onItemClick,
+    items: Array.isArray(candidate.items) ? candidate.items : [],
+  }
+}
 
 export const CopilotChat = defineComponent({
   props: {
     instructions: {
       type: String,
-      default: ''
+      default: '',
     },
     onSubmitMessage: {
       type: Function as PropType<(messageContent: string) => void>,
-      default: () => {}
+      default: () => {},
     },
     makeSystemMessage: {
       type: Function as PropType<SystemMessageFunction>,
-      default: null
+      default: null,
     },
     showResponseButton: {
       type: Boolean,
-      default: true
+      default: true,
     },
     onInProgress: {
       type: Function as PropType<(isLoading: boolean) => void>,
-      default: () => {}
+      default: () => {},
     },
     className: {
       type: String,
-      default: ''
+      default: '',
     },
     labels: {
       type: Object,
-      default: () => ({})
-    }
+      default: () => ({}),
+    },
+    suggestionsTitle: {
+      type: String,
+      default: undefined,
+    },
+    suggestionsPosition: {
+      type: String as PropType<'top' | 'above-input'>,
+      default: 'above-input',
+    },
+    suggestionsVariant: {
+      type: String as PropType<SuggestionsVariant>,
+      default: 'chips',
+    },
+    suggestionsLayout: {
+      type: String as PropType<CopilotSuggestionsLayout>,
+      default: 'wrap',
+    },
+    suggestionsScrollable: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup(props, { slots }) {
     const context = useCopilotContext()
+    const { labels } = useChatContext()
     watch(
       () => props.instructions,
       instructions => {
@@ -52,9 +112,48 @@ export const CopilotChat = defineComponent({
 
     const chatContext = useChatContext()
     const isVisible = chatContext ? chatContext.open : true
+
+    const handleSuggestionClick = async (suggestion: CopilotChatSuggestion, index: number) => {
+      const suggestionSection = toSuggestionSection(currentSuggestions.value)
+
+      if (suggestionSection?.onItemClick) {
+        await suggestionSection.onItemClick({ data: suggestion, index })
+        return
+      }
+
+      await sendMessage(suggestion.message)
+    }
+
+    const getSuggestionItems = (section: ChatSuggestionSectionState | null): CopilotChatSuggestion[] => {
+      if (!section || !Array.isArray(section.items)) {
+        return []
+      }
+
+      return section.items
+    }
+
     return () => {
+      const currentSuggestionSection = toSuggestionSection(currentSuggestions.value)
+      const suggestionItems = getSuggestionItems(currentSuggestionSection)
+      const resolvedSuggestionsTitle = props.suggestionsTitle || labels?.suggestionsTitle || 'Suggestions'
+
+      const suggestionsNode =
+        currentSuggestionSection && suggestionItems.length ? (
+          <SuggestionsBar
+            section={currentSuggestionSection}
+            items={suggestionItems}
+            disabled={isLoading.value}
+            fallbackTitle={resolvedSuggestionsTitle}
+            variant={currentSuggestionSection.variant || props.suggestionsVariant}
+            layout={currentSuggestionSection.layout || props.suggestionsLayout}
+            scrollable={currentSuggestionSection.scrollable ?? props.suggestionsScrollable}
+            onItemClick={handleSuggestionClick}
+          />
+        ) : null
+
       return (
         <WrappedCopilotChat labels={props.labels} className={props.className}>
+          {props.suggestionsPosition === 'top' ? suggestionsNode : null}
           {/* success */}
           {/* {slots.messages ? slots.messages({ messages: visibleMessages.value, inProgress: isLoading.value, children: {default: () => <>{props.showResponseButton && visibleMessages.value.length > 0 && <ResponseButton inProgress={isLoading.value} hClick={isLoading.value ? stopGeneration : reloadMessages} />}</>}  }) : <DefaultMessages messages={visibleMessages.value}  inProgress={isLoading.value}>
             {props.showResponseButton && visibleMessages.value.length > 0 && <ResponseButton inProgress={isLoading.value} hClick={isLoading.value ? stopGeneration : reloadMessages} />}
@@ -79,24 +178,13 @@ export const CopilotChat = defineComponent({
                       slots.responseButton &&
                       slots.responseButton({
                         inProgress: isLoading.value,
-                        hClick: isLoading.value ? stopGeneration : reloadMessages
+                        hClick: isLoading.value ? stopGeneration : reloadMessages,
                       })}
-                    {currentSuggestions.value.length > 0 && (
-                      <div class="suggestions">
-                        <h6>Suggestions</h6>
-                        <div class="suggestionsList">
-                          {currentSuggestions.value.map((suggestion, index) => (
-                            <button disabled={isLoading.value} onClick={() => sendMessage(suggestion.message)}>
-                              {suggestion.title}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
                   </>
-                )
-              }
+                ),
+              },
             })}
+          {props.suggestionsPosition === 'above-input' ? suggestionsNode : null}
           {slots.input && slots.input({ send: sendMessage, inProgress: isLoading.value, isVisible: isVisible })}
           {/* {slots.input ? slots.input({ send:sendMessage, inProgress: isLoading.value, isVisible: isVisible }) : <DefaultInput inProgress={isLoading.value} send={sendMessage} isVisible={isVisible} />} */}
         </WrappedCopilotChat>
@@ -106,12 +194,12 @@ export const CopilotChat = defineComponent({
         // </WrappedCopilotChat>
       )
     }
-  }
+  },
 })
 export function WrappedCopilotChat(
   {
     labels,
-    className
+    className,
   }: {
     labels?: CopilotChatLabels
     className?: string
@@ -135,13 +223,13 @@ export const useCopilotChatLogic = (
   makeSystemMessage?: SystemMessageFunction,
   onInProgress?: (isLoading: boolean) => void,
   onSubmitMessage?: (messageContent: string) => void
-) => {
+): CopilotChatLogicResult => {
   const { visibleMessages, appendMessage, reloadMessages, stopGeneration, isLoading } = useCopilotChat({
     id: randomId(),
-    makeSystemMessage
+    makeSystemMessage,
   })
-  const currentSuggestions = ref<CopilotChatSuggestion[]>([])
-  const setCurrentSuggestions = (value: CopilotChatSuggestion[]) => {
+  const currentSuggestions = ref<unknown>(null)
+  const setCurrentSuggestions = (value: ChatSuggestionSectionState | null) => {
     currentSuggestions.value = value
   }
   const suggestionsAbortControllerRef = ref<AbortController | null>(null)
@@ -172,7 +260,7 @@ export const useCopilotChatLogic = (
             )
           }
         },
-        currentSuggestions.value.length === 0 ? 0 : SUGGESTIONS_DEBOUNCE_TIMEOUT
+        !toSuggestionSection(currentSuggestions.value)?.items.length ? 0 : SUGGESTIONS_DEBOUNCE_TIMEOUT
       )
       debounceTimerRef.value = timeout
 
@@ -182,17 +270,17 @@ export const useCopilotChatLogic = (
     },
     {
       immediate: true,
-      deep: true
+      deep: true,
     }
   )
 
   const sendMessage = async (messageContent: string) => {
     abortSuggestions()
-    setCurrentSuggestions([])
+    setCurrentSuggestions(null)
 
     const message: Message = new TextMessage({
       content: messageContent,
-      role: Role.User
+      role: Role.User,
     })
 
     // Append the message immediately to make it visible
@@ -209,12 +297,14 @@ export const useCopilotChatLogic = (
     return message
   }
 
-  return {
+  const result: CopilotChatLogicResult = {
     visibleMessages,
     isLoading,
     currentSuggestions,
     sendMessage,
     stopGeneration,
-    reloadMessages
+    reloadMessages,
   }
+
+  return result
 }

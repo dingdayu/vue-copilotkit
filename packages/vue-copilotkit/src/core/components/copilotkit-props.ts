@@ -1,3 +1,10 @@
+import type {
+  CopilotKitDarkMode,
+  CopilotKitTheme,
+  CopilotKitThemeTokenOverrides,
+  CopilotKitThemeVariantOverrides,
+} from '../theme'
+
 /**
  * Props for CopilotKit.
  */
@@ -77,4 +84,10 @@ export interface CopilotKitProps {
    * If set to "auto", the dev console will be show on localhost only.
    */
   showDevConsole?: boolean | 'auto'
+
+  theme?: CopilotKitTheme
+
+  themeOverrides?: CopilotKitThemeTokenOverrides | CopilotKitThemeVariantOverrides
+
+  darkMode?: CopilotKitDarkMode
 }

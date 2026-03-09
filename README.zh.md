@@ -17,6 +17,7 @@ Vue CopilotKit 是一个受 [CopilotKit](https://github.com/CopilotKit/CopilotKi
 ## 这个仓库提供什么？
 
 - 统一包，包含 Provider、composables、聊天 UI、Popup / Sidebar 和 `CopilotTextarea`
+- 内置主题预设、暗黑模式支持，以及聊天 UI 的自定义主题覆盖能力
 - 基于 Vue 3 + Vite 的双语示例应用，覆盖多个实际场景
 - 兼容 CopilotKit v2 single-route runtime 协议
 - 基于 pnpm monorepo，方便统一开发、构建和发布
@@ -68,7 +69,7 @@ pnpm dev
 
 ## 包说明
 
-- `@dingdayu/vue-copilotkit`：推荐入口，统一导出 Provider、composables、聊天 UI、Popup、Sidebar 和 `CopilotTextarea`
+- `@dingdayu/vue-copilotkit`：推荐入口，统一导出 Provider、composables、聊天 UI、Popup、Sidebar、`CopilotTextarea`、主题 API、`useAgentContext`，以及 `CopilotChatMessageView`、`CopilotChatAssistantMessage`、`CopilotChatUserMessage` 等消息视图组件
 - `@dingdayu/vue-copilotkit-core`：历史遗留的底层 Provider 与 runtime hooks 包
 - `@dingdayu/vue-copilotkit-ui`：历史遗留的预构建 UI 包
 
@@ -152,7 +153,7 @@ const tokenTheme = computed(() => ({
 
 <template>
   <ConfigProvider :theme="tokenTheme">
-    <CopilotKit runtime-url="http://localhost:4000/copilotkit" show-dev-console>
+    <CopilotKit runtime-url="http://localhost:4000/copilotkit" theme="x.ant.design" dark-mode="auto" show-dev-console>
       <App>
         <RouterView />
       </App>
@@ -172,6 +173,72 @@ import { CopilotPopup } from '@dingdayu/vue-copilotkit'
   <CopilotPopup />
 </template>
 ```
+
+你也可以把页面状态注册为 agent context，并使用新的消息视图组件定制聊天界面：
+
+```vue
+<script setup lang="ts">
+import { computed, ref } from 'vue'
+import {
+  CopilotChat,
+  CopilotChatAssistantMessage,
+  CopilotChatInput,
+  CopilotChatUserMessage,
+  CopilotChatView,
+  useAgentContext,
+  useCopilotTheme,
+} from '@dingdayu/vue-copilotkit'
+
+const draft = ref('')
+const { activeThemeName } = useCopilotTheme()
+const pageContext = computed(() => ({
+  page: 'sdk',
+  theme: activeThemeName.value,
+}))
+
+useAgentContext({
+  description: '当前 SDK 页面状态',
+  value: pageContext,
+})
+</script>
+
+<template>
+  <CopilotChat>
+    <template #messages="{ messages, inProgress, children }">
+      <CopilotChatView :messages="messages" :inProgress="inProgress">
+        <template #userMessage="{ message }">
+          <CopilotChatUserMessage :message="message" />
+        </template>
+        <template #assistantMessage="{ message, inProgress: messageInProgress, reasoningOpen }">
+          <CopilotChatAssistantMessage
+            :message="message"
+            :inProgress="messageInProgress"
+            :reasoningOpen="reasoningOpen"
+          />
+        </template>
+        <component :is="children.default" v-if="children?.default" />
+      </CopilotChatView>
+    </template>
+
+    <template #input="{ send, inProgress, isVisible }">
+      <CopilotChatInput
+        :send="send"
+        :inProgress="inProgress"
+        :isVisible="isVisible"
+        :value="draft"
+        :onChange="value => (draft = value)"
+      />
+    </template>
+  </CopilotChat>
+</template>
+```
+
+主题 API 概览：
+
+- `theme="default" | "copilotkit" | "ant-design-x" | "x.ant.design"`
+- `dark-mode="auto" | true | false`
+- `theme-overrides` 用于覆盖内置 token
+- `useCopilotTheme()` 可在运行时通过 `setTheme()` 和 `setDarkMode()` 切换主题
 
 如果你从包根入口导入，样式会自动引入；如果只使用子路径导入，请手动添加：
 

@@ -1,6 +1,6 @@
 import { defineComponent, ref, watch } from 'vue'
 import { InputProps } from './props'
-import { ActivityIcon, SendIcon, PushToTalkIcon } from './Icon'
+import { SendIcon, StopIcon, PushToTalkIcon } from './Icon'
 import { AutoResizingTextarea } from './Textarea'
 import { Message } from '@copilotkit/runtime-client-gql'
 import { useChatContext } from './ChatContext'
@@ -9,16 +9,36 @@ export const Input = defineComponent({
   props: {
     inProgress: {
       type: Boolean,
-      required: true
+      default: false,
+    },
+    mode: {
+      type: String as () => InputProps['mode'],
+      default: 'input',
+    },
+    value: {
+      type: String,
+      default: undefined,
+    },
+    onChange: {
+      type: Function,
+      default: undefined,
     },
     send: {
       type: Function,
-      default: async (_text: string) => ({}) as Message
+      default: async (_text: string) => ({}) as Message,
+    },
+    onStop: {
+      type: Function,
+      default: undefined,
+    },
+    positioning: {
+      type: String as () => InputProps['positioning'],
+      default: 'static',
     },
     isVisible: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   setup: _p => {
     const { labels } = useChatContext()
@@ -29,13 +49,28 @@ export const Input = defineComponent({
       if (event.target !== event.currentTarget) return
       textareaRef.value?.$el?.focus()
     }
-    const text = ref('')
+    const text = ref(_p.value ?? '')
+
+    watch(
+      () => _p.value,
+      value => {
+        if (typeof value === 'string' && value !== text.value) {
+          text.value = value
+        }
+      }
+    )
+
+    const updateText = (value: string) => {
+      text.value = value
+      _p.onChange?.(value)
+    }
+
     const hsend = async () => {
       if (_p.inProgress) return
       const content = text.value.trim()
       if (!content) return
       await _p.send(content)
-      text.value = ''
+      updateText('')
       textareaRef.value?.$el?.focus()
     }
     watch(
@@ -47,17 +82,23 @@ export const Input = defineComponent({
 
     const sendIcon = SendIcon
     const showPushToTalk = false
-    const sendDisabled = _p.inProgress
+    const isProcessing = _p.mode === 'processing' || _p.inProgress
+    const isTranscribeMode = _p.mode === 'transcribe'
+    const sendDisabled = isProcessing || isTranscribeMode
 
     return () => (
-      <div class="copilotKitInput" onClick={handleDivClick}>
+      <div
+        class={['copilotKitInput', _p.positioning === 'absolute' ? 'copilotKitInputAbsolute' : '']}
+        onClick={handleDivClick}
+      >
         <AutoResizingTextarea
           ref={e => (textareaRef.value = e)}
           placeholder={labels?.placeholder || 'Type a message...'}
           autoFocus={true}
           maxRows={5}
           value={text.value}
-          onChange={e => (text.value = e.target.value)}
+          disabled={isTranscribeMode}
+          onChange={e => updateText(e.target.value)}
           onKeyDown={e => {
             if (e.isComposing) return
             if (e.key === 'Enter' && !e.shiftKey) {
@@ -72,11 +113,17 @@ export const Input = defineComponent({
               <PushToTalkIcon />
             </button>
           )}
-          <button disabled={sendDisabled} onClick={hsend}>
-            <sendIcon />
-          </button>
+          {_p.inProgress && _p.onStop ? (
+            <button onClick={() => _p.onStop?.()} type="button">
+              <StopIcon />
+            </button>
+          ) : (
+            <button disabled={sendDisabled} onClick={hsend} type="button">
+              <sendIcon />
+            </button>
+          )}
         </div>
       </div>
     )
-  }
+  },
 })

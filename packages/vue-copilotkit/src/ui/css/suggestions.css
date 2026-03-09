@@ -1,3 +1,10 @@
+.copilotKitSuggestionsBar {
+  flex: 0 0 auto;
+  padding: 0.85rem 1.1rem 0.75rem;
+  background: var(--copilot-kit-background-color);
+}
+
+.copilotKitSuggestionsBar .suggestions,
 .copilotKitMessages footer .suggestions {
   display: flex;
   flex-direction: column;
@@ -5,6 +12,7 @@
   width: 100%;
 }
 
+.copilotKitSuggestionsBar h6,
 .copilotKitMessages footer h6 {
   margin: 0;
   font-size: 0.72rem;
@@ -14,36 +22,143 @@
   font-weight: 700;
 }
 
+.copilotKitSuggestionsBar .suggestions .suggestionsList,
 .copilotKitMessages footer .suggestions .suggestionsList {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.45rem;
+  gap: 0.65rem;
   width: 100%;
 }
 
+.copilotKitSuggestionsBar.copilotKitSuggestionsLayout-horizontal .suggestions .suggestionsList {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 0.15rem;
+  scrollbar-width: thin;
+}
+
+.copilotKitSuggestionsBar.copilotKitSuggestionsLayout-horizontal .suggestions .suggestionsList > * {
+  flex: 0 0 auto;
+}
+
+.copilotKitSuggestionsBar.is-scrollable .suggestions .suggestionsList {
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex-wrap: nowrap;
+}
+
+.copilotKitSuggestionsBar.is-scrollable .suggestions .suggestionsList::-webkit-scrollbar {
+  height: 8px;
+}
+
+.copilotKitSuggestionsBar.is-scrollable .suggestions .suggestionsList::-webkit-scrollbar-thumb {
+  background-color: var(--copilot-kit-scrollbar-color);
+  border-radius: 999px;
+}
+
+.copilotKitSuggestionsBar .suggestions button,
 .copilotKitMessages footer .suggestions button {
   border: 1px solid rgba(15, 118, 110, 0.18);
   border-radius: 999px;
-  background: rgba(15, 118, 110, 0.1);
-  color: var(--copilot-kit-primary-strong-color);
+  background: var(--copilot-kit-suggestion-background-color);
+  color: var(--copilot-kit-suggestion-text-color);
   padding: 0.42rem 0.84rem;
   font-size: 0.82rem;
   white-space: nowrap;
   transition:
     transform 0.2s ease,
-    background-color 0.2s ease;
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
+.copilotKitSuggestionsBar .suggestions button:not(:disabled):hover,
 .copilotKitMessages footer .suggestions button:not(:disabled):hover {
   transform: translateY(-1px);
-  background: rgba(15, 118, 110, 0.16);
+  background: var(--copilot-kit-suggestion-hover-background-color);
 }
 
+.copilotKitSuggestionItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.copilotKitSuggestionIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+
+.copilotKitSuggestionContent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  min-width: 0;
+}
+
+.copilotKitSuggestionLabel {
+  font-weight: 600;
+  line-height: 1.2rem;
+}
+
+.copilotKitSuggestionDescription {
+  margin-top: 0.14rem;
+  font-size: 0.76rem;
+  line-height: 1.05rem;
+  color: var(--copilot-kit-muted-color);
+  white-space: normal;
+}
+
+.copilotKitSuggestionsBar-cards .suggestions .suggestionsList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.copilotKitSuggestionsBar-cards.copilotKitSuggestionsLayout-horizontal .suggestions .suggestionsList,
+.copilotKitSuggestionsBar-cards.is-scrollable .suggestions .suggestionsList {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.copilotKitSuggestionsBar-cards.copilotKitSuggestionsLayout-horizontal .suggestions .suggestionsList > *,
+.copilotKitSuggestionsBar-cards.is-scrollable .suggestions .suggestionsList > * {
+  flex: 0 0 min(280px, 80%);
+}
+
+.copilotKitSuggestionsBar-cards .suggestions button {
+  border-radius: var(--copilot-kit-radius-lg);
+  padding: 0.85rem 0.95rem;
+  min-height: 88px;
+  justify-content: flex-start;
+  align-items: flex-start;
+  white-space: normal;
+  background: var(--copilot-kit-surface-color);
+  box-shadow: var(--copilot-kit-shadow-md);
+}
+
+.copilotKitSuggestionsBar-cards .suggestions button:not(:disabled):hover {
+  border-color: rgba(15, 118, 110, 0.34);
+  box-shadow: var(--copilot-kit-shadow-lg);
+}
+
+.copilotKitSuggestionsBar-cards .copilotKitSuggestionContent {
+  gap: 0.1rem;
+}
+
+.copilotKitSuggestionsBar .suggestions button:disabled,
 .copilotKitMessages footer .suggestions button:disabled {
   cursor: not-allowed;
   opacity: 0.75;
 }
 
+.copilotKitSuggestionsBar .suggestions button svg,
 .copilotKitMessages footer .suggestions button svg {
   margin-right: 6px;
 }

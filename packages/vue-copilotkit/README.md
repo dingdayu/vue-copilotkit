@@ -11,10 +11,24 @@ pnpm add @dingdayu/vue-copilotkit
 ## Quick usage
 
 ```ts
-import { CopilotKit, CopilotPopup } from '@dingdayu/vue-copilotkit'
+import {
+  CopilotKit,
+  CopilotPopup,
+  CopilotChatMessageView,
+  CopilotChatAssistantMessage,
+  CopilotChatUserMessage,
+  useAgentContext,
+  useCopilotTheme,
+} from '@dingdayu/vue-copilotkit'
 ```
 
 Wrap your app with `CopilotKit`, then render components like `CopilotPopup`, `CopilotChat`, `CopilotSidebar`, or `CopilotTextarea` where needed.
+
+`CopilotKit` also accepts UI theme props:
+
+- `theme`
+- `themeOverrides`
+- `darkMode`
 
 ## Styles
 
@@ -27,7 +41,7 @@ import '@dingdayu/vue-copilotkit/style.css'
 
 ## Exports
 
-- Root exports (recommended): `CopilotKit`, `CopilotChat`, `CopilotPopup`, `CopilotSidebar`, `CopilotTextarea`, and common `useXxx` composables.
+- Root exports (recommended): `CopilotKit`, `CopilotChat`, `CopilotPopup`, `CopilotSidebar`, `CopilotTextarea`, `CopilotChatMessageView`, `CopilotChatAssistantMessage`, `CopilotChatUserMessage`, `useAgentContext`, `useCopilotTheme`, and common `useXxx` composables.
 - Subpath exports:
   - `@dingdayu/vue-copilotkit/components`
   - `@dingdayu/vue-copilotkit/composables`
@@ -37,3 +51,5 @@ import '@dingdayu/vue-copilotkit/style.css'
 ## Notes
 
 - This repository targets the CopilotKit v2 single-route runtime protocol.
+- `useAgentContext({ description, value })` registers contextual app state for the active agent.
+- `useCopilotTheme()` exposes `activeThemeName`, `resolvedAppearance`, `setTheme()`, and `setDarkMode()`.

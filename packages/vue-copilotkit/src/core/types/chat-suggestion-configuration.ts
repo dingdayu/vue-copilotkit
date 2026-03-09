@@ -1,6 +1,20 @@
+import type { VNodeChild } from 'vue'
+
+export type CopilotSuggestionsVariant = 'chips' | 'cards'
+export type CopilotSuggestionsLayout = 'wrap' | 'horizontal'
+
 export interface CopilotSuggestionItem {
-  title: string
+  title?: string
+  label?: string
   message: string
+  description?: string
+  icon?: VNodeChild
+  className?: string
+}
+
+export interface CopilotSuggestionClickInfo {
+  data: CopilotSuggestionItem
+  index: number
 }
 
 export interface CopilotChatSuggestionConfiguration {
@@ -21,6 +35,11 @@ export interface CopilotChatSuggestionConfiguration {
    */
   maxSuggestions?: number
 
+  title?: string
+  variant?: CopilotSuggestionsVariant
+  layout?: CopilotSuggestionsLayout
+  scrollable?: boolean
+
   /**
    * Explicit suggestion items to show in chat UI.
    * When provided, these items are prioritized over generic defaults.
@@ -31,4 +50,6 @@ export interface CopilotChatSuggestionConfiguration {
    * An optional class name to apply to the suggestions.
    */
   className?: string
+
+  onItemClick?: (info: CopilotSuggestionClickInfo) => void | Promise<void>
 }

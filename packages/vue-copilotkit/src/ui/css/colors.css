@@ -2,6 +2,7 @@
   --copilot-kit-font-family: 'Manrope', 'Avenir Next', 'Segoe UI', sans-serif;
   --copilot-kit-background-color: #f3f7fb;
   --copilot-kit-surface-color: #ffffff;
+  --copilot-kit-surface-elevated-color: #ffffff;
   --copilot-kit-secondary-color: #e7eef5;
   --copilot-kit-secondary-contrast-color: #162332;
   --copilot-kit-primary-color: #0f766e;
@@ -18,4 +19,12 @@
   --copilot-kit-radius-md: 10px;
   --copilot-kit-response-button-color: #0f766e;
   --copilot-kit-response-button-background-color: #ffffff;
+  --copilot-kit-toolbar-background-color: rgba(15, 118, 110, 0.08);
+  --copilot-kit-toolbar-hover-background-color: rgba(15, 118, 110, 0.14);
+  --copilot-kit-toolbar-text-color: #0f766e;
+  --copilot-kit-suggestion-background-color: rgba(15, 118, 110, 0.1);
+  --copilot-kit-suggestion-hover-background-color: rgba(15, 118, 110, 0.16);
+  --copilot-kit-suggestion-text-color: #115e59;
+  --copilot-kit-input-hover-background-color: rgba(15, 118, 110, 0.08);
+  --copilot-kit-user-message-shadow: 0 8px 22px rgba(15, 118, 110, 0.2);
 }

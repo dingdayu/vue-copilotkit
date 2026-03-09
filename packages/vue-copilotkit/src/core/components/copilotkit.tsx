@@ -1,4 +1,4 @@
-import { defineComponent, provide, renderSlot, ref } from 'vue'
+import { computed, defineComponent, onBeforeUnmount, onMounted, provide, ref, renderSlot, watch } from 'vue'
 import { COPILOT_CLOUD_CHAT_URL, CopilotCloudConfig, FunctionCallHandler } from '@copilotkit/shared'
 import { Message } from '@copilotkit/runtime-client-gql'
 
@@ -15,6 +15,15 @@ import { UsageBanner } from './usage-banner'
 import { CopilotKitError } from '@copilotkit/shared'
 // vue context symbol
 import { CopilotKitContext, CopilotContextParams, InChatRenderFunction } from '../context'
+import {
+  CopilotKitThemeContext,
+  isCopilotKitThemeName,
+  resolveCopilotKitThemeTokens,
+  toCopilotKitCssVariables,
+  type CopilotKitAppearance,
+  type CopilotKitDarkMode,
+  type CopilotKitTheme,
+} from '../theme'
 
 /**
  * Interface for the configuration of the Copilot API.
@@ -86,7 +95,19 @@ export const CopilotKit = defineComponent({
     transcribeAudioUrl: String,
     textToSpeechUrl: String,
     credentials: String,
-    showDevConsole: [Boolean, String] as any
+    showDevConsole: [Boolean, String] as any,
+    theme: {
+      type: [String, Object] as any,
+      default: 'default',
+    },
+    themeOverrides: {
+      type: Object,
+      default: undefined,
+    },
+    darkMode: {
+      type: [Boolean, String] as any,
+      default: 'auto',
+    },
   },
   setup(props: CopilotKitProps, { slots }) {
     if (!props.runtimeUrl && !props.publicApiKey) {
@@ -99,7 +120,7 @@ export const CopilotKit = defineComponent({
     const {
       addElement: addDocument,
       removeElement: removeDocument,
-      allElements: allDocuments
+      allElements: allDocuments,
     } = useFlatCategoryStore<DocumentPointer>()
 
     const chatComponentsCache = ref<Record<string, InChatRenderFunction | string>>({})
@@ -112,6 +133,9 @@ export const CopilotKit = defineComponent({
     const chatInstructions = ref('')
     const chatSuggestionConfiguration = ref<Record<string, CopilotChatSuggestionConfiguration>>({})
     const humanInTheLoopEvent = ref<CopilotContextParams['humanInTheLoopEvent']['value']>(null)
+    const theme = ref<CopilotKitTheme>(props.theme || 'default')
+    const darkMode = ref<CopilotKitDarkMode>(props.darkMode ?? 'auto')
+    const systemPrefersDark = ref(false)
 
     const setMessages = (value: Message[]) => {
       messages.value = value
@@ -134,7 +158,7 @@ export const CopilotKit = defineComponent({
     const setAction = (id: string, action: FrontendAction<any>) => {
       actions.value = {
         ...actions.value,
-        [id]: action
+        [id]: action,
       }
     }
     const removeAction = (id: string) => {
@@ -148,6 +172,83 @@ export const CopilotKit = defineComponent({
     const setAgentSession = (session: CopilotContextParams['agentSession']['value']) => {
       agentSession.value = session
     }
+
+    const setTheme = (nextTheme: CopilotKitTheme) => {
+      theme.value = nextTheme
+    }
+
+    const setDarkMode = (mode: CopilotKitDarkMode) => {
+      darkMode.value = mode
+    }
+
+    const resolvedAppearance = computed<CopilotKitAppearance>(() => {
+      if (darkMode.value === 'auto') {
+        return systemPrefersDark.value ? 'dark' : 'light'
+      }
+
+      return darkMode.value ? 'dark' : 'light'
+    })
+
+    const activeThemeName = computed(() => {
+      if (isCopilotKitThemeName(theme.value)) {
+        return theme.value
+      }
+
+      if (theme.value && typeof theme.value === 'object' && 'name' in theme.value && theme.value.name) {
+        return theme.value.name
+      }
+
+      return 'custom'
+    })
+
+    const activeThemeTokens = computed(() =>
+      resolveCopilotKitThemeTokens(theme.value, resolvedAppearance.value, props.themeOverrides)
+    )
+
+    const activeThemeCssVariables = computed(() => toCopilotKitCssVariables(activeThemeTokens.value))
+
+    let mediaQuery: MediaQueryList | null = null
+    let mediaQueryListener: ((event: MediaQueryListEvent) => void) | null = null
+
+    const syncSystemTheme = () => {
+      systemPrefersDark.value =
+        typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches
+    }
+
+    onMounted(() => {
+      if (typeof window === 'undefined') {
+        return
+      }
+
+      syncSystemTheme()
+      mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+      mediaQueryListener = event => {
+        systemPrefersDark.value = event.matches
+      }
+      mediaQuery.addEventListener('change', mediaQueryListener)
+    })
+
+    onBeforeUnmount(() => {
+      if (mediaQuery && mediaQueryListener) {
+        mediaQuery.removeEventListener('change', mediaQueryListener)
+      }
+    })
+
+    watch(
+      () => props.theme,
+      value => {
+        if (value !== undefined) {
+          theme.value = value
+        }
+      }
+    )
+
+    watch(
+      () => props.darkMode,
+      value => {
+        darkMode.value = value ?? 'auto'
+      }
+    )
 
     const getContextString = (documents: DocumentPointer[], categories: string[]) => {
       const documentsString = documents
@@ -183,7 +284,7 @@ export const CopilotKit = defineComponent({
     const addChatSuggestionConfiguration = (id: string, suggestion: CopilotChatSuggestionConfiguration) => {
       chatSuggestionConfiguration.value = {
         ...chatSuggestionConfiguration.value,
-        [id]: suggestion
+        [id]: suggestion,
       }
     }
     const removeChatSuggestionConfiguration = (id: string) => {
@@ -207,10 +308,10 @@ export const CopilotKit = defineComponent({
             restrictToTopic: {
               enabled: props.cloudRestrictToTopic ? true : false,
               validTopics: props.cloudRestrictToTopic?.validTopics || [],
-              invalidTopics: props.cloudRestrictToTopic?.invalidTopics || []
-            }
-          }
-        }
+              invalidTopics: props.cloudRestrictToTopic?.invalidTopics || [],
+            },
+          },
+        },
       }
     }
 
@@ -223,7 +324,7 @@ export const CopilotKit = defineComponent({
       properties: props.properties || {},
       transcribeAudioUrl: props.transcribeAudioUrl,
       textToSpeechUrl: props.textToSpeechUrl,
-      credentials: props.credentials
+      credentials: props.credentials,
     }
 
     provide<CopilotContextParams>(CopilotKitContext, {
@@ -256,21 +357,40 @@ export const CopilotKit = defineComponent({
       setHumanInTheLoopEvent,
       showDevConsole: props.showDevConsole || 'auto',
       usageError,
-      setUsageError
+      setUsageError,
+    })
+
+    provide(CopilotKitThemeContext, {
+      theme,
+      darkMode,
+      resolvedAppearance,
+      activeThemeName,
+      tokens: activeThemeTokens,
+      cssVariables: activeThemeCssVariables,
+      setTheme,
+      setDarkMode,
     })
 
     return () => {
+      const themeName = activeThemeName.value.replace(/[^a-zA-Z0-9_-]+/g, '-')
       return (
-        <ToastProvider>
-          <CopilotErrorBoundary>
-            {renderSlot(slots, 'default')}
-            <ConsoleTrigger />
-            {usageError.value && <UsageBanner error={usageError.value} onClose={() => (usageError.value = null)} />}
-          </CopilotErrorBoundary>
-        </ToastProvider>
+        <div
+          class={['copilotKitRoot', `copilotKitTheme-${themeName}`, `copilotKitAppearance-${resolvedAppearance.value}`]}
+          data-copilotkit-theme={activeThemeName.value}
+          data-copilotkit-appearance={resolvedAppearance.value}
+          style={activeThemeCssVariables.value}
+        >
+          <ToastProvider>
+            <CopilotErrorBoundary>
+              {renderSlot(slots, 'default')}
+              <ConsoleTrigger />
+              {usageError.value && <UsageBanner error={usageError.value} onClose={() => (usageError.value = null)} />}
+            </CopilotErrorBoundary>
+          </ToastProvider>
+        </div>
       )
     }
-  }
+  },
 })
 
 export const defaultCopilotContextCategories = ['global']

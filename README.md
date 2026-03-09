@@ -17,6 +17,7 @@ Vue CopilotKit is a Vue 3 implementation inspired by the React UI layer of [Copi
 ## Why use this repository?
 
 - Unified package with provider, composables, chat UI, popup/sidebar UI, and `CopilotTextarea`
+- Built-in theme presets, dark mode support, and custom theme overrides for chat UI
 - Vue 3 + Vite demo app with bilingual routes and practical scenarios
 - CopilotKit v2 single-route runtime compatibility
 - pnpm monorepo with package-level builds and demo runtime examples
@@ -68,7 +69,7 @@ Default local runtime endpoint: `http://localhost:4000/copilotkit`
 
 ## Package Guide
 
-- `@dingdayu/vue-copilotkit` — recommended entry point for provider, composables, chat UI, popup, sidebar, and `CopilotTextarea`
+- `@dingdayu/vue-copilotkit` — recommended entry point for provider, composables, chat UI, popup, sidebar, `CopilotTextarea`, theme APIs, `useAgentContext`, and message view primitives such as `CopilotChatMessageView`, `CopilotChatAssistantMessage`, and `CopilotChatUserMessage`
 - `@dingdayu/vue-copilotkit-core` — legacy low-level provider and runtime hooks package
 - `@dingdayu/vue-copilotkit-ui` — legacy prebuilt UI package
 
@@ -152,7 +153,7 @@ const tokenTheme = computed(() => ({
 
 <template>
   <ConfigProvider :theme="tokenTheme">
-    <CopilotKit runtime-url="http://localhost:4000/copilotkit" show-dev-console>
+    <CopilotKit runtime-url="http://localhost:4000/copilotkit" theme="x.ant.design" dark-mode="auto" show-dev-console>
       <App>
         <RouterView />
       </App>
@@ -172,6 +173,72 @@ import { CopilotPopup } from '@dingdayu/vue-copilotkit'
   <CopilotPopup />
 </template>
 ```
+
+Register app state as agent context and customize the chat surface with the newer view primitives:
+
+```vue
+<script setup lang="ts">
+import { computed, ref } from 'vue'
+import {
+  CopilotChat,
+  CopilotChatAssistantMessage,
+  CopilotChatInput,
+  CopilotChatUserMessage,
+  CopilotChatView,
+  useAgentContext,
+  useCopilotTheme,
+} from '@dingdayu/vue-copilotkit'
+
+const draft = ref('')
+const { activeThemeName } = useCopilotTheme()
+const pageContext = computed(() => ({
+  page: 'sdk',
+  theme: activeThemeName.value,
+}))
+
+useAgentContext({
+  description: 'Current SDK page state',
+  value: pageContext,
+})
+</script>
+
+<template>
+  <CopilotChat>
+    <template #messages="{ messages, inProgress, children }">
+      <CopilotChatView :messages="messages" :inProgress="inProgress">
+        <template #userMessage="{ message }">
+          <CopilotChatUserMessage :message="message" />
+        </template>
+        <template #assistantMessage="{ message, inProgress: messageInProgress, reasoningOpen }">
+          <CopilotChatAssistantMessage
+            :message="message"
+            :inProgress="messageInProgress"
+            :reasoningOpen="reasoningOpen"
+          />
+        </template>
+        <component :is="children.default" v-if="children?.default" />
+      </CopilotChatView>
+    </template>
+
+    <template #input="{ send, inProgress, isVisible }">
+      <CopilotChatInput
+        :send="send"
+        :inProgress="inProgress"
+        :isVisible="isVisible"
+        :value="draft"
+        :onChange="value => (draft = value)"
+      />
+    </template>
+  </CopilotChat>
+</template>
+```
+
+Theme API summary:
+
+- `theme="default" | "copilotkit" | "ant-design-x" | "x.ant.design"`
+- `dark-mode="auto" | true | false`
+- `theme-overrides` for custom token overrides
+- `useCopilotTheme()` for runtime switching via `setTheme()` and `setDarkMode()`
 
 If you import from the package root, styles are already included. If you only use subpath imports, add:
 

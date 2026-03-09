@@ -1,6 +1,7 @@
 export { useCopilotContext } from '../core/context'
 export {
   useAgent,
+  useAgentContext,
   useConfigureSuggestions,
   useCopilotAction,
   useCopilotChat,
@@ -8,6 +9,7 @@ export {
   useDefaultRenderTool,
   useHumanInTheLoop,
   useMakeCopilotDocumentReadable,
-  useRenderTool
+  useRenderTool,
 } from '../core/hooks'
+export { useCopilotTheme } from '../core/theme'
 export { useCopilotChatSuggestions, useCopyToClipboard, useDarkMode, usePushToTalk } from '../ui/hooks'

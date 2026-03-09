@@ -16,8 +16,13 @@ export interface HeaderProps {
   setOpen: (open: boolean) => void
 }
 export interface InputProps {
-  inProgress: boolean
+  inProgress?: boolean
+  mode?: 'input' | 'transcribe' | 'processing'
+  value?: string
+  onChange?: (value: string) => void
   send: (text: string) => Promise<Message>
+  onStop?: () => void
+  positioning?: 'static' | 'absolute'
   isVisible?: boolean
 }
 

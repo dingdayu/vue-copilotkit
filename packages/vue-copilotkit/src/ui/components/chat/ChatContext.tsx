@@ -38,6 +38,8 @@ export interface CopilotChatLabels {
    * @default "Regenerate response"
    */
   regenerateResponse?: string
+
+  suggestionsTitle?: string
 }
 
 const defaultLabels: Required<CopilotChatLabels> = {
@@ -46,47 +48,48 @@ const defaultLabels: Required<CopilotChatLabels> = {
   placeholder: 'Type a message...',
   error: '❌ An error occurred. Please try again.',
   stopGenerating: 'Stop generating',
-  regenerateResponse: 'Regenerate response'
+  regenerateResponse: 'Regenerate response',
+  suggestionsTitle: 'Suggestions',
 }
 
 const defaultChatContext = {
   labels: defaultLabels,
   open: true,
-  setOpen: () => {}
+  setOpen: () => {},
 }
 
 export const ChatContextProvider = defineComponent({
   props: {
     labels: {
       type: Object as PropType<CopilotChatLabels>,
-      default: () => ({})
+      default: () => ({}),
     },
     open: {
       type: Boolean,
-      default: false
+      default: false,
     },
     setOpen: {
       type: Function as PropType<(open: boolean) => void>,
-      default: () => {}
-    }
+      default: () => {},
+    },
   },
   setup(props, { slots }) {
     const context = {
       get labels() {
         return {
           ...defaultLabels,
-          ...props.labels
+          ...props.labels,
         }
       },
       get open() {
         return props.open
       },
-      setOpen: (open: boolean) => props.setOpen(open)
+      setOpen: (open: boolean) => props.setOpen(open),
     }
     provide('chatContext', context)
 
     return () => renderSlot(slots, 'default')
-  }
+  },
 })
 
 interface ChatContext {

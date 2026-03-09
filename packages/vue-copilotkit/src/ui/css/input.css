@@ -11,6 +11,13 @@
   gap: 0.6rem;
 }
 
+.copilotKitInputAbsolute {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
 .copilotKitInput > .copilotKitInputControls > button {
   padding: 0.32rem;
   cursor: pointer;
@@ -45,7 +52,7 @@
 
 .copilotKitInput > .copilotKitInputControls > button:not([disabled]):hover {
   transform: scale(1.04);
-  background-color: rgba(15, 118, 110, 0.08);
+  background-color: var(--copilot-kit-input-hover-background-color);
 }
 
 .copilotKitInput > .copilotKitInputControls > button[disabled] {

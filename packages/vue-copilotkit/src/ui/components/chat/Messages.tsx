@@ -1,6 +1,5 @@
 import { computed, defineComponent, PropType, ref, watch } from 'vue'
 
-import { Markdown } from './Markdown'
 import { RenderFunctionStatus, useCopilotContext } from '../../../core'
 import { SpinnerIcon } from './Icon'
 
@@ -9,26 +8,28 @@ import {
   Message,
   MessageStatusCode,
   ResultMessage,
-  TextMessage
+  TextMessage,
 } from '@copilotkit/runtime-client-gql'
+import { CopilotChatAssistantMessage } from './CopilotChatAssistantMessage'
+import { CopilotChatUserMessage } from './CopilotChatUserMessage'
 
 export const Messages = defineComponent({
   props: {
     messages: {
       type: Array as PropType<Message[]>,
-      required: true
+      required: true,
     },
     inProgress: {
       type: Boolean,
-      required: true
+      required: true,
     },
     maxHeight: {
       type: [String, Number],
-      default: undefined
+      default: undefined,
     },
     children: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   setup(props, { slots }) {
     const { chatComponentsCache, defaultToolRender } = useCopilotContext()
@@ -121,7 +122,8 @@ export const Messages = defineComponent({
       }
 
       return {
-        maxHeight: typeof props.maxHeight === 'number' ? `${props.maxHeight}px` : props.maxHeight
+        maxHeight: typeof props.maxHeight === 'number' ? `${props.maxHeight}px` : props.maxHeight,
+        height: '100%',
       }
     })
 
@@ -215,7 +217,7 @@ export const Messages = defineComponent({
         const content = dynamicRenderer({
           status,
           args: message.arguments,
-          result
+          result,
         })
 
         if (typeof content === 'string') {
@@ -235,7 +237,7 @@ export const Messages = defineComponent({
           name: message.name,
           status,
           parameters: message.arguments,
-          result
+          result,
         })
 
         if (content) {
@@ -252,10 +254,23 @@ export const Messages = defineComponent({
           const isCurrentMessage = index === lastRenderableMessageIndex.value
 
           if (message instanceof TextMessage && message.role === 'user') {
+            const userSlot = slots.userMessage
+
+            if (userSlot) {
+              return userSlot({
+                message,
+                branchIndex: 0,
+                numberOfBranches: 1,
+              })
+            }
+
             return (
-              <div key={message.id || index} class="copilotKitMessage copilotKitUserMessage">
-                {message.content}
-              </div>
+              <CopilotChatUserMessage
+                key={message.id || index}
+                message={message}
+                branchIndex={0}
+                numberOfBranches={1}
+              />
             )
           }
 
@@ -267,18 +282,42 @@ export const Messages = defineComponent({
               return null
             }
 
+            const assistantSlot = slots.assistantMessage
+
+            if (assistantSlot) {
+              return assistantSlot({
+                message,
+                inProgress: isCurrentMessage && props.inProgress,
+                reasoningOpen: isCurrentMessage && props.inProgress,
+              })
+            }
+
             return (
-              <div key={message.id || index} class="copilotKitMessage copilotKitAssistantMessage">
+              <div key={message.id || index}>
                 {isCurrentMessage && props.inProgress && !hasText ? (
-                  <SpinnerIcon />
+                  <div class="copilotKitMessage copilotKitAssistantMessage">
+                    <SpinnerIcon />
+                  </div>
                 ) : (
-                  <Markdown content={message.content} reasoningOpen={isCurrentMessage && props.inProgress} />
+                  <CopilotChatAssistantMessage
+                    message={message}
+                    inProgress={isCurrentMessage && props.inProgress}
+                    reasoningOpen={isCurrentMessage && props.inProgress}
+                  />
                 )}
               </div>
             )
           }
 
           if (message instanceof ActionExecutionMessage) {
+            if (slots.actionMessage) {
+              return slots.actionMessage({
+                message,
+                isCurrentMessage,
+                renderDefault: () => renderActionMessage(message, isCurrentMessage),
+              })
+            }
+
             return <div key={message.id || index}>{renderActionMessage(message, isCurrentMessage)}</div>
           }
 
@@ -293,5 +332,5 @@ export const Messages = defineComponent({
         <footer ref={messagesEndRef}>{slots.default?.()}</footer>
       </div>
     )
-  }
+  },
 })

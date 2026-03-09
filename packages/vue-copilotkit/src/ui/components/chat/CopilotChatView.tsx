@@ -1,23 +1,23 @@
 import { defineComponent, PropType } from 'vue'
 import { Message } from '@copilotkit/runtime-client-gql'
 
-import { Messages } from './Messages'
+import { CopilotChatMessageView } from './CopilotChatMessageView'
 
 export const CopilotChatView = defineComponent({
   name: 'CopilotChatView',
   props: {
     messages: {
       type: Array as PropType<Message[]>,
-      required: true
+      required: true,
     },
     inProgress: {
       type: Boolean,
-      required: true
+      required: true,
     },
     maxHeight: {
       type: [String, Number],
-      default: '100%'
-    }
+      default: '100%',
+    },
   },
   setup(props, { slots }) {
     const normalizeHeight = () => {
@@ -36,13 +36,19 @@ export const CopilotChatView = defineComponent({
           height: '100%',
           overflow: 'hidden',
           display: 'flex',
-          flexDirection: 'column'
+          flexDirection: 'column',
         }}
       >
-        <Messages messages={props.messages} inProgress={props.inProgress} maxHeight="100%">
-          {slots.default?.()}
-        </Messages>
+        <CopilotChatMessageView messages={props.messages} inProgress={props.inProgress} maxHeight="100%">
+          {{
+            assistantMessage: slots.assistantMessage,
+            userMessage: slots.userMessage,
+            emptyScreen: slots.emptyScreen,
+            actionMessage: slots.actionMessage,
+            default: slots.default,
+          }}
+        </CopilotChatMessageView>
       </div>
     )
-  }
+  },
 })

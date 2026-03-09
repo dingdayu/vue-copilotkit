@@ -2,6 +2,7 @@
   overflow-y: auto;
   flex: 1;
   min-height: 0;
+  height: 100%;
   padding: 1rem 1.1rem;
   display: flex;
   flex-direction: column;
@@ -45,7 +46,7 @@
   color: var(--copilot-kit-contrast-color);
   margin-left: auto;
   white-space: pre-wrap;
-  box-shadow: 0 8px 22px rgba(15, 118, 110, 0.2);
+  box-shadow: var(--copilot-kit-user-message-shadow);
 }
 
 .copilotKitMessage.copilotKitAssistantMessage {
@@ -53,6 +54,63 @@
   color: var(--copilot-kit-secondary-contrast-color);
   margin-right: auto;
   border: 1px solid var(--copilot-kit-separator-color);
+}
+
+.copilotKitMessageShell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.45rem;
+}
+
+.copilotKitMessageToolbar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.copilotKitMessageToolbarButton,
+.copilotKitBranchButton {
+  border: 0;
+  background: var(--copilot-kit-toolbar-background-color);
+  color: var(--copilot-kit-toolbar-text-color);
+  border-radius: 999px;
+  padding: 0.28rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.copilotKitMessageToolbarButton:hover,
+.copilotKitBranchButton:hover {
+  background: var(--copilot-kit-toolbar-hover-background-color);
+  transform: translateY(-1px);
+}
+
+.copilotKitBranchNav {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32rem;
+  color: var(--copilot-kit-muted-color);
+  font-size: 0.72rem;
+}
+
+.copilotKitBranchStatus {
+  min-width: 3.5rem;
+  text-align: center;
+}
+
+.copilotKitEmptyState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  padding: 2rem 1rem;
+  color: var(--copilot-kit-muted-color);
+  text-align: center;
 }
 
 .copilotKitMessage.copilotKitUserMessage + .copilotKitMessage.copilotKitAssistantMessage {

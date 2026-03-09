@@ -4,28 +4,32 @@ export const AutoResizingTextarea = defineComponent({
   props: {
     maxRows: {
       type: Number,
-      default: 3
+      default: 3,
     },
     placeholder: {
       type: String,
-      default: ''
+      default: '',
     },
     value: {
       type: String,
-      default: ''
+      default: '',
     },
     onChange: {
       type: Function,
-      default: () => {}
+      default: () => {},
     },
     onKeyDown: {
       type: Function,
-      default: () => {}
+      default: () => {},
     },
     autoFocus: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup(props) {
     const internalTextareaRef = ref<HTMLTextAreaElement | null>(null)
@@ -71,6 +75,7 @@ export const AutoResizingTextarea = defineComponent({
         rows={1}
         placeholder={props.placeholder}
         value={props.value}
+        disabled={props.disabled}
         onInput={event => {
           props.onChange(event)
         }}
@@ -80,9 +85,9 @@ export const AutoResizingTextarea = defineComponent({
         style={{
           overflow: 'auto',
           resize: 'none',
-          maxHeight: `${maxHeight}px`
+          maxHeight: `${maxHeight}px`,
         }}
       />
     )
-  }
+  },
 })
