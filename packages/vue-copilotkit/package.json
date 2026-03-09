@@ -1,7 +1,7 @@
 {
   "name": "@dingdayu/vue-copilotkit",
   "private": false,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Vue 3 integration for CopilotKit - build AI-powered applications with ease.",
   "author": "dingdayu <dingxiaoyu.ddy@gmail.com>",
   "license": "MIT",
